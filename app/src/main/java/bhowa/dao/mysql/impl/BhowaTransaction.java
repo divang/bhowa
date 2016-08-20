@@ -1,8 +1,9 @@
 package bhowa.dao.mysql.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BhowaTransaction {
+public class BhowaTransaction implements Serializable {
 
 	public int srNo;
 	public String name;

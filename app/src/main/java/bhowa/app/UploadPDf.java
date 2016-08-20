@@ -48,7 +48,7 @@ public class UploadPDf extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
 
           new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
                 @Override public void fileSelected(final File file) {
@@ -58,6 +58,9 @@ public class UploadPDf extends Activity implements View.OnClickListener {
                     if(BhowaDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bState))
                     {
                         filePath.setText("Uploaded");
+                        Intent transactionReportIntent = new Intent(v.getContext(), TransactionReport.class);
+                        transactionReportIntent.putExtra("report",bState);
+                        startActivityForResult(transactionReportIntent, 0);
                     }
                     else
                     {

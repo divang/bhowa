@@ -1,8 +1,9 @@
 package bhowa.dao.mysql.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BankStatement {
+public class BankStatement implements Serializable {
 
 	public String bankStatementFileName;
 	public List<BhowaTransaction> allTransactions;
