@@ -1,5 +1,7 @@
 package bhowa.app;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,10 +24,6 @@ public class MainActivity extends AppCompatActivity {
         final TextView passwordText = (TextView) findViewById(R.id.passwordText);
         final TextView loginLevel = (TextView) findViewById(R.id.LoginLevel);
 
-        final TextView userIdLevel = (TextView) findViewById(R.id.textView);
-        final TextView paswwordLevel = (TextView) findViewById(R.id.textView2);
-
-
         final Button loginButton = (Button) findViewById(R.id.LoginButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -34,15 +32,12 @@ public class MainActivity extends AppCompatActivity {
                 UserLogin userLogin = new UserLogin();
                 userLogin.userName = userNameText.getText().toString();
                 userLogin.password = passwordText.getText().toString();
+
                 boolean isLoginSuccess = BhowaDatabaseFactory.getDBInstance().login( userLogin);
-//              boolean isLoginSuccess = true;
+                //boolean isLoginSuccess = true;
                 if (isLoginSuccess) {
-                    loginLevel.setText("Successful login!!!");
-                    passwordText.setVisibility(View.INVISIBLE);
-                    userNameText.setVisibility(View.INVISIBLE);
-                    loginButton.setVisibility(View.INVISIBLE);
-                    userIdLevel.setVisibility(View.INVISIBLE);
-                    paswwordLevel.setVisibility(View.INVISIBLE);
+                    Intent uploadPDFIntent = new Intent(v.getContext(), UploadPDf.class);
+                    startActivityForResult(uploadPDFIntent, 0);
                 } else {
                     loginLevel.setText("Login : Try again!");
                 }

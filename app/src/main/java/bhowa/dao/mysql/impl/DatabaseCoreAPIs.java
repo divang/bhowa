@@ -141,12 +141,14 @@ public class DatabaseCoreAPIs extends Queries {
 					pStat.setInt(1, t.srNo);
 					pStat.setString(2, t.name);
 					pStat.setFloat(3, t.amount);
-					pStat.setDate(4, new Date(t.transactionDate.getTime()));
+					if(t.transactionDate != null) pStat.setDate(4, new Date(t.transactionDate.getTime()));
+					else pStat.setDate(4, new Date(System.currentTimeMillis()));
 					pStat.setString(5, t.transactionFlow);
 					pStat.setString(6, t.type);
 					pStat.setString(7, t.reference);
 					pStat.addBatch();
 					pStat.clearParameters();
+					System.out.println(t);
 				}
 				
 				pStat.executeBatch();

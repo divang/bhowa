@@ -1,6 +1,6 @@
 package bhowa.parser;
 
-import bhowa.parser.pdf.BhowaPDFParserImpl;
+import bhowa.parser.pdf.BhowaPDFiTextParserImpl;
 
 public class BhowaParserFactory {
 
@@ -13,7 +13,7 @@ public class BhowaParserFactory {
 		
 		synchronized (lock) {
 			if(instance != null) return instance;
-			instance = new BhowaPDFParserImpl();
+			instance = new BhowaPDFiTextParserImpl();// impl for iText jar. Use BhowaPDFParserImpl for pdfbox
 		}
 		return instance;
 	}

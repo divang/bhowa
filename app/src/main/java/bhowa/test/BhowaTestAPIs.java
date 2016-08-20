@@ -1,8 +1,6 @@
 package bhowa.test;
 
-import bhowa.dao.mysql.impl.BankStatement;
 import bhowa.dao.mysql.impl.DatabaseCoreAPIs;
-import bhowa.parser.pdf.BhowaPDFParserImpl;
 
 public class BhowaTestAPIs {
 
@@ -11,8 +9,8 @@ public class BhowaTestAPIs {
 	public static void main(String[] args) {
 		BhowaTestAPIs testUtil = new BhowaTestAPIs();
 		//testUtil.loginTest();
-		//testUtil.uploadMonthlyTransactionsDBTest();
-		testUtil.isStatementAlreadyProcessedDBTest();
+		testUtil.uploadMonthlyTransactionsDBTest();
+		//testUtil.isStatementAlreadyProcessedDBTest();
 	}
 	
 	public void loginTest()
@@ -34,11 +32,11 @@ public class BhowaTestAPIs {
 	{
 		try
 		{
-			BhowaPDFParserImpl bp = new BhowaPDFParserImpl();
+			/*BhowaPDFParserImpl bp = new BhowaPDFParserImpl();
 			BankStatement bStat = bp.getAllTransaction("res/Report.pdf");
 			boolean r = dbCore.uploadMonthlyTransactionsDB(bStat);
 			if(r) System.out.println("All transactions uploaded test OK");
-			else System.err.println("Transactions upload test Failed");
+			else System.err.println("Transactions upload test Failed");*/
 		}
 		catch(Exception e)
 		{

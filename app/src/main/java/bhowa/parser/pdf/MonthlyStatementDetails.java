@@ -10,29 +10,29 @@ import bhowa.dao.mysql.impl.BhowaTransaction;
 
 public class MonthlyStatementDetails {
 
-	private static DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+	protected  DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 	
 	//Move these values to Database
-	private static String[] irrelevantWords = {"WITHDRAWAL", "BY", "BRANCH" ,"FROM" ,"Ref number Dr", "CrAmountDescription Balance Dr","CrDateSl. No.",
+	protected  String[] irrelevantWords = {"WITHDRAWAL", "BY", "BRANCH" ,"FROM" ,"Ref number Dr", "CrAmountDescription Balance Dr","CrDateSl. No.",
 												"REF" ,"TRANSFER", "PROCEEDS", "FUND", "TO", "Account Statement",":SI",
 												"Chq", "Number", "AMOUNT","Description", "BALANCE", "@JKK", "@",
 												"Date","/"};
 	
 	//Various description
-	private static String subStrCASH = "CASH";
-	private static String subStrIB = "IB";
-	private static String subStrINT_PD = "PD:";
-	private static String subStrMATURITY = "MATURITY";
-	private static String subStrMB = "MB:";
-	private static String subStrNEFT = "NEFT";
-	private static String subStrSWEEP = "SWEEP";
-	private static String subStrCLG = "CLG";
-	private static String subStrTD = "TD PREMAT";
-	private static String subStrIMPS= "IMPS";
+	protected  String subStrCASH = "CASH";
+	protected  String subStrIB = "IB";
+	protected  String subStrINT_PD = "PD:";
+	protected  String subStrMATURITY = "MATURITY";
+	protected  String subStrMB = "MB:";
+	protected  String subStrNEFT = "NEFT";
+	protected  String subStrSWEEP = "SWEEP";
+	protected  String subStrCLG = "CLG";
+	protected  String subStrTD = "TD PREMAT";
+	protected  String subStrIMPS= "IMPS";
 	
-	public static boolean isLoggingEnable = false;
+	public boolean isLoggingEnable = false;
 	
-	public static List<BhowaTransaction> getMonthlyDetails(List<String> strTransactionsList)
+	public  List<BhowaTransaction> getMonthlyDetails(List<String> strTransactionsList)
 	{
 		isLoggingEnable = false;
 		List<BhowaTransaction> bhowaTransactions = new ArrayList<BhowaTransaction>();
@@ -56,7 +56,7 @@ public class MonthlyStatementDetails {
 		return bhowaTransactions;
 	}
 	
-	private static BhowaTransaction getIMPSTransaction(String strTransaction)
+	protected  BhowaTransaction getIMPSTransaction(String strTransaction)
 	{
 		//4 IMPS FROM PHANI KRISH REF 613818443058 IMPS-613818595459 CR3,200.0017/05/2016 CR30,090.18 
 
@@ -69,7 +69,7 @@ public class MonthlyStatementDetails {
 	}
 
 	
-	private static BhowaTransaction getCLGTransaction(String strTransaction)
+	protected  BhowaTransaction getCLGTransaction(String strTransaction)
 	{
 		//24 TO CLG DANIEL L 236 DR13,260.0005/05/2016 CR6,611.18 
 		//27 TO CLG UMESHA 285 DR25,480.0004/05/2016 CR12,791.18 
@@ -82,7 +82,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getTDTransaction(String strTransaction)
+	protected  BhowaTransaction getTDTransaction(String strTransaction)
 	{
 		//53 TD PREMAT PROCEEDS: 5010906407 5010906407TO CR8.0022/04/2016 CR18,402.18 
 		if(isLoggingEnable) System.out.println(strTransaction);
@@ -93,14 +93,14 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getSWEEPTransaction(String strTransaction)
+	protected  BhowaTransaction getSWEEPTransaction(String strTransaction)
 	{
 		//SWEEP TRANSFER TO [5011214267] DR10,000.0018/05/2016 CR27,090.18
 		BhowaTransaction t = new BhowaTransaction();
 		return t;
 	}
 	
-	private static BhowaTransaction getNEFTTransaction(String strTransaction)
+	protected  BhowaTransaction getNEFTTransaction(String strTransaction)
 	{
 		//2 NEFT 971020308 VIVEK SHARMA NEFTINW-0041525369 CR17,000.0018/05/2016 CR37,090.18 
 		//14 NEFT AXMB161312110739 SUMITH VARGHESE NEFTINW-0041191977 CR10,000.0010/05/2016 CR32,634.18
@@ -113,7 +113,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getIBTransaction(String strTransaction)
+	protected  BhowaTransaction getIBTransaction(String strTransaction)
 	{
 		//22 IB: FUND TRANSFER FROMGAUTAM  KUMAR IB CR4,000.0005/05/2016 CR14,211.18
 		if(isLoggingEnable) System.out.println(strTransaction);
@@ -124,7 +124,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getIntPdTransaction(String strTransaction)
+	protected  BhowaTransaction getIntPdTransaction(String strTransaction)
 	{
 		//102 Int.Pd:3011153048:01-10- 2015 to 31-03-2016 CR606.0031/03/2016 CR26,879.18
 		if(isLoggingEnable) System.out.println(strTransaction);
@@ -135,7 +135,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getMATURITYTransaction(String strTransaction)
+	protected  BhowaTransaction getMATURITYTransaction(String strTransaction)
 	{
 		//9 MATURITY PROCEEDS: 5019585711 TO CR10,308.0014/05/2016 CR39,790.18
 		BhowaTransaction t = new BhowaTransaction();
@@ -143,7 +143,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getMBTransaction(String strTransaction)
+	protected  BhowaTransaction getMBTransaction(String strTransaction)
 	{
 		//13 MB:FUND TRANSFER FROM ABHINAV NIGAM MB-999976821552 CR6,540.0010/05/2016 CR39,174.18
 		if(isLoggingEnable) System.out.println(strTransaction);
@@ -154,7 +154,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 	
-	private static BhowaTransaction getCashTransaction(String strTransaction)
+	protected  BhowaTransaction getCashTransaction(String strTransaction)
 	{
 		//20 CASH WITHDRAWAL BY AKBAR HUSSAIN LASKAR@JKK BRANCH 237 DR16,000.0006/05/2016 CR8,517.18 
 		//80 CASH WITHDRAWAL BY AKBAR HUSSAIN LASKAR 283 DR16,000.0005/04/2016 CR24,130.18 
@@ -169,7 +169,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 
-	private static BhowaTransaction buildTransaction(String strTransaction)
+	protected  BhowaTransaction buildTransaction(String strTransaction)
 	{
 		BhowaTransaction t = new BhowaTransaction();
 		try
@@ -187,7 +187,7 @@ public class MonthlyStatementDetails {
 		return t;
 	}
 
-	private static void setAmountnDateStr(String strTransaction, BhowaTransaction t)
+	protected  void setAmountnDateStr(String strTransaction, BhowaTransaction t)
 	{
 		/*
 		 82 NEFT CITIN16632511367 NEFTINW-0039741498 CR3,370.0005042016 CR36,420.18      DR  CR  DR  CR  MAHESWAR MOHANTY 
@@ -233,7 +233,7 @@ public class MonthlyStatementDetails {
 		}
 	}
 	
-	private static void setName(String strTransaction, BhowaTransaction t)
+	protected  void setName(String strTransaction, BhowaTransaction t)
 	{
 		//==>50 NEFT CITIN16637946869 PHANI KRISHNA NARAYANAM NEFTINW-0040451164 CR3,200.0025042016 CR45,902.18      DR  CR  DR  CR  
 		
@@ -294,7 +294,7 @@ public class MonthlyStatementDetails {
 		}
 	}
 
-	private static void setSrId(String strTransaction, BhowaTransaction t)
+	protected  void setSrId(String strTransaction, BhowaTransaction t)
 	{
 		//==>50 NEFT CITIN16637946869 PHANI KRISHNA NARAYANAM NEFTINW-0040451164 CR3,200.0025042016 CR45,902.18      DR  CR  DR  CR  
 		//==>2 NEFT 971020308 VIVEK SHARMA NEFTINW-0041525369 CR17,000.0018052016 CR37,090.18 
@@ -329,7 +329,7 @@ public class MonthlyStatementDetails {
 		}
 	}
 
-	private static void setReference(String strTransaction, BhowaTransaction t)
+	protected  void setReference(String strTransaction, BhowaTransaction t)
 	{
 		try
 		{
@@ -362,7 +362,7 @@ public class MonthlyStatementDetails {
 		}
 	}
 	
-	private static void setCreditDebit(String strTransaction, BhowaTransaction t)
+	protected  void setCreditDebit(String strTransaction, BhowaTransaction t)
 	{
 		int indexCR = strTransaction.indexOf(" CR");
 		int indexDR = strTransaction.indexOf(" DR");
