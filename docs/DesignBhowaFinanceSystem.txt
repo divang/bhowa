@@ -1,0 +1,99 @@
+Design of BHOWA Finance Account Management :
+------------------------------------------
+APP based Solution:
+-------------------
+
+	DB design Tables :
+	------------------
+		User
+		User_Activity_Logging
+		User_Expense
+
+		Bank_Statement
+		Raw_Data
+		Transactions
+		Transactions_Staging_Data
+
+		Error_Log
+		Expense_Type
+
+	Process Flow :
+	--------------
+		Release 1.0 :
+			User Type
+				Super user
+				Individual user
+			Super user - 
+				User name / password login
+				Validate the mobile number.  
+			Individual user 
+				maintains his/her deposit amount.
+			User can use this APP via user name and password.
+			App fetches the data according to the user type. 
+				For Individual, 
+					Pulls his/her deposit which is not settled.
+					Break down this amount.
+					Pull the aggregate data i.e. Monthly report.
+					Cash expense submission.
+					Update password.
+					Add/Update bank account details.
+				For Super (addition capabilities),
+					Capability to scan a gmail account and read the kotak bank account statement.
+					Pull all pending individual's activities.
+					Send notification to particular individual / all members.
+					Create user name and password for new user.
+					Modify password of individual account.
+					Approve the individual account detail.
+			Database has a table which stores each and every activity done by any user.
+		
+
+Existing XLS format (Financial details) :
+---------------------------------------
+Sheets :
+	Summary
+		Receivable
+		Received
+		Money Yet to collect
+		Spenidng
+		Balance left
+		in Bank
+		in FD
+		in Cash
+		
+	Income Expense Summary
+		Receipts
+		Expenses
+			- Security Guards
+			- House Keeping Labour
+			- Common Electricity - BESCOM
+			- Water Tankers 
+			- Gardening
+			- Waste Disposal
+			- Deisel for Generator
+			- House Keeping consumables
+			- Pest Control
+			- Generator AMC
+			- Generator Repair/Servicing
+			- Motor Purchase/Repair
+			- Lift AMC
+			- Lift Repair
+			- Plumbing
+			- Electrical Repair
+			- Tank Cleaning/Repairing
+			- Lawyer
+			- Miscellaneous
+			- Intercom AMC
+			- Intercom Purchase/Repair
+			- Fire Extinguisher
+			- Security  Related (Gril,Mat etc.)
+			- Apartment Infra Structure Repair
+			- Children Park
+			- Septick Tank n Pipe cleaning maintenance
+			- Club House 
+			- Alamari purchase
+
+	Individual wise details
+	Gym Members and collection
+	Gym Spending
+	Interest
+
