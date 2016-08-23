@@ -1,7 +1,6 @@
 package bhowa.app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserLogin userLogin = new UserLogin();
+                UserDetails userLogin = new UserDetails();
                 userLogin.userName = userNameText.getText().toString();
                 userLogin.password = passwordText.getText().toString();
 

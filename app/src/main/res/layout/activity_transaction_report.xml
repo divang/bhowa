@@ -4,13 +4,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="bhowa.app.TransactionReport">
+    tools:context="bhowa.app.TransactionReport"
+    android:background="@drawable/background">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scrollbars="none"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_below="@+id/uploadMsg"
+        android:id="@+id/scrollView">
 
         <HorizontalScrollView
             android:id="@+id/horizontalView"
@@ -29,4 +32,23 @@
             </TableLayout>
         </HorizontalScrollView>
     </ScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload transactions"
+        android:id="@+id/uploadTransactions"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/uploadMsg"
+        android:text="Please varify the below Transactions, if all is ok, then click button to upload transactions in Staging table."
+        android:layout_below="@+id/uploadTransactions"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseCoreAPIs extends Queries {
 
@@ -22,7 +24,7 @@ public class DatabaseCoreAPIs extends Queries {
         }
     }
 
-    private Connection getDBInstance()
+    public Connection getDBInstance()
     {
         try{
             Connection connection = DriverManager.getConnection(databaseDBURL, databaseUser, databasePassword);
@@ -134,8 +136,8 @@ public class DatabaseCoreAPIs extends Queries {
 			try
 			{
 				con = getDBInstance();
-				pStat = con.prepareStatement(transactionQuery);
-				
+
+				pStat = con.prepareStatement(transactionStagingQuery);
 				for(BhowaTransaction t : bankStatement.allTransactions)
 				{
 					pStat.setInt(1, t.srNo);
@@ -148,17 +150,20 @@ public class DatabaseCoreAPIs extends Queries {
 					pStat.setString(7, t.reference);
 					pStat.addBatch();
 					pStat.clearParameters();
-					System.out.println(t);
 				}
-				
+
+				System.out.println("Executing Batch operations");
 				pStat.executeBatch();
-				
+				System.out.println("Executed Batch operations");
 				saveStatementProcessedDB(bankStatement.bankStatementFileName);
 				
 				return true;
 			}catch(Exception e)
 			{
 				e.printStackTrace();
+			}
+			finally {
+				close(con,pStat, null);
 			}
 			
 		}
@@ -185,6 +190,183 @@ public class DatabaseCoreAPIs extends Queries {
         } finally {
             close(con,pStat,res);
         }
+	}
+
+	public void insertRawData(List<String> data)
+	{
+		Connection con = null;
+		PreparedStatement pStat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			pStat = con.prepareStatement(insertRawDataQuery);
+			for(String d: data) {
+				pStat.setString(1, d);
+				pStat.addBatch();
+				pStat.clearParameters();
+			}
+			pStat.executeBatch();
+
+		} catch(Exception e){
+			System.err.println(e.getMessage());
+			e.getStackTrace();
+		} finally {
+			close(con,pStat,res);
+		}
+
+	}
+
+	public List<String> showRawData()
+	{
+		List<String> allRawData = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(selectAllRawQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				allRawData.add(result.getString(1));
+			}
+
+		}catch(Exception e){
+			System.err.println("Error");
+		} finally {
+			close(connection,pStat,result);
+		}
+		return allRawData;
+	}
+
+	public void deleteAllRawData()
+	{
+		Connection con = null;
+		PreparedStatement pStat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			pStat = con.prepareStatement(deleteAllRawQuery);
+			pStat.executeUpdate();
+
+		} catch(Exception e){
+			System.err.println(e.getMessage());
+			e.getStackTrace();
+		} finally {
+			close(con,pStat,res);
+		}
+
+	}
+
+	public List<UserDetails> getActiveUser()
+	{
+		List<UserDetails> users = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(activeUserQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				//`User_Id`, `Password`, `Status`, `Flat_No`, `Name`,
+				// //LEFT(`Name_Alias`, 256), `Mobile_No`, `Email_Id`, `Maintenance_Monthly`, `Address`, `Block`
+				UserDetails u = new UserDetails();
+				u.userId = result.getString(1);
+				u.password = result.getString(2);
+				u.isActive = result.getInt(3) == 1 ? true : false;
+				u.flatNo = result.getInt(4);
+				u.userName = result.getString(5);
+				u.nameAlias = result.getString(6);
+				u.mobileNo = result.getLong(7);
+				u.emailId = result.getString(8);
+				u.maintenanceMonthly = result.getFloat(9);
+				u.address = result.getString(10);
+				u.block = result.getString(11);
+				users.add(u);
+			}
+
+		} catch (Exception e) {
+			System.err.println("Error");
+		} finally {
+			close(connection,pStat,result);
+		}
+		return users;
+	}
+
+
+	public List<String> getExpenseType()
+	{
+		List<String> types = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(expenseTypeQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				types.add(result.getString(1));
+			}
+
+		}catch(Exception e){
+			System.err.println("Error");
+		} finally {
+			close(connection,pStat,result);
+		}
+		return types;
+	}
+
+	public void errorLogging(String data)
+	{
+		Connection con = null;
+		PreparedStatement pStat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			pStat = con.prepareStatement(errorLoggingQuery);
+			pStat.setString(1, data);
+			pStat.executeUpdate();
+
+		} catch(Exception e){
+			System.err.println(e.getMessage());
+			e.getStackTrace();
+		} finally {
+			close(con,pStat,res);
+		}
+
+	}
+
+
+	public List<String> getAllTransactionStagingUsers()
+	{
+		List<String> uniqueNames = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(allTransactionStagingUsersQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				uniqueNames.add(result.getString(1));
+			}
+
+		}catch(Exception e){
+			System.err.println("Error");
+		} finally {
+			close(connection,pStat,result);
+		}
+		return uniqueNames;
 	}
 
 }

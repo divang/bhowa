@@ -7,6 +7,7 @@ public class BankStatement implements Serializable {
 
 	public String bankStatementFileName;
 	public List<BhowaTransaction> allTransactions;
+	public List<String> rowdata;
 	
 	@Override
 	public String toString() {
@@ -17,9 +18,10 @@ public class BankStatement implements Serializable {
 	
 	/* Database Schema
  	
- 	CREATE TABLE `Processed_Bank_Statement` (
-		`Bank_Statement_FileName` VARCHAR(30) NOT NULL,
-		`Uploaded_Date` DATETIME NOT NULL
+ 	CREATE TABLE `Bank_Statement` (
+	`Statement_FileName` VARCHAR(100) NOT NULL,
+	`Uploaded_Date` DATETIME NOT NULL,
+	`Status` VARCHAR(10) NOT NULL
 	)
 	ENGINE=InnoDB
 	ROW_FORMAT=DEFAULT

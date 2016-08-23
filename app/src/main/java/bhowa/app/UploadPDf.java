@@ -54,18 +54,14 @@ public class UploadPDf extends Activity implements View.OnClickListener {
                 @Override public void fileSelected(final File file) {
                     String path = file.getPath();
                     BankStatement bState = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);
+                    //Insert raw data in DB. Table : 'Row_Data'
+                    BhowaDatabaseFactory.getDBInstance().insertRawData(bState.rowdata);
 
-                    if(BhowaDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bState))
-                    {
-                        filePath.setText("Uploaded");
-                        Intent transactionReportIntent = new Intent(v.getContext(), TransactionReport.class);
-                        transactionReportIntent.putExtra("report",bState);
-                        startActivityForResult(transactionReportIntent, 0);
-                    }
-                    else
-                    {
-                        filePath.setText("Uploaded Failed");
-                    }
+                    //Display Parsed Transactions
+                    Intent transactionReportIntent = new Intent(v.getContext(), TransactionReport.class);
+                    transactionReportIntent.putExtra("report",bState);
+                    startActivityForResult(transactionReportIntent, 0);
+
                 }}).showDialog();
     }
 

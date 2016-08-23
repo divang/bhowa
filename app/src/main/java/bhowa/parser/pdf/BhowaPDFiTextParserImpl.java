@@ -52,7 +52,8 @@ public class BhowaPDFiTextParserImpl implements IBhowaParser{
 		
 		MonthlyStatementDetailsFromiTextParser mt = new MonthlyStatementDetailsFromiTextParser();
 		mt.isLoggingEnable = true;
-		bankStatement.allTransactions = mt.getMonthlyDetails(allTransactions(pdfString.toString()));
+		bankStatement.rowdata = allTransactions(pdfString.toString());
+		bankStatement.allTransactions = mt.getMonthlyDetails(bankStatement.rowdata);
 		return bankStatement;
 	}
   

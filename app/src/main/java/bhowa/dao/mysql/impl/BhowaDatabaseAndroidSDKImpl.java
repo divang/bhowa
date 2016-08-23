@@ -1,5 +1,6 @@
 package bhowa.dao.mysql.impl;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import android.os.AsyncTask;
@@ -8,7 +9,7 @@ import bhowa.dao.IBhowaDatabase;
 /**
  * Created by divang.sharma on 8/6/2016.
  */
-public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean> implements IBhowaDatabase {
+public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object> implements IBhowaDatabase {
 
 	private DatabaseCoreAPIs dbCore = new DatabaseCoreAPIs();
 
@@ -17,13 +18,20 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 		login,
 		activityLogging,
 		isStatementAlreadyProcessed,
-		uploadMonthlyTransactions
+		uploadMonthlyTransactions,
+		insertRawData,
+		showRawData,
+		deleteAllRawData,
+		getActiveUser,
+		getExpenseType,
+		errorLogging,
+		getAllTransactionStagingUsers
 	}
 
 	@Override
-	protected Boolean doInBackground(Object... params) {
+	protected Object doInBackground(Object... params) {
 
-		boolean result = true;
+		Object result = null;
 		try{
 
 			switch(QUERY_NAME.valueOf(String.valueOf(params[0])))
@@ -31,9 +39,11 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 				case login:
 					result = dbCore.loginDB(String.valueOf(params[1]), String.valueOf(params[2]));
 					break;
+
 				case activityLogging:
 					dbCore.activityLoggingDB(params[1]);
 					break;
+
 				case isStatementAlreadyProcessed:
 					result = dbCore.isStatementAlreadyProcessedDB(String.valueOf(params[1]));
 					break;
@@ -41,6 +51,35 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 				case uploadMonthlyTransactions:
 					result = dbCore.uploadMonthlyTransactionsDB(params[1]);
 					break;
+
+				case deleteAllRawData:
+					dbCore.deleteAllRawData();
+					break;
+
+				case errorLogging:
+					dbCore.errorLogging(String.valueOf(params[1]));
+					break;
+
+				case getActiveUser:
+					result = dbCore.getActiveUser();
+					break;
+
+				case getAllTransactionStagingUsers:
+					result = dbCore.getAllTransactionStagingUsers();
+					break;
+
+				case getExpenseType:
+					result = dbCore.getExpenseType();
+					break;
+
+				case insertRawData:
+					dbCore.insertRawData((List<String>)params[1]);
+					break;
+
+				case showRawData:
+					result = dbCore.showRawData();
+					break;
+
 			}
 		}catch(Exception e){
 			System.err.println("Error");
@@ -51,12 +90,12 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 	@Override
 	public boolean login(Object userDetailsObj) {
 
-		if(userDetailsObj instanceof UserLogin)
+		if(userDetailsObj instanceof UserDetails)
 		{
-			UserLogin user = (UserLogin) userDetailsObj;
-			AsyncTask<Object, Void, Boolean> aTask = this.execute(QUERY_NAME.login.name(), user.userName, user.password);
+			UserDetails user = (UserDetails) userDetailsObj;
+			AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.login.name(), user.userName, user.password);
 			try {
-				return aTask.get();
+				return (Boolean)aTask.get();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
@@ -69,7 +108,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 	@Override
 	public void activityLogging(Object activity) {
 
-		AsyncTask<Object, Void, Boolean> aTask = this.execute(QUERY_NAME.activityLogging.name(), activity);
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.activityLogging.name(), activity);
 		try {
 			aTask.get();
 		} catch (InterruptedException e) {
@@ -81,9 +120,9 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 
 	@Override
 	public boolean isStatementAlreadyProcessed(String monthlyStatementFileName) {
-		AsyncTask<Object, Void, Boolean> aTask = this.execute(QUERY_NAME.isStatementAlreadyProcessed.name(), monthlyStatementFileName);
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.isStatementAlreadyProcessed.name(), monthlyStatementFileName);
 		try {
-			return aTask.get();
+			return (Boolean)aTask.get();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
@@ -94,15 +133,103 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Boolean
 
 	@Override
 	public boolean uploadMonthlyTransactions(Object transactions) {
-		AsyncTask<Object, Void, Boolean> aTask = this.execute(QUERY_NAME.uploadMonthlyTransactions.name(), transactions);
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.uploadMonthlyTransactions.name(), transactions);
 		try {
-			return aTask.get();
+			return (Boolean)aTask.get();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public void insertRawData(List<String> data) {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.insertRawData.name(), data);
+		try {
+			aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<String> showRawData() {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.showRawData.name());
+		try {
+			return (List<String>)aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void deleteAllRawData() {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.deleteAllRawData.name());
+		try {
+			aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<UserDetails> getActiveUser() {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.getActiveUser.name());
+		try {
+			return (List<UserDetails>)aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<String> getExpenseType() {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.getExpenseType.name());
+		try {
+			return (List<String>)aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void errorLogging(String data) {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.errorLogging.name());
+		try {
+			aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<String> getAllTransactionStagingUsers() {
+		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.getAllTransactionStagingUsers.name());
+		try {
+			return (List<String>)aTask.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
 
