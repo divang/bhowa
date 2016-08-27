@@ -1,0 +1,93 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <ViewStub
+        android:id="@+id/vsHeader"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inflatedId="@+id/header"
+        android:layout="@layout/header"
+        />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/home_activity_btn_upload_pdf"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_upload_pdf"
+            android:onClick="onButtonClicker"
+            android:text="@string/uploadPdfIconText"
+            />
+
+        <Button
+            android:id="@+id/home_activity_btn_download_raw"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_download_raw_data"
+            android:onClick="onButtonClicker"
+            android:text="@string/downloadRawDataIconText"
+            />
+
+        <Button
+            android:id="@+id/home_activity_btn_all_transactions"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_all_transactions"
+            android:onClick="onButtonClicker"
+            android:text="@string/allTransactionsIconText"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/home_activity_btn_manage_users"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_manage_user"
+            android:onClick="onButtonClicker"
+            android:text="@string/manageUsersIconText"
+            />
+
+        <Button
+            android:id="@+id/home_activity_btn_expenditure_type"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_expenditure_type"
+            android:onClick="onButtonClicker"
+            android:text="@string/expenditureTypeIconText"
+            />
+
+        <Button
+            android:id="@+id/home_activity_btn_send_notification"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_notification"
+            android:onClick="onButtonClicker"
+            android:text="@string/notificationIconText"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/home_activity_btn_my_expense"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_my_expense"
+            android:onClick="onButtonClicker"
+            android:text="@string/myExpensesIconText"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

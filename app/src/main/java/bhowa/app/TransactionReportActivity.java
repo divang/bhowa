@@ -15,13 +15,13 @@ import bhowa.dao.BhowaDatabaseFactory;
 import bhowa.dao.mysql.impl.BankStatement;
 import bhowa.dao.mysql.impl.BhowaTransaction;
 
-public class TransactionReport extends AppCompatActivity {
+public class TransactionReportActivity extends DashBoardActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_report);
-
+        setHeader("", true);
        final BankStatement bankStat = (BankStatement)getIntent().getSerializableExtra("report");
        final TableLayout tableL = (TableLayout)findViewById(R.id.reportTableLayout);
 

@@ -7,4 +7,23 @@
     <string name="title_activity_transaction_report">TransactionReport</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_dash_board">DashBoardActivity</string>
+
+    <string name="uploadPdfIconText">Upload PDF</string>
+    <string name="downloadRawDataIconText">Raw Data</string>
+    <string name="allTransactionsIconText">All Transactions</string>
+    <string name="manageUsersIconText">Manage Users</string>
+    <string name="expenditureTypeIconText">Expenditure Types</string>
+    <string name="myExpensesIconText">My Transactions</string>
+    <string name="notificationIconText">Send Notification</string>
+
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_manage_user">ManageUserActivity</string>
+    <string name="title_activity_manage_expenditure_type">ManageExpenditureTypeActivity</string>
+    <string name="title_activity_view_raw_transaction_data">ViewRawTransactionDataActivity</string>
+    <string name="title_activity_my_transactions">MyTransactionsActivity</string>
+    <string name="title_activity_notification">NotificationActivity</string>
+
+
+
 </resources>
