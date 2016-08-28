@@ -35,12 +35,13 @@
             />
 
         <Button
-            android:id="@+id/home_activity_btn_all_transactions"
+            android:id="@+id/home_activity_btn_delete_raw"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_all_transactions"
+            android:drawableTop="@drawable/ic_delete_raw_data"
             android:onClick="onButtonClicker"
-            android:text="@string/allTransactionsIconText"
+            android:text="@string/deleteRawDataIconText"
             />
+
     </LinearLayout>
 
     <LinearLayout
@@ -48,6 +49,14 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/home_activity_btn_all_transactions"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_all_transactions"
+            android:onClick="onButtonClicker"
+            android:text="@string/allTransactionsIconText"
+            />
 
         <Button
             android:id="@+id/home_activity_btn_manage_users"
@@ -65,13 +74,6 @@
             android:text="@string/expenditureTypeIconText"
             />
 
-        <Button
-            android:id="@+id/home_activity_btn_send_notification"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_notification"
-            android:onClick="onButtonClicker"
-            android:text="@string/notificationIconText"
-            />
     </LinearLayout>
 
     <LinearLayout
@@ -79,6 +81,14 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/home_activity_btn_send_notification"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_notification"
+            android:onClick="onButtonClicker"
+            android:text="@string/notificationIconText"
+            />
 
         <Button
             android:id="@+id/home_activity_btn_my_expense"

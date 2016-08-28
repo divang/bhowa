@@ -22,7 +22,6 @@
         android:text="Upload PDF file"
         android:id="@+id/browse"
         android:layout_marginTop="46dp"
-        android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

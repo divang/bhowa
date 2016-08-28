@@ -32,10 +32,11 @@ public class Queries {
 			"select * from Row_Data";
 
 	public static final String deleteAllRawQuery =
+
 			"delete from Row_Data";
 
-	public static final String activeUserQuery =
-			"SELECT * FROM User where status = 1";
+	public static final String allUsersQuery =
+			"SELECT * FROM User";
 
 	public static final String expenseTypeQuery =
 			"SELECT * FROM Expense_Type";

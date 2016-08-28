@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bhowa</string>
+    <string name="app_name"></string>
 
     <string name="uploadPdfText">Please upload monthly kotak bank statement in PDF format!</string>
     <string name="action_settings">Settings</string>
@@ -16,6 +16,7 @@
     <string name="expenditureTypeIconText">Expenditure Types</string>
     <string name="myExpensesIconText">My Transactions</string>
     <string name="notificationIconText">Send Notification</string>
+    <string name="deleteRawDataIconText">Delete Raw Data</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_manage_user">ManageUserActivity</string>

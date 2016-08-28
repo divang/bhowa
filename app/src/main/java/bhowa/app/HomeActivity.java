@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.io.File;
 
@@ -28,17 +29,23 @@ public class HomeActivity extends DashBoardActivity {
         switch (v.getId())
         {
             case R.id.home_activity_btn_upload_pdf:
-                //intent = new Intent(this, UploadPDfActivity.class);
-                //startActivity(intent);
                 openFileBrowser();
                 break;
 
             case R.id.home_activity_btn_download_raw:
-                intent = new Intent(this, UploadPDfActivity.class);
+                intent = new Intent(this, ViewRawTransactionDataActivity.class);
                 startActivity(intent);
                 break;
-        }
 
+            case R.id.home_activity_btn_manage_users:
+                intent = new Intent(this, ManageUserActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.home_activity_btn_delete_raw:
+                BhowaDatabaseFactory.getDBInstance().deleteAllRawData();
+                break;
+        }
     }
 
     public void openFileBrowser()
@@ -58,25 +65,4 @@ public class HomeActivity extends DashBoardActivity {
             }}).showDialog();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

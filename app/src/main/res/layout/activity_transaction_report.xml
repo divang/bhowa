@@ -17,12 +17,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scrollbars="none"
-        android:layout_weight="1"
-        android:layout_below="@+id/uploadMsg"
-        android:id="@+id/scrollView">
+        android:layout_weight="1">
 
         <HorizontalScrollView
-            android:id="@+id/horizontalView"
             android:layout_height="wrap_content"
             android:scrollbars="horizontal|vertical"
             android:layout_width="wrap_content"

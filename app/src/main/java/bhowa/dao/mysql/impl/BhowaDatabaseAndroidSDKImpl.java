@@ -4,12 +4,17 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import bhowa.app.R;
+import bhowa.dao.BhowaDatabaseFactory;
 import bhowa.dao.IBhowaDatabase;
 
 /**
  * Created by divang.sharma on 8/6/2016.
  */
-public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object> implements IBhowaDatabase {
+public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Object> implements IBhowaDatabase {
 
 	private DatabaseCoreAPIs dbCore = new DatabaseCoreAPIs();
 
@@ -26,6 +31,16 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 		getExpenseType,
 		errorLogging,
 		getAllTransactionStagingUsers
+	}
+
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+	}
+
+	@Override
+	protected void onProgressUpdate(Integer... values) {
+		super.onProgressUpdate(values);
 	}
 
 	@Override
@@ -61,7 +76,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 					break;
 
 				case getActiveUser:
-					result = dbCore.getActiveUser();
+					result = dbCore.getAllUsers();
 					break;
 
 				case getAllTransactionStagingUsers:
@@ -88,12 +103,16 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 	}
 
 	@Override
+	protected void onPostExecute(Object result) {
+	}
+
+	@Override
 	public boolean login(Object userDetailsObj) {
 
 		if(userDetailsObj instanceof UserDetails)
 		{
 			UserDetails user = (UserDetails) userDetailsObj;
-			AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.login.name(), user.userName, user.password);
+			AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.login.name(), user.userName, user.password);
 			try {
 				return (Boolean)aTask.get();
 			} catch (InterruptedException e) {
@@ -108,7 +127,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 	@Override
 	public void activityLogging(Object activity) {
 
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.activityLogging.name(), activity);
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.activityLogging.name(), activity);
 		try {
 			aTask.get();
 		} catch (InterruptedException e) {
@@ -120,7 +139,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public boolean isStatementAlreadyProcessed(String monthlyStatementFileName) {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.isStatementAlreadyProcessed.name(), monthlyStatementFileName);
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.isStatementAlreadyProcessed.name(), monthlyStatementFileName);
 		try {
 			return (Boolean)aTask.get();
 		} catch (InterruptedException e) {
@@ -133,7 +152,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public boolean uploadMonthlyTransactions(Object transactions) {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.uploadMonthlyTransactions.name(), transactions);
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.uploadMonthlyTransactions.name(), transactions);
 		try {
 			return (Boolean)aTask.get();
 		} catch (InterruptedException e) {
@@ -146,7 +165,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public void insertRawData(List<String> data) {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.insertRawData.name(), data);
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.insertRawData.name(), data);
 		try {
 			aTask.get();
 		} catch (InterruptedException e) {
@@ -158,7 +177,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public List<String> showRawData() {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.showRawData.name());
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.showRawData.name());
 		try {
 			return (List<String>)aTask.get();
 		} catch (InterruptedException e) {
@@ -171,7 +190,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public void deleteAllRawData() {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.deleteAllRawData.name());
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.deleteAllRawData.name());
 		try {
 			aTask.get();
 		} catch (InterruptedException e) {
@@ -182,8 +201,8 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 	}
 
 	@Override
-	public List<UserDetails> getActiveUser() {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.getActiveUser.name());
+	public List<UserDetails> getAllUsers() {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getActiveUser.name());
 		try {
 			return (List<UserDetails>)aTask.get();
 		} catch (InterruptedException e) {
@@ -196,7 +215,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public List<String> getExpenseType() {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.getExpenseType.name());
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getExpenseType.name());
 		try {
 			return (List<String>)aTask.get();
 		} catch (InterruptedException e) {
@@ -209,7 +228,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public void errorLogging(String data) {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.errorLogging.name());
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.errorLogging.name());
 		try {
 			aTask.get();
 		} catch (InterruptedException e) {
@@ -221,7 +240,7 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Void, Object>
 
 	@Override
 	public List<String> getAllTransactionStagingUsers() {
-		AsyncTask<Object, Void, Object> aTask = this.execute(QUERY_NAME.getAllTransactionStagingUsers.name());
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllTransactionStagingUsers.name());
 		try {
 			return (List<String>)aTask.get();
 		} catch (InterruptedException e) {

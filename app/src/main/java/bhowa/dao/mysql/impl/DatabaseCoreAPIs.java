@@ -262,7 +262,7 @@ public class DatabaseCoreAPIs extends Queries {
 
 	}
 
-	public List<UserDetails> getActiveUser()
+	public List<UserDetails> getAllUsers()
 	{
 		List<UserDetails> users = new ArrayList<>();
 		Connection connection = null;
@@ -270,7 +270,7 @@ public class DatabaseCoreAPIs extends Queries {
 		ResultSet result = null;
 		try{
 			connection = getDBInstance();
-			pStat = connection.prepareStatement(activeUserQuery);
+			pStat = connection.prepareStatement(allUsersQuery);
 			result = pStat.executeQuery();
 			while(result.next())
 			{

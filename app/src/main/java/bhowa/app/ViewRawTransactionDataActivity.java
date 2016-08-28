@@ -4,34 +4,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
-public class ViewRawTransactionDataActivity extends AppCompatActivity {
+import java.util.List;
+
+import bhowa.dao.BhowaDatabaseFactory;
+import bhowa.dao.mysql.impl.BhowaTransaction;
+
+public class ViewRawTransactionDataActivity extends DashBoardActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_raw_transaction_data);
-    }
+        setHeader(getString(R.string.title_activity_home), true);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_view_raw_transaction_data, menu);
-        return true;
-    }
+        final TableLayout tableL = (TableLayout)findViewById(R.id.rawDataLinesTableLayout);
+        List<String> rawData = BhowaDatabaseFactory.getDBInstance().showRawData();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        for(String  line : rawData)
+        {
+            TableRow row = new TableRow(this);
+            TextView l = new TextView(this); l.setText(line);row.addView(l);
+            tableL.addView(row);
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
 }

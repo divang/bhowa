@@ -15,7 +15,7 @@ public interface IBhowaDatabase {
     boolean login(Object userDetailsObj);
     
     /** Capture all user activities
-     * @param activities
+     * @param activityObj
      */
     void activityLogging(Object activityObj);
     
@@ -26,7 +26,7 @@ public interface IBhowaDatabase {
     boolean isStatementAlreadyProcessed(String monthlyStatementFileName);
    
     /** Upload monthly statement to DB and save all transaction.
-     * @param monthlyStatementFileName
+     * @param transactionsObj
      * @return
      */
     boolean uploadMonthlyTransactions(Object transactionsObj);
@@ -53,7 +53,7 @@ public interface IBhowaDatabase {
      * It returns all active society users which are paying their maintenance
      * @return
      */
-    List<UserDetails> getActiveUser();
+    List<UserDetails> getAllUsers();
 
     /**
      * All type of expenses which user can do.

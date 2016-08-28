@@ -9,14 +9,6 @@ public class BhowaDatabaseFactory {
 	
 	public static IBhowaDatabase getDBInstance()
 	{
-		/*
-		if(instance != null) return instance;
-		
-		synchronized (lock) {
-			if(instance != null) return instance;
-			instance = new BhowaDatabaseAndroidSDKImpl();
-		}*/
-		//Because of Async task instance should be different
 		return new BhowaDatabaseAndroidSDKImpl();
 	}
 }
