@@ -17,7 +17,6 @@ import bhowa.dao.mysql.impl.*;
 public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progress;
-    private static boolean isInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +31,15 @@ public class MainActivity extends AppCompatActivity {
         progress = ProgressDialog.show(MainActivity.this, null, "Connecting to Database  ...", true, false);
         progress.hide();
 
-        if(isInit) loginLevel.setText("Login : Failed try again!  ");
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 progress.show();
+                progress.setMessage("Connecting to Database  ...");
 
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
                         doTask(v, userNameText, passwordText);
-                        progress.dismiss();
-                        progress.cancel();
                   }
                 });
                 taskThread.start();
@@ -61,6 +57,27 @@ public class MainActivity extends AppCompatActivity {
         if (isLoginSuccess) {
             Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
             startActivity(homeIntent);
+            progress.dismiss();
+            progress.cancel();
+        }
+        else
+        {
+            runOnUiThread(changeMessage);
         }
     }
+
+    private Runnable changeMessage = new Runnable() {
+        @Override
+        public void run() {
+            progress.show();
+            progress.setMessage("Login Failed!!!");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            progress.dismiss();
+            progress.cancel();
+        }
+    };
 }
