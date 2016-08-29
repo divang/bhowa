@@ -47,6 +47,10 @@
             android:name=".NotificationActivity"
             android:label="@string/title_activity_notification" >
         </activity>
+        <activity
+            android:name=".TransactionReportActivity"
+            android:label="@string/title_activity_upload_pdf" >
+        </activity>
     </application>
 
 </manifest>
