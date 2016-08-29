@@ -3,10 +3,7 @@ package bhowa.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import java.io.File;
 
@@ -36,7 +33,7 @@ public class HomeActivity extends DashBoardActivity {
                 break;
 
             case R.id.home_activity_btn_download_raw:
-                intent = new Intent(this, ViewRawTransactionDataActivity.class);
+                intent = new Intent(this, ViewRawDataActivity.class);
                 startActivity(intent);
                 break;
 
@@ -58,26 +55,19 @@ public class HomeActivity extends DashBoardActivity {
                 final String path = file.getPath();
 
                 progress = ProgressDialog.show(HomeActivity.this, null, "Parsing PDF ...", true, false);
-                //progress.hide();
                 progress.show();
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
 
-                        BankStatement bState = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);
-                        Intent transactionReportIntent = new Intent(getApplicationContext(), TransactionReportActivity.class);
-                        transactionReportIntent.putExtra("report",bState);
+                        BankStatement bankStat = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);
+                        Intent transactionReportIntent = new Intent(getApplicationContext(), HomeTransactionActivity.class);
+                        transactionReportIntent.putExtra("bankStat",bankStat);
                         startActivityForResult(transactionReportIntent, 0);
                         progress.dismiss();
                         progress.cancel();
-
                     }
                 });
                 taskThread.start();
-
-                //Insert raw data in DB. Table : 'Row_Data'
-                //BhowaDatabaseFactory.getDBInstance().insertRawData(bState.rowdata);
-
-                //Display Parsed Transactions
 
             }}).showDialog();
     }

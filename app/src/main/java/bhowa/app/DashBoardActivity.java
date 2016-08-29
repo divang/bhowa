@@ -25,13 +25,8 @@ public abstract class DashBoardActivity extends AppCompatActivity {
         ViewStub stub = (ViewStub) findViewById(R.id.vsHeader);
         View infalted = stub.inflate();
 
-        //TextView txtTitle = (TextView) infalted.findViewById(R.id.txtHeading);
-        //txtTitle.setText(title);
-
         Button btnHome = (Button) infalted.findViewById(R.id.btnHome);
-
         if(!btnHomeVisible) btnHome.setVisibility(View.INVISIBLE);
-
     }
 
     public void btnHomeClick(View v)

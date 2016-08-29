@@ -1,29 +1,29 @@
 package bhowa.app;
 
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.List;
 
 import bhowa.dao.BhowaDatabaseFactory;
 import bhowa.dao.mysql.impl.BankStatement;
 import bhowa.dao.mysql.impl.BhowaTransaction;
 
-public class TransactionReportActivity extends DashBoardActivity {
+public class TransactionRawDataActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_report);
-        setHeader("", true);
-        final BankStatement bankStat = (BankStatement)getIntent().getSerializableExtra("report");
+        setContentView(R.layout.activity_transaction_raw_data);
+
+        final BankStatement bankStat = (BankStatement)getIntent().getSerializableExtra("bankStat");
         final TableLayout tableL = (TableLayout)findViewById(R.id.reportTableLayout);
 
         for(BhowaTransaction bt : bankStat.allTransactions)
@@ -38,24 +38,12 @@ public class TransactionReportActivity extends DashBoardActivity {
             tableL.addView(row);
         }
 
-        final Button uploadTransactionButton = (Button)findViewById(R.id.uploadTransactions);
-        uploadTransactionButton.setOnClickListener(new View.OnClickListener() {
+        final Button backButton = (Button)findViewById(R.id.backToReportBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView uploadText = (TextView) findViewById(R.id.uploadMsg);
-                if(BhowaDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bankStat))
-                {
-                    tableL.removeAllViews();
-                    uploadText.setText("Uploaded Successfully :)");
-                    BhowaDatabaseFactory.getDBInstance().deleteAllRawData();
-                    uploadTransactionButton.setVisibility(View.GONE);
-                }
-                else
-                {
-                    uploadText.setText("Uploaded Failed :(");
-                }
+                finish();
             }
         });
     }
-
 }

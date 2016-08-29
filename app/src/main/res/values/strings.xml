@@ -9,6 +9,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_dash_board">DashBoardActivity</string>
 
+    <!-- Home Dashboard Icons text -->
     <string name="uploadPdfIconText">Upload PDF</string>
     <string name="downloadRawDataIconText">Raw Data</string>
     <string name="allTransactionsIconText">All Transactions</string>
@@ -18,12 +19,19 @@
     <string name="notificationIconText">Send Notification</string>
     <string name="deleteRawDataIconText">Delete Raw Data</string>
 
+    <!-- Transaction report Dashboard Icons text -->
+    <string name="viewRawDataIconText">View Raw Data</string>
+    <string name="viewTransactionsIconText">View Transactions</string>
+    <string name="uploadRawDataIconText">Upload Raw Data</string>
+    <string name="uploadTransactionsIconText">Upload Transactions</string>
+
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_manage_user">ManageUserActivity</string>
     <string name="title_activity_manage_expenditure_type">ManageExpenditureTypeActivity</string>
     <string name="title_activity_view_raw_transaction_data">ViewRawTransactionDataActivity</string>
     <string name="title_activity_my_transactions">MyTransactionsActivity</string>
     <string name="title_activity_notification">NotificationActivity</string>
+    <string name="title_activity_transaction_raw_data">TransactionRawDataActivity</string>
 
 
 
