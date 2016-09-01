@@ -22,7 +22,7 @@
         <Button
             android:id="@+id/transaction_report_activity_btn_view_raw_data"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_upload_pdf"
+            android:drawableTop="@drawable/ic_raw_data"
             android:onClick="onButtonClicker"
             android:text="@string/viewRawDataIconText"
             />
@@ -30,7 +30,7 @@
         <Button
             android:id="@+id/transaction_report_activity_btn_view_transactions"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_download_raw_data"
+            android:drawableTop="@drawable/ic_transactions"
             android:onClick="onButtonClicker"
             android:text="@string/viewTransactionsIconText"
             />
@@ -46,7 +46,7 @@
         <Button
             android:id="@+id/transaction_report_activity_btn_upload_raw_data"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_upload_pdf"
+            android:drawableTop="@drawable/ic_upload_raw_data"
             android:onClick="onButtonClicker"
             android:text="@string/uploadRawDataIconText"
             />
@@ -54,7 +54,7 @@
         <Button
             android:id="@+id/transaction_report_activity_btn_upload_transactions"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_download_raw_data"
+            android:drawableTop="@drawable/ic_upload_transactions"
             android:onClick="onButtonClicker"
             android:text="@string/uploadTransactionsIconText"
             />

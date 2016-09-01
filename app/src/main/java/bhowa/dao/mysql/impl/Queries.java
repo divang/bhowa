@@ -46,4 +46,7 @@ public class Queries {
 
 	public static final String allTransactionStagingUsersQuery =
 			"select distinct(Name) from Transactions_Staging_Data";
+
+	public static final String updateAliasUserId =
+			"UPDATE User SET Name_Alias = ? WHERE User_Id = ?";
 }

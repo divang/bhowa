@@ -32,6 +32,7 @@
     <string name="title_activity_my_transactions">MyTransactionsActivity</string>
     <string name="title_activity_notification">NotificationActivity</string>
     <string name="title_activity_transaction_raw_data">TransactionRawDataActivity</string>
+    <string name="title_activity_map_user_to_name_alias">MapUserToNameAlias</string>
 
 
 

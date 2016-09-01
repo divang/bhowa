@@ -3,6 +3,7 @@ package bhowa.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import java.io.File;
@@ -25,26 +26,30 @@ public class HomeActivity extends DashBoardActivity {
 
     public void onButtonClicker(View v)
     {
-        Intent intent;
-        switch (v.getId())
+        try {
+            Intent intent;
+            switch (v.getId()) {
+                case R.id.home_activity_btn_upload_pdf:
+                    openFileBrowser();
+                    break;
+
+                case R.id.home_activity_btn_download_raw:
+                    intent = new Intent(this, ViewRawDataActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case R.id.home_activity_btn_manage_users:
+                    intent = new Intent(this, ManageUserActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case R.id.home_activity_btn_delete_raw:
+                    BhowaDatabaseFactory.getDBInstance().deleteAllRawData();
+                    break;
+            }
+        }catch (Exception e)
         {
-            case R.id.home_activity_btn_upload_pdf:
-                openFileBrowser();
-                break;
-
-            case R.id.home_activity_btn_download_raw:
-                intent = new Intent(this, ViewRawDataActivity.class);
-                startActivity(intent);
-                break;
-
-            case R.id.home_activity_btn_manage_users:
-                intent = new Intent(this, ManageUserActivity.class);
-                startActivity(intent);
-                break;
-
-            case R.id.home_activity_btn_delete_raw:
-                BhowaDatabaseFactory.getDBInstance().deleteAllRawData();
-                break;
+            Log.e("Error", "Something goes wrong", e);
         }
     }
 

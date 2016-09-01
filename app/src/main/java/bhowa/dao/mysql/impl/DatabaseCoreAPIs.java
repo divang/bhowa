@@ -1,5 +1,7 @@
 package bhowa.dao.mysql.impl;
 
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -19,20 +21,19 @@ public class DatabaseCoreAPIs extends Queries {
     {
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-        }catch(Exception e){
+        } catch(Exception e){
         	e.getStackTrace();
+			Log.e("Error", "Driver Initialization failed", e);
         }
     }
 
-    public Connection getDBInstance()
-    {
+    public Connection getDBInstance() throws Exception {
         try{
             Connection connection = DriverManager.getConnection(databaseDBURL, databaseUser, databasePassword);
             return connection;
         }catch(Exception e){
-        	e.getStackTrace();
+			throw e;
         }
-        return null;
     }
 
     private void close(Connection connection, PreparedStatement pStat, ResultSet result) {
@@ -50,11 +51,11 @@ public class DatabaseCoreAPIs extends Queries {
                 result.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+			Log.e("Error", "Connection close has some problem.", e);
         }
     }
 
-    public boolean loginDB(String userName, String password) {
+    public boolean loginDB(String userName, String password) throws Exception{
     	
     	Connection connection = null;
         PreparedStatement pStat = null;
@@ -68,14 +69,14 @@ public class DatabaseCoreAPIs extends Queries {
             if(result != null && result.next()) return true;
 
         }catch(Exception e){
-            System.err.println("Error");
+			throw e;
         } finally {
             close(connection,pStat,result);
         }
         return false;
     }
     
-    public void activityLoggingDB(Object activity) {
+    public void activityLoggingDB(Object activity) throws Exception{
 		
     	if(activity instanceof UserActivity)
 		{
@@ -96,14 +97,14 @@ public class DatabaseCoreAPIs extends Queries {
 				res = pStat.executeQuery();
 				
 			} catch(Exception e){
-				e.getStackTrace();
+				throw e;
 	        } finally {
 	            close(con,pStat,res);
 	        }
 		}
 	}
 
-	public boolean isStatementAlreadyProcessedDB(String monthlyStatementFileName) {
+	public boolean isStatementAlreadyProcessedDB(String monthlyStatementFileName) throws Exception{
 		
 		Connection con = null;
 		PreparedStatement pStat = null;
@@ -118,14 +119,14 @@ public class DatabaseCoreAPIs extends Queries {
 			if(res != null && res.next()) return true;
 			
 		} catch(Exception e){
-			 e.getStackTrace();
+			throw e;
         } finally {
             close(con,pStat,res);
         }
 		return false;
 	}
 
-	public boolean uploadMonthlyTransactionsDB(Object transactions) {
+	public boolean uploadMonthlyTransactionsDB(Object transactions) throws Exception{
 		
 		if(transactions instanceof BankStatement)
 		{
@@ -158,9 +159,8 @@ public class DatabaseCoreAPIs extends Queries {
 				saveStatementProcessedDB(bankStatement.bankStatementFileName);
 				
 				return true;
-			}catch(Exception e)
-			{
-				e.printStackTrace();
+			}catch(Exception e) {
+				throw e;
 			}
 			finally {
 				close(con,pStat, null);
@@ -170,7 +170,7 @@ public class DatabaseCoreAPIs extends Queries {
 		return false;
 	}
 	
-	public void saveStatementProcessedDB(String monthlyStatementFileName) {
+	public void saveStatementProcessedDB(String monthlyStatementFileName) throws Exception{
 	
 		Connection con = null;
 		PreparedStatement pStat = null;
@@ -185,15 +185,13 @@ public class DatabaseCoreAPIs extends Queries {
 			pStat.executeUpdate();
 			
 		} catch(Exception e){
-			System.err.println(e.getMessage());
-			 e.getStackTrace();
+			throw e;
         } finally {
             close(con,pStat,res);
         }
 	}
 
-	public void insertRawData(List<String> data)
-	{
+	public void insertRawData(List<String> data) throws Exception {
 		Connection con = null;
 		PreparedStatement pStat = null;
 		ResultSet res = null;
@@ -210,16 +208,14 @@ public class DatabaseCoreAPIs extends Queries {
 			pStat.executeBatch();
 
 		} catch(Exception e){
-			System.err.println(e.getMessage());
-			e.getStackTrace();
+			throw e;
 		} finally {
 			close(con,pStat,res);
 		}
 
 	}
 
-	public List<String> showRawData()
-	{
+	public List<String> showRawData() throws Exception	{
 		List<String> allRawData = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
@@ -234,15 +230,14 @@ public class DatabaseCoreAPIs extends Queries {
 			}
 
 		}catch(Exception e){
-			System.err.println("Error");
+			throw e;
 		} finally {
 			close(connection,pStat,result);
 		}
 		return allRawData;
 	}
 
-	public void deleteAllRawData()
-	{
+	public void deleteAllRawData() throws Exception	{
 		Connection con = null;
 		PreparedStatement pStat = null;
 		ResultSet res = null;
@@ -254,16 +249,14 @@ public class DatabaseCoreAPIs extends Queries {
 			pStat.executeUpdate();
 
 		} catch(Exception e){
-			System.err.println(e.getMessage());
-			e.getStackTrace();
+			throw e;
 		} finally {
 			close(con,pStat,res);
 		}
 
 	}
 
-	public List<UserDetails> getAllUsers()
-	{
+	public List<UserDetails> getAllUsers() throws Exception	{
 		List<UserDetails> users = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
@@ -292,7 +285,7 @@ public class DatabaseCoreAPIs extends Queries {
 			}
 
 		} catch (Exception e) {
-			System.err.println("Error");
+			throw e;
 		} finally {
 			close(connection,pStat,result);
 		}
@@ -300,8 +293,7 @@ public class DatabaseCoreAPIs extends Queries {
 	}
 
 
-	public List<String> getExpenseType()
-	{
+	public List<String> getExpenseType() throws Exception {
 		List<String> types = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
@@ -316,15 +308,14 @@ public class DatabaseCoreAPIs extends Queries {
 			}
 
 		}catch(Exception e){
-			System.err.println("Error");
+			throw e;
 		} finally {
 			close(connection,pStat,result);
 		}
 		return types;
 	}
 
-	public void errorLogging(String data)
-	{
+	public void errorLogging(String data) throws Exception	{
 		Connection con = null;
 		PreparedStatement pStat = null;
 		ResultSet res = null;
@@ -337,17 +328,14 @@ public class DatabaseCoreAPIs extends Queries {
 			pStat.executeUpdate();
 
 		} catch(Exception e){
-			System.err.println(e.getMessage());
-			e.getStackTrace();
+			throw e;
 		} finally {
 			close(con,pStat,res);
 		}
-
 	}
 
 
-	public List<String> getAllTransactionStagingUsers()
-	{
+	public List<String> getAllTransactionStagingUsers() throws Exception {
 		List<String> uniqueNames = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
@@ -362,11 +350,31 @@ public class DatabaseCoreAPIs extends Queries {
 			}
 
 		}catch(Exception e){
-			System.err.println("Error");
+			throw e;
 		} finally {
 			close(connection,pStat,result);
 		}
 		return uniqueNames;
 	}
 
+	public void setAliasOfUserId(String userId, String alias) throws Exception
+	{
+		Connection con = null;
+		PreparedStatement pStat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			pStat = con.prepareStatement(updateAliasUserId);
+			pStat.setString(1, alias);
+			pStat.setString(2, userId);
+			pStat.executeUpdate();
+
+		} catch(Exception e){
+			throw e;
+		} finally {
+			close(con,pStat,res);
+		}
+	}
 }

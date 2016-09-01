@@ -31,7 +31,9 @@ public class FileBrowserActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(final View v) {
 
-          new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
+        FileChooser fc = new FileChooser(this);
+        //fc.setExtension(".pdf");
+        fc.setFileListener(new FileChooser.FileSelectedListener() {
                 @Override public void fileSelected(final File file) {
                     String path = file.getPath();
                     BankStatement bankStat = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);

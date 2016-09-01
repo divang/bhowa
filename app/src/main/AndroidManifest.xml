@@ -21,19 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".FileBrowserActivity"></activity>
-        <activity android:name=".HomeActivity" ></activity>
-        <activity android:name=".HomeTransactionActivity"></activity>
-
-        <activity android:name=".ManageUserActivity"></activity>
-        <activity android:name=".ManageExpenditureTypeActivity"></activity>
-        <activity android:name=".MyTransactionsActivity"></activity>
-        <activity android:name=".NotificationActivity"></activity>
-
-        <activity android:name=".TransactionRawDataActivity"></activity>
-        <activity android:name=".ViewRawDataActivity"></activity>
-
+        <activity android:name=".FileBrowserActivity" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeTransactionActivity" />
+        <activity android:name=".ManageUserActivity" />
+        <activity android:name=".ManageExpenditureTypeActivity" />
+        <activity android:name=".MyTransactionsActivity" />
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".TransactionRawDataActivity" />
+        <activity android:name=".ViewRawDataActivity" />
+        <activity
+            android:name=".MapUserToNameAlias"
+            android:label="@string/title_activity_map_user_to_name_alias" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,9 +1,15 @@
 package bhowa.app;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -50,19 +56,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void doTask(View v, TextView userNameText, TextView passwordText)
     {
-        UserDetails userLogin = new UserDetails();
-        userLogin.userName = userNameText.getText().toString();
-        userLogin.password = passwordText.getText().toString();
-        boolean isLoginSuccess = BhowaDatabaseFactory.getDBInstance().login(userLogin);
-        if (isLoginSuccess) {
-            Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
-            startActivity(homeIntent);
-            progress.dismiss();
-            progress.cancel();
-        }
-        else
+        try {
+            UserDetails userLogin = new UserDetails();
+            userLogin.userName = userNameText.getText().toString();
+            userLogin.password = passwordText.getText().toString();
+            boolean isLoginSuccess = BhowaDatabaseFactory.getDBInstance().login(userLogin);
+            if (isLoginSuccess) {
+                Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
+                startActivity(homeIntent);
+                progress.dismiss();
+                progress.cancel();
+            } else {
+                runOnUiThread(changeMessage);
+            }
+        }catch (Exception e)
         {
-            runOnUiThread(changeMessage);
+            Log.e("Error", "Login connectivity has problem", e);
         }
     }
 
