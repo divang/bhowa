@@ -16,6 +16,7 @@ import bhowa.parser.BhowaParserFactory;
 public class HomeActivity extends DashBoardActivity {
 
     private ProgressDialog progress;
+    final private int PICKFILE_RESULT_CODE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class HomeActivity extends DashBoardActivity {
         }
     }
 
+
     public void openFileBrowser()
     {
         new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
@@ -76,5 +78,4 @@ public class HomeActivity extends DashBoardActivity {
 
             }}).showDialog();
     }
-
 }

@@ -26,14 +26,14 @@ public class FileBrowserActivity extends Activity implements View.OnClickListene
         filePath = (TextView) findViewById(R.id.file_path);
         Browse = (Button) findViewById(R.id.browse);
         Browse.setOnClickListener(this);
+
+
     }
 
     @Override
     public void onClick(final View v) {
 
-        FileChooser fc = new FileChooser(this);
-        //fc.setExtension(".pdf");
-        fc.setFileListener(new FileChooser.FileSelectedListener() {
+        new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
                 @Override public void fileSelected(final File file) {
                     String path = file.getPath();
                     BankStatement bankStat = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);
@@ -42,6 +42,4 @@ public class FileBrowserActivity extends Activity implements View.OnClickListene
                     startActivityForResult(transactionReportIntent, 0);
                 }}).showDialog();
     }
-
-
 }
