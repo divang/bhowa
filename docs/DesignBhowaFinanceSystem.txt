@@ -138,3 +138,5 @@ Sheets :
 	Gym Spending
 	Interest
 
+Copy file from local to Emulator :
+D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /mnt

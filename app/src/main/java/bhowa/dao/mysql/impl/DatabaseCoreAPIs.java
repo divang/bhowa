@@ -13,11 +13,11 @@ import java.util.List;
 
 public class DatabaseCoreAPIs extends Queries {
 
-    private static final String databaseDBURL = "jdbc:mysql://dbbhra.cr39zxmr47h3.us-east-1.rds.amazonaws.com:3306/BHOWA";
-    private static final String databaseUser = "BHRA2010";
-    private static final String databasePassword = "BHRA_2010";
+	private static final String databaseDBURL = "jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6134070";
+	private static final String databaseUser = "sql6134070";
+	private static final String databasePassword = "UAgCjcJ2d4";
 
-    static
+	static
     {
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
