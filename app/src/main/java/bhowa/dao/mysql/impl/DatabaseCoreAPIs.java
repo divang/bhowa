@@ -267,20 +267,33 @@ public class DatabaseCoreAPIs extends Queries {
 			result = pStat.executeQuery();
 			while(result.next())
 			{
-				//`User_Id`, `Password`, `Status`, `Flat_No`, `Name`,
-				// //LEFT(`Name_Alias`, 256), `Mobile_No`, `Email_Id`, `Maintenance_Monthly`, `Address`, `Block`
+				/*
+				SELECT `User_Id`, `Login_Id`, `User_Type_Id`,
+				`Status`, `Flat_Id`, `Name`,
+				LEFT(`Name_Alias`, 256), `Mobile_No`, `Moble_No_Alternate`,
+				`Email_Id`, `Address`, `Flat_Join_Date`,
+				`Flat_Left_Date`
+				FROM `sql6134070`.`User_Details` ORDER BY `Login_Id` ASC LIMIT 0, 1000;
+				 */
 				UserDetails u = new UserDetails();
 				u.userId = result.getString(1);
-				u.password = result.getString(2);
-				u.isActive = result.getInt(3) == 1 ? true : false;
-				u.flatNo = result.getInt(4);
-				u.userName = result.getString(5);
-				u.nameAlias = result.getString(6);
-				u.mobileNo = result.getLong(7);
-				u.emailId = result.getString(8);
-				u.maintenanceMonthly = result.getFloat(9);
-				u.address = result.getString(10);
-				u.block = result.getString(11);
+				u.loginId = result.getString(2);
+				u.userTypeId = result.getString(3);
+
+				u.isActive = result.getInt(4) == 1 ? true : false;
+				u.flatId = result.getInt(5);
+				u.userName = result.getString(6);
+
+				u.nameAlias = result.getString(7);
+				u.mobileNo = result.getLong(8);
+				u.mobileNoAlternative = result.getLong(9);
+
+				u.emailId = result.getString(10);
+				u.address = result.getString(11);
+				u.flatJoinDate = result.getDate(12);
+
+				u.flatLeftDate = result.getDate(13);
+
 				users.add(u);
 			}
 

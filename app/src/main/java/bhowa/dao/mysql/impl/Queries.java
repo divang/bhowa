@@ -4,7 +4,7 @@ public class Queries {
 
 	  //Queries
     public static final String loginQuery = 
-    		"select user_id FROM User WHERE user_id = ? and password = ?";
+    		"select Login_Id FROM Login WHERE Login_Id = ? and Password = ? and Status = 1";
 
     public static final String activityLoggingQuery = 
     		"Insert into User_Activity_Logging (UserName, Mobile, Activity, Comment, Time) values (? ,? ,?, ?, ?)";
@@ -36,7 +36,7 @@ public class Queries {
 			"delete from Row_Data";
 
 	public static final String allUsersQuery =
-			"SELECT * FROM User";
+			"SELECT * FROM User_Details";
 
 	public static final String expenseTypeQuery =
 			"SELECT * FROM Expense_Type";
@@ -48,5 +48,5 @@ public class Queries {
 			"select distinct(Name) from Transactions_Staging_Data";
 
 	public static final String updateAliasUserId =
-			"UPDATE User SET Name_Alias = ? WHERE User_Id = ?";
+			"UPDATE User_Details SET Name_Alias = ? WHERE User_Id = ?";
 }
