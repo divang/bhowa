@@ -19,28 +19,29 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/home_activity_btn_upload_pdf"
+            android:id="@+id/home_activity_btn_create_login"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_upload_pdf"
+            android:drawableTop="@drawable/ic_login_create"
             android:onClick="onButtonClicker"
-            android:text="@string/uploadPdfIconText"
+            android:text="@string/createLoginIconText"
             />
 
         <Button
-            android:id="@+id/home_activity_btn_download_raw"
+            android:id="@+id/home_activity_btn_add_flat"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_download_raw_data"
+            android:drawableTop="@drawable/ic_add_flat"
             android:onClick="onButtonClicker"
-            android:text="@string/downloadRawDataIconText"
+            android:text="@string/addFlatIconText"
             />
 
         <Button
-            android:id="@+id/home_activity_btn_delete_raw"
+            android:id="@+id/home_activity_btn_add_user"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_delete_raw_data"
+            android:drawableTop="@drawable/ic_add_user"
             android:onClick="onButtonClicker"
-            android:text="@string/deleteRawDataIconText"
+            android:text="@string/addUserIconText"
             />
+
 
     </LinearLayout>
 
@@ -51,11 +52,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/home_activity_btn_all_transactions"
+            android:id="@+id/home_activity_btn_upload_pdf"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_all_transactions"
+            android:drawableTop="@drawable/ic_upload_pdf"
             android:onClick="onButtonClicker"
-            android:text="@string/allTransactionsIconText"
+            android:text="@string/uploadPdfIconText"
             />
 
         <Button

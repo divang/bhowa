@@ -49,4 +49,21 @@ public class Queries {
 
 	public static final String updateAliasUserId =
 			"UPDATE User_Details SET Name_Alias = ? WHERE User_Id = ?";
+
+	public static final String createLoginQuery =
+			"Insert into Login(Login_Id, Password) values (?, ?)";
+
+	public static final String insertFlatDetailsQuery =
+			"Insert into Flat(Flat_Id,Flat_Number,Area,Maintenance_Amount,Block_Number) " +
+					"values (?, ?, ?, ?,?)";
+
+	public static final String addUserQuery =
+			"Insert into User_Details(" +
+					"User_Id,User_Type_Id,Status," +
+					"Flat_Id,Name,Name_Alias,Mobile_No," +
+					"Moble_No_Alternate,Email_Id,Address,Flat_Join_Date," +
+					"Flat_Left_Date) values (?, ?, ?, " +
+					"?, ?, ?," +
+					"?, ?, ?," +
+					" ?, ? )";
 }

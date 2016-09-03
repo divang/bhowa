@@ -2,6 +2,7 @@ package bhowa.dao;
 
 import java.util.List;
 
+import bhowa.dao.mysql.impl.Flat;
 import bhowa.dao.mysql.impl.UserDetails;
 
 /**
@@ -80,4 +81,18 @@ public interface IBhowaDatabase {
      */
     void setAliasOfUserId(String userId, String allAliasNames) throws Exception;
 
+    /**
+     * Create a User login
+     * @param loginId
+     * @param password
+     * @throws Exception
+     */
+    void createLogin(String loginId, String password) throws Exception;
+
+    /**
+     * Add society flat details
+     * @param flat
+     * @throws Exception
+     */
+    void addFlatDetails(Object flat) throws Exception;
 }

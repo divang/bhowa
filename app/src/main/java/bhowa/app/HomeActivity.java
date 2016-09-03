@@ -30,12 +30,18 @@ public class HomeActivity extends DashBoardActivity {
         try {
             Intent intent;
             switch (v.getId()) {
+
+                case R.id.home_activity_btn_create_login:
+                    intent = new Intent(this, CreateLoginIdActivity.class);
+                    startActivity(intent);
+                    break;
+
                 case R.id.home_activity_btn_upload_pdf:
                     openFileBrowser();
                     break;
 
-                case R.id.home_activity_btn_download_raw:
-                    intent = new Intent(this, ViewRawDataActivity.class);
+                case R.id.home_activity_btn_add_user:
+                    intent = new Intent(this, AddUserActivity.class);
                     startActivity(intent);
                     break;
 
@@ -44,8 +50,9 @@ public class HomeActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
 
-                case R.id.home_activity_btn_delete_raw:
-                    BhowaDatabaseFactory.getDBInstance().deleteAllRawData();
+                case R.id.home_activity_btn_add_flat:
+                    intent = new Intent(this, AddFlatDetailsActivity.class);
+                    startActivity(intent);
                     break;
             }
         }catch (Exception e)

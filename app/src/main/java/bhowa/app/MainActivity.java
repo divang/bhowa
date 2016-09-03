@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView userNameText = (TextView) findViewById(R.id.userNameText);
         final TextView passwordText = (TextView) findViewById(R.id.passwordText);
-        final TextView loginLevel = (TextView) findViewById(R.id.LoginLevel);
         final Button loginButton = (Button) findViewById(R.id.LoginButton);
 
         progress = ProgressDialog.show(MainActivity.this, null, "Connecting to Database  ...", true, false);

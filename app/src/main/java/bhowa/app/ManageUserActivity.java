@@ -26,6 +26,7 @@ public class ManageUserActivity extends DashBoardActivity {
             setHeader(getString(R.string.title_activity_home), true);
 
             final TableLayout tableL = (TableLayout) findViewById(R.id.allUsersTableLayout);
+            tableL.invalidate();
             List<UserDetails> users = BhowaDatabaseFactory.getDBInstance().getAllUsers();
 
             for (UserDetails user : users) {

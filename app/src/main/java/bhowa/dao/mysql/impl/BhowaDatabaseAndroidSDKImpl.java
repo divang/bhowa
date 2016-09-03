@@ -31,7 +31,9 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 		getExpenseType,
 		errorLogging,
 		getAllTransactionStagingUsers,
-		setAliasOfUserId
+		setAliasOfUserId,
+		createLogin,
+		addFlatDetails
 	}
 
 	@Override
@@ -98,6 +100,14 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 
 				case setAliasOfUserId:
 					dbCore.setAliasOfUserId(String.valueOf(params[1]), String.valueOf(params[2]));
+					break;
+
+				case createLogin:
+					dbCore.createUserLogin(String.valueOf(params[1]), String.valueOf(params[2]));
+					break;
+
+				case addFlatDetails:
+					dbCore.addFlatDetails(params[1]);
 					break;
 
 			}
@@ -233,6 +243,27 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 	@Override
 	public void setAliasOfUserId(String userId, String allAliasNames)  throws Exception{
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.setAliasOfUserId.name(), userId, allAliasNames);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void createLogin(String loginId, String password) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createLogin.name(), loginId, password);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void addFlatDetails(Object flat) throws Exception {
+
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.addFlatDetails.name(), flat);
 		try {
 			aTask.get();
 		} catch (Exception e) {

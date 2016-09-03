@@ -10,7 +10,10 @@
     <string name="title_activity_dash_board">DashBoardActivity</string>
 
     <!-- Home Dashboard Icons text -->
+    <string name="createLoginIconText">Create Login</string>
+    <string name="addFlatIconText">Add Flat Details</string>
     <string name="uploadPdfIconText">Upload PDF</string>
+    <string name="addUserIconText">Add User</string>
     <string name="downloadRawDataIconText">Raw Data</string>
     <string name="allTransactionsIconText">All Transactions</string>
     <string name="manageUsersIconText">Manage Users</string>
@@ -20,7 +23,7 @@
     <string name="deleteRawDataIconText">Delete Raw Data</string>
 
     <!-- Transaction report Dashboard Icons text -->
-    <string name="mapUserAliasIconText">View Raw Data</string>
+    <string name="mapUserAliasIconText">Map User Alias</string>
     <string name="viewRawDataIconText">View Raw Data</string>
     <string name="viewTransactionsIconText">View Transactions</string>
     <string name="uploadRawDataIconText">Upload Raw Data</string>
@@ -35,6 +38,10 @@
     <string name="title_activity_transaction_raw_data">TransactionRawDataActivity</string>
     <string name="title_activity_map_user_to_name_alias">MapUserToNameAlias</string>
     <string name="title_activity_user_alias_mapping">UserAliasMappingActivity</string>
+    <string name="title_activity_add_user">AddUserActivity</string>
+    <string name="title_activity_create_login_id">CreateLoginIdActivity</string>
+    <string name="title_activity_add_flat_details">AddFlatDetailsActivity</string>
+
 
 
 

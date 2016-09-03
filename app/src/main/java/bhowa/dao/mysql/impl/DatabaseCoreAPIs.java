@@ -390,4 +390,51 @@ public class DatabaseCoreAPIs extends Queries {
 			close(con,pStat,res);
 		}
 	}
+
+	public void createUserLogin(String loginId, String password) throws Exception	{
+		Connection con = null;
+		PreparedStatement pStat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			pStat = con.prepareStatement(createLoginQuery);
+			pStat.setString(1, loginId);
+			pStat.setString(2, password);
+			pStat.executeUpdate();
+
+		} catch(Exception e){
+			throw e;
+		} finally {
+			close(con,pStat,res);
+		}
+	}
+
+	public void addFlatDetails(Object oflat) throws Exception	{
+
+		if(oflat instanceof Flat) {
+			Flat flat = (Flat) oflat;
+			Connection con = null;
+			PreparedStatement pStat = null;
+			ResultSet res = null;
+
+			try {
+				con = getDBInstance();
+				pStat = con.prepareStatement(insertFlatDetailsQuery);
+				pStat.setString(1, flat.flatId);
+				pStat.setString(2, flat.flatNumber);
+				pStat.setInt(3, flat.area);
+				pStat.setFloat(4, flat.maintenanceAmount);
+				pStat.setString(5, flat.block);
+
+				pStat.executeUpdate();
+
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				close(con, pStat, res);
+			}
+		}
+	}
 }
