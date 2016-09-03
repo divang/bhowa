@@ -437,4 +437,68 @@ public class DatabaseCoreAPIs extends Queries {
 			}
 		}
 	}
+
+	public List<Login> getAllLogin() throws Exception {
+		List<Login> logins = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			/*
+			SELECT `Login_Id`, `Password`, `Status`, `Authorised_Activity` FROM `sql6134070`.`Login` LIMIT 0, 1000;
+			 */
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(selectAllLoginQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				Login l = new Login();
+				l.loginId = result.getString(1);
+				l.password = result.getString(2);
+				l.status = result.getBoolean(3);
+				l.authorisedActivity = result.getString(4);
+				logins.add(l);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return logins;
+	}
+
+	public List<Flat> getAllFlats() throws Exception {
+		List<Flat> flats = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			/*
+			SELECT `Flat_Id`, `Flat_Number`, `Area`, `Maintenance_Amount`, `Block_Number`, `Status`
+			FROM `sql6134070`.`Flat` LIMIT 0, 1000;
+			 */
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(selectAllFlatQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				Flat l = new Flat();
+				l.flatId = result.getString(1);
+				l.flatNumber = result.getString(2);
+				l.area = result.getInt(3);
+				l.maintenanceAmount = result.getFloat(4);
+				l.block = result.getString(5);
+				l.status = result.getBoolean(6);
+
+				flats.add(l);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return flats;
+	}
 }

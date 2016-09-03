@@ -51,8 +51,8 @@ public class AddFlatDetailsActivity extends DashBoardActivity {
                     public void run() {
                         try {
                             BhowaDatabaseFactory.getDBInstance().addFlatDetails(flat);
-                            //Intent intent = new Intent(getApplicationContext(), ManageUserActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(getApplicationContext(), ManageFlatActivity.class);
+                            startActivity(intent);
                         } catch (Exception e) {
                             Log.e("Error", "Login creation failed", e);
                         }

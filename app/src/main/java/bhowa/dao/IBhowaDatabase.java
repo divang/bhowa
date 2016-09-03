@@ -3,6 +3,7 @@ package bhowa.dao;
 import java.util.List;
 
 import bhowa.dao.mysql.impl.Flat;
+import bhowa.dao.mysql.impl.Login;
 import bhowa.dao.mysql.impl.UserDetails;
 
 /**
@@ -95,4 +96,18 @@ public interface IBhowaDatabase {
      * @throws Exception
      */
     void addFlatDetails(Object flat) throws Exception;
+
+    /**
+     * It returns all the logins
+     * @return
+     * @throws Exception
+     */
+    List<Login> getAllLogins() throws Exception;
+
+    /**
+     * It returns all the flats
+     * @return
+     * @throws Exception
+     */
+    List<Flat> getAllFlats() throws Exception;
 }

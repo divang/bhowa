@@ -41,6 +41,8 @@
     <string name="title_activity_add_user">AddUserActivity</string>
     <string name="title_activity_create_login_id">CreateLoginIdActivity</string>
     <string name="title_activity_add_flat_details">AddFlatDetailsActivity</string>
+    <string name="title_activity_manage_login">ManageLoginActivity</string>
+    <string name="title_activity_manage_flat">ManageFlatActivity</string>
 
 
 

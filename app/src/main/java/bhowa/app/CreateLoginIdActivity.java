@@ -41,7 +41,7 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                     public void run() {
                         try {
                             BhowaDatabaseFactory.getDBInstance().createLogin(loginIdText.getText().toString(), passwordText.getText().toString());
-                            Intent intent = new Intent(getApplicationContext(), ManageUserActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), ManageLoginActivity.class);
                             startActivity(intent);
                         }catch (Exception e)
                         {

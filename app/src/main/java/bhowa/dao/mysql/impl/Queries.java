@@ -57,6 +57,12 @@ public class Queries {
 			"Insert into Flat(Flat_Id,Flat_Number,Area,Maintenance_Amount,Block_Number) " +
 					"values (?, ?, ?, ?,?)";
 
+	public static final String selectAllLoginQuery =
+			"SELECT * FROM Login";
+
+	public static final String selectAllFlatQuery =
+			"SELECT * FROM Flat";
+
 	public static final String addUserQuery =
 			"Insert into User_Details(" +
 					"User_Id,User_Type_Id,Status," +
