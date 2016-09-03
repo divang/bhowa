@@ -20,6 +20,14 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/transaction_report_activity_btn_view_map_user_alias"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_user_mapping"
+            android:onClick="onButtonClicker"
+            android:text="@string/mapUserAliasIconText"
+            />
+
+        <Button
             android:id="@+id/transaction_report_activity_btn_view_raw_data"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_raw_data"

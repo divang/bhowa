@@ -21,6 +21,8 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -50,41 +52,108 @@ public class TransactionRawDataActivity extends AppCompatActivity {
         try {
             setContentView(R.layout.activity_transaction_raw_data);
 
-            TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
-            layoutParams.setMargins(10, 10, 10, 10);
+            TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int[] fixedColumnWidths = new int[]{20, 5, 5, 40, 20, 70, 60, 20, 20};
+            int[] scrollableColumnWidths = new int[]{20, 5, 5, 40, 20, 70, 60, 20, 20};
+            int fixedRowHeight = 50;
+            int fixedHeaderHeight = 60;
+
+            TableRow row = new TableRow(this);
+            //header (fixed vertically)
+            TableLayout header = (TableLayout) findViewById(R.id.table_header);
+            row.setLayoutParams(wrapWrapTableRowParams);
+            row.setGravity(Gravity.CENTER);
+            row.setBackgroundColor(Color.YELLOW);
+            //row.addView(makeTableRowWithText("User Id", fixedColumnWidths[0], fixedHeaderHeight));
+          //  row.addView(makeTableRowWithText("Approved", fixedColumnWidths[1], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Sr", fixedColumnWidths[2], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Name in transaction", fixedColumnWidths[3], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Amount", fixedColumnWidths[4], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Transaction Date", fixedColumnWidths[5], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Reference", fixedColumnWidths[6], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Cr / Dr", fixedColumnWidths[7], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Type", fixedColumnWidths[8], fixedHeaderHeight));
+            //header.addView(row);
+
+            TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
+            TextView fixedViewUserIdH = makeTableRowWithText("User Id", scrollableColumnWidths[0], fixedHeaderHeight);
+            fixedViewUserIdH.setBackgroundColor(Color.YELLOW);
+            fixedViewUserIdH.setLayoutParams(wrapWrapTableRowParams);
+            fixedColumn.addView(fixedViewUserIdH);
+
+
+            //rest of the table (within a scroll view)
+            TableLayout scrollablePart = (TableLayout) findViewById(R.id.reportTableLayout);
+            scrollablePart.addView(row);
+
 
             final BankStatement bankStat = (BankStatement) getIntent().getSerializableExtra("bankStat");
-            final TableLayout tableL = (TableLayout) findViewById(R.id.reportTableLayout);
             users = BhowaDatabaseFactory.getDBInstance().getAllUsers();
-            tableL.invalidate();
 
-            for (String btName : getUniqueNamesInTransaction(bankStat)) {
-                TableRow row = new TableRow(this);
+            int srNo = 0;
+            boolean isdimGreen = true;
 
-                row.setLayoutParams(layoutParams);
+            for (BhowaTransaction bt : bankStat.allTransactions) {
+                srNo++;
 
-                String userId = getUserID(btName, users);
+                //Fixed Columns
+                String userId = getUserID(bt.name, users);
+                TextView fixedViewUserId = makeTableRowWithText(userId, scrollableColumnWidths[0], fixedRowHeight);
+                //fixedViewUserId.setBackgroundColor(Color.BLUE);
+                fixedColumn.addView(fixedViewUserId);
+                //Fixed Columns
+
+                //Scrollable columns
+                row = new TableRow(this);
+                row.setLayoutParams(wrapWrapTableRowParams);
+                row.setGravity(Gravity.CENTER);
+                row.setBackgroundColor(Color.WHITE);
+/*
                 if (userId != null) {
+                    CheckBox approvedCheck = new CheckBox(this);
+                    approvedCheck.setOnClickListener(new View.OnClickListener() {
+                                                         @Override
+                                                         public void onClick(View v) {
+                                                             Log.d("info", "Approved");
+                                                             //insert to  DB
+                                                         }
+                                                     }
+                    );
+                    fixedColumn.addView(approvedCheck);
+                }
+*/
+                row.addView(makeTableRowWithText(String.valueOf(srNo), scrollableColumnWidths[2], fixedRowHeight));
 
-                    TextView userIdText = new TextView(this);
-                    userIdText.setText(userId);
-                    row.addView(userIdText);
+                row.addView(makeTableRowWithText(bt.name, scrollableColumnWidths[3], fixedRowHeight));
 
-                    TextView nameCol = new TextView(this);
-                    nameCol.setHeight(30);
-                    nameCol.setText(btName);
-                    row.addView(nameCol);
+                row.addView(makeTableRowWithText(String.valueOf(bt.amount), scrollableColumnWidths[4], fixedRowHeight));
 
-                } else {
+                row.addView(makeTableRowWithText(String.valueOf(bt.transactionDate), scrollableColumnWidths[5], fixedRowHeight));
 
-                    row.addView(getUserIDListView(users, btName));
+                row.addView(makeTableRowWithText(bt.reference, scrollableColumnWidths[6], fixedRowHeight));
 
-                    TextView nameCol = new TextView(this);
-                    nameCol.setText(btName);
-                    row.addView(nameCol);
+                row.addView(makeTableRowWithText(bt.transactionFlow, scrollableColumnWidths[7], fixedRowHeight));
+
+                row.addView(makeTableRowWithText(bt.type, scrollableColumnWidths[8], fixedRowHeight));
+
+                scrollablePart.addView(row);
+
+
+                if (userId == null) {
+                    row.setBackgroundColor(Color.RED);
+                    fixedViewUserId.setBackgroundColor(Color.RED);
+                }
+                else if(isdimGreen) {
+                    row.setBackgroundColor(Color.argb(100, 143, 196, 162));
+                    fixedViewUserId.setBackgroundColor(Color.argb(100, 143, 196, 162));
+                    isdimGreen = !isdimGreen;
+                }
+                else {
+                    row.setBackgroundColor(Color.argb(100, 178, 243, 202));
+                    fixedViewUserId.setBackgroundColor(Color.argb(100, 178, 243, 202));
+                    isdimGreen = !isdimGreen;
                 }
 
-                tableL.addView(row);
             }
 
             final Button backButton = (Button) findViewById(R.id.backToReportBtn);
@@ -101,24 +170,6 @@ public class TransactionRawDataActivity extends AppCompatActivity {
         }
     }
 
-    private Spinner getUserIDListView(List<UserDetails> users, final String aliasName)
-    {
-        List<String> userIds = new ArrayList<>();
-        userIds.add("Select User Id");
-        for(UserDetails u : users) if(!userIds.contains(u.userId)) userIds.add(u.userId);
-
-        ArrayAdapter<String> userIdsAdapter = new UserListViewAdaptor(userIds);
-        userIdsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        final Spinner spinnerUserId = new Spinner(this);
-        spinnerUserId.setAdapter(userIdsAdapter);
-        spinnerUserId.setOnItemSelectedListener(new UserMappingAdapter(spinnerUserId, aliasName));
-        spinnerUserId.setBackgroundColor(Color.GRAY);
-
-        return spinnerUserId;
-    }
-
-
     private String getUserID(String tName, List<UserDetails> users)
     {
         if(tName == null) return null;
@@ -131,85 +182,19 @@ public class TransactionRawDataActivity extends AppCompatActivity {
         return null;
     }
 
-    private UserDetails getUser(String userId)
-    {
-        for(UserDetails u : users) if(u.userId.equals(userId)) return u;
-        return null;
+
+    //util method
+    private TextView recyclableTextView;
+
+    public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        recyclableTextView = new TextView(this);
+        recyclableTextView.setText(text);
+        recyclableTextView.setTextColor(Color.BLACK);
+        recyclableTextView.setTextSize(10);
+        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
+        recyclableTextView.setHeight(fixedHeightInPixels);
+        return recyclableTextView;
     }
 
-    private List<String> getUniqueNamesInTransaction(BankStatement bankStat)
-    {
-        List<String> unameList = new ArrayList<>();
-        for(BhowaTransaction bt : bankStat.allTransactions) if(!unameList.contains(bt.name.toUpperCase().trim())) unameList.add(bt.name.toUpperCase().trim());
-        return unameList;
-    }
-
-    class UserMappingAdapter implements AdapterView.OnItemSelectedListener {
-
-        final Spinner spinnerUserId;
-        final String aliasName;
-        boolean initialized = false;
-
-        UserMappingAdapter(Spinner spinnerUserId, String aliasName){
-            this.spinnerUserId = spinnerUserId;
-            this.aliasName = aliasName;
-        }
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            final String userId = spinnerUserId.getSelectedItem().toString();
-
-            if(!initialized)
-            {
-                initialized = true;
-                return;
-            }
-
-            UserDetails u = getUser(userId);
-            final String alias = u.nameAlias != null ? u.nameAlias + "," + aliasName : aliasName;
-
-            progress = ProgressDialog.show(TransactionRawDataActivity.this, null, "Updating alias for UserId : " + userId + " alias : "+alias, true, false);
-            progress.show();
-            Thread taskThread = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        BhowaDatabaseFactory.getDBInstance().setAliasOfUserId(userId, alias);
-                    } catch (Exception e) {
-                        Log.e("Error", "Update alias has problem", e);
-                    }
-                    progress.dismiss();
-                    progress.cancel();
-                }
-            });
-            taskThread.start();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    }
-
-    class UserListViewAdaptor extends  ArrayAdapter{
-
-        UserListViewAdaptor(List<String> userIds) {
-            super(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, userIds);
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View v = super.getView(position, convertView, parent);
-            ((TextView) v).setTextSize(16);
-            ((TextView) v).setTextColor(Color.BLACK);
-
-            return v;
-        }
-
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View v = super.getDropDownView(position, convertView, parent);
-            ((TextView) v).setTextColor(Color.BLACK);
-            ((TextView) v).setGravity(Gravity.LEFT);
-
-            return v;
-        }
-    }
 }

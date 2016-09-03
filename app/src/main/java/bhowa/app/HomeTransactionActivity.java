@@ -21,6 +21,13 @@ public class HomeTransactionActivity extends DashBoardActivity {
 
             Intent intent;
             switch (v.getId()) {
+
+                case R.id.transaction_report_activity_btn_view_map_user_alias:
+                    intent = new Intent(this, UserAliasMappingActivity.class);
+                    intent.putExtra("bankStat", bankStat);
+                    startActivity(intent);
+                    break;
+
                 case R.id.transaction_report_activity_btn_view_raw_data:
                     intent = new Intent(this, ViewRawDataActivity.class);
                     intent.putExtra("bankStat", bankStat);

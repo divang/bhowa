@@ -20,6 +20,7 @@
     <string name="deleteRawDataIconText">Delete Raw Data</string>
 
     <!-- Transaction report Dashboard Icons text -->
+    <string name="mapUserAliasIconText">View Raw Data</string>
     <string name="viewRawDataIconText">View Raw Data</string>
     <string name="viewTransactionsIconText">View Transactions</string>
     <string name="uploadRawDataIconText">Upload Raw Data</string>
@@ -33,6 +34,7 @@
     <string name="title_activity_notification">NotificationActivity</string>
     <string name="title_activity_transaction_raw_data">TransactionRawDataActivity</string>
     <string name="title_activity_map_user_to_name_alias">MapUserToNameAlias</string>
+    <string name="title_activity_user_alias_mapping">UserAliasMappingActivity</string>
 
 
 
