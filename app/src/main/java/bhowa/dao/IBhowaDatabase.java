@@ -110,4 +110,12 @@ public interface IBhowaDatabase {
      * @throws Exception
      */
     List<Flat> getAllFlats() throws Exception;
+
+    /**
+     * Insert new user
+     * @param userDetails
+     * @throws Exception
+     */
+    void addUserDetails(Object userDetails)  throws Exception;
+
 }

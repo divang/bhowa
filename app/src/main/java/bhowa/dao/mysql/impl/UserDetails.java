@@ -6,11 +6,11 @@ public class UserDetails {
 
 	public String userId;
 	public String password;
-	public String userTypeId;
+	public String userType;
 	public String userName;
 	public String loginId;
 	public boolean isActive;
-	public int flatId;
+	public String flatId;
 	public String nameAlias;
 	public String emailId;
 	public String address;
@@ -23,7 +23,7 @@ public class UserDetails {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append("userId=").append(userId);
-		str.append(" userTypeId=").append(userTypeId);
+		str.append(" userType=").append(userType);
 		str.append(" userName").append(userName);
 		str.append(" loginId=").append(loginId);
 		str.append(" isActive=").append(isActive);

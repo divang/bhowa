@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -278,10 +279,10 @@ public class DatabaseCoreAPIs extends Queries {
 				UserDetails u = new UserDetails();
 				u.userId = result.getString(1);
 				u.loginId = result.getString(2);
-				u.userTypeId = result.getString(3);
+				u.userType = result.getString(3);
 
 				u.isActive = result.getInt(4) == 1 ? true : false;
-				u.flatId = result.getInt(5);
+				u.flatId = result.getString(5);
 				u.userName = result.getString(6);
 
 				u.nameAlias = result.getString(7);
@@ -501,4 +502,54 @@ public class DatabaseCoreAPIs extends Queries {
 		}
 		return flats;
 	}
+
+	public void addUserDetails(Object oflat) throws Exception	{
+
+		if(oflat instanceof UserDetails) {
+			UserDetails ud = (UserDetails) oflat;
+			Connection con = null;
+			PreparedStatement pStat = null;
+			ResultSet res = null;
+
+			try {
+				con = getDBInstance();
+				pStat = con.prepareStatement(insertUserDetailsQuery);
+				/*
+		        User_Id, User_Type, Flat_Id,
+                Name, Name_Alias, Mobile_No,
+                Moble_No_Alternate,Email_Id,Address,
+                Flat_Join_Date,Flat_Left_Date, Login_Id)
+				 */
+                pStat.setString(1, ud.userId);
+				pStat.setString(2, ud.userType);
+                pStat.setString(3, ud.flatId);
+
+                pStat.setString(4, ud.userName);
+                pStat.setString(5, ud.nameAlias);
+                pStat.setLong(6, ud.mobileNo);
+
+				pStat.setLong(7, ud.mobileNoAlternative);
+				pStat.setString(8, ud.emailId);
+                pStat.setString(9, ud.address);
+				pStat.setDate(10, ud.flatJoinDate == null ? new Date(System.currentTimeMillis()) : ud.flatJoinDate);
+                pStat.setDate(11, ud.flatLeftDate == null ? new Date(System.currentTimeMillis()) : ud.flatLeftDate);
+                pStat.setString(12, ud.loginId);
+
+/*				if(ud.flatLeftDate == null)
+				{
+					pStat.setNull(10, Types.DATE);
+				}else {
+					pStat.setDate(10, ud.flatLeftDate);
+				}
+*/
+				pStat.executeUpdate();
+
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				close(con, pStat, res);
+			}
+		}
+	}
+
 }

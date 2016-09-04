@@ -63,13 +63,15 @@ public class Queries {
 	public static final String selectAllFlatQuery =
 			"SELECT * FROM Flat";
 
-	public static final String addUserQuery =
+	public static final String insertUserDetailsQuery =
 			"Insert into User_Details(" +
-					"User_Id,User_Type_Id,Status," +
-					"Flat_Id,Name,Name_Alias,Mobile_No," +
-					"Moble_No_Alternate,Email_Id,Address,Flat_Join_Date," +
-					"Flat_Left_Date) values (?, ?, ?, " +
+					"User_Id, User_Type, Flat_Id," +
+					"Name, Name_Alias,Mobile_No," +
+					"Moble_No_Alternate, Email_Id, Address," +
+					"Flat_Join_Date, Flat_Left_Date, Login_Id)" +
+					" values (" +
+					"?, ?, ?, " +
 					"?, ?, ?," +
 					"?, ?, ?," +
-					" ?, ? )";
+					"?, ?, ? )";
 }

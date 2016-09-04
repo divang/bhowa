@@ -35,7 +35,8 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 		createLogin,
 		addFlatDetails,
         getAllLogins,
-        getAllFlats
+        getAllFlats,
+        addUserDetails
 	}
 
 	@Override
@@ -118,6 +119,10 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 
                 case getAllFlats:
                     result = dbCore.getAllFlats();
+                    break;
+
+                case addUserDetails:
+                    dbCore.addUserDetails(params[1]);
                     break;
 			}
 		}catch(Exception e){
@@ -295,6 +300,16 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
         AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllFlats.name());
         try {
             return (List<Flat>)aTask.get();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void addUserDetails(Object userDetails) throws Exception {
+        AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.addUserDetails.name(),userDetails);
+        try {
+            aTask.get();
         } catch (Exception e) {
             throw e;
         }
