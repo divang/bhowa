@@ -36,7 +36,10 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 		addFlatDetails,
         getAllLogins,
         getAllFlats,
-        addUserDetails
+        addUserDetails,
+		getAllDetailsTransactions,
+		saveVerifiedTransactions,
+		getMyTransactions
 	}
 
 	@Override
@@ -124,6 +127,18 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
                 case addUserDetails:
                     dbCore.addUserDetails(params[1]);
                     break;
+
+				case getAllDetailsTransactions:
+					result = dbCore.getAllDetailTransaction();
+					break;
+
+				case saveVerifiedTransactions:
+					dbCore.saveVerifiedTransactionsDB(params[1]);
+					break;
+
+				case getMyTransactions:
+					result = dbCore.getMyTransactions(String.valueOf(params[1]));
+					break;
 			}
 		}catch(Exception e){
 			System.err.println("Error");
@@ -175,10 +190,10 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 	}
 
 	@Override
-	public boolean uploadMonthlyTransactions(Object transactions)  throws Exception{
+	public void uploadMonthlyTransactions(Object transactions)  throws Exception{
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.uploadMonthlyTransactions.name(), transactions);
 		try {
-			return (Boolean)aTask.get();
+			aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -314,6 +329,34 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
             throw e;
         }
     }
+
+	@Override
+	public List<BhowaTransaction> getAllDetailsTransactions() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllDetailsTransactions.name());
+		try {
+			return (List<BhowaTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void saveVerifiedTransactions(Object obj) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.saveVerifiedTransactions.name(),obj);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<BhowaTransaction> getMyTransactions(String userId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getMyTransactions.name(), userId);
+		try {
+			return (List<BhowaTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }
-
-

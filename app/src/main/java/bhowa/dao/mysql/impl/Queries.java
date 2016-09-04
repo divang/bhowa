@@ -21,9 +21,14 @@ public class Queries {
     	    + "values(?, ?, ?, ?, ?, ?, ?)";
 
 	public static final String transactionStagingQuery =
-			"Insert into Transactions_Staging_Data(StatementID, Name, Amount, "
-					+ "Transaction_Date, Transaction_Flow, Transaction_Mode, Transaction_Reference) "
-					+ "values(?, ?, ?, ?, ?, ?, ?)";
+			"Insert into Transactions_Staging_Data(" +
+					"StatementID, Name, Amount, "
+					+ "Transaction_Date, Transaction_Flow, Transaction_Mode, " +
+					"Transaction_Reference) "
+					+ "values(" +
+					"?, ?, ?, " +
+					"?, ?, ?, " +
+					"?)";
 
 	public static final String insertRawDataQuery =
 			"Insert into Row_Data(Transaction_Raw_Line_Parse_From_PDF) values (?)";
@@ -63,6 +68,27 @@ public class Queries {
 	public static final String selectAllFlatQuery =
 			"SELECT * FROM Flat";
 
+	public static final String selectFinalTransactionQuery =
+			"SELECT  Transaction_ID,StatementID,ud.Name,Amount," +
+					"Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
+					"ud.User_Id,ud.Flat_Id,Admin_Approved,Admin_Comment," +
+					"User_Comment " +
+					"FROM Transactions_Staging_Data as tsd " +
+					"left join " +
+					"User_Details as ud " +
+					"on (UPPER(tsd.Name) LIKE CONCAT('%', UPPER(ud.Name),'%')) " +
+					"OR (UPPER(tsd.Name) LIKE CONCAT('%', UPPER(ud.Name_Alias), '%'))";
+
+	public static final String insertFinalTransactionQuery =
+			"Insert into Transactions_Verified (" +
+					"Amount, Transaction_Date,Transaction_Flow," +
+					"Transaction_Mode,Transaction_Reference,User_Id," +
+					"Flat_Id,Admin_Comment,User_Comment) " +
+					"values (" +
+					"? , ?, ?, " +
+					"?, ?, ?, " +
+					"?, ?, ?) ";
+
 	public static final String insertUserDetailsQuery =
 			"Insert into User_Details(" +
 					"User_Id, User_Type, Flat_Id," +
@@ -74,4 +100,15 @@ public class Queries {
 					"?, ?, ?," +
 					"?, ?, ?," +
 					"?, ?, ? )";
+
+    public static final String myTransactionsQuery =
+                    "SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +
+                            "Transaction_Mode,Transaction_Reference, ud.Flat_Id,Admin_Comment,User_Comment " +
+                            "FROM Transactions_Verified tv inner " +
+                            "join User_Details ud " +
+                            "on tv.User_Id = ud.User_Id " +
+                            "inner join Login l " +
+                            "on l.Login_Id = ud.Login_Id " +
+                            "where l.Login_Id = ?";
+
 }

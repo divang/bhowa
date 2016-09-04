@@ -26,6 +26,7 @@
     <string name="myExpensesIconText">My Transactions</string>
     <string name="notificationIconText">Send Notification</string>
     <string name="deleteRawDataIconText">Delete Raw Data</string>
+    <string name="detailTransactionsIconText">Detail Transactions</string>
 
     <!-- Transaction report Dashboard Icons text -->
     <string name="mapUserAliasIconText">Map User Alias</string>
@@ -33,6 +34,7 @@
     <string name="viewTransactionsIconText">View Transactions</string>
     <string name="uploadRawDataIconText">Upload Raw Data</string>
     <string name="uploadTransactionsIconText">Upload Transactions</string>
+    <string name="verifiedTransactionsIconText">Verified Transactions</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_manage_user">ManageUserActivity</string>
@@ -48,6 +50,7 @@
     <string name="title_activity_add_flat_details">AddFlatDetailsActivity</string>
     <string name="title_activity_manage_login">ManageLoginActivity</string>
     <string name="title_activity_manage_flat">ManageFlatActivity</string>
+    <string name="title_activity_detail_transaction_view">DetailTransactionViewActivity</string>
 
 
 

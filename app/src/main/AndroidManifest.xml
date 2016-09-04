@@ -33,10 +33,14 @@
         <activity android:name=".MapUserToNameAlias" />
         <activity android:name=".UserAliasMappingActivity" />
         <activity android:name=".AddUserActivity" />
-        <activity android:name=".CreateLoginIdActivity"/>
-        <activity android:name=".AddFlatDetailsActivity"/>
-        <activity android:name=".ManageLoginActivity"/>
-        <activity android:name=".ManageFlatActivity"/>
+        <activity android:name=".CreateLoginIdActivity" />
+        <activity android:name=".AddFlatDetailsActivity" />
+        <activity android:name=".ManageLoginActivity" />
+        <activity android:name=".ManageFlatActivity" />
+        <activity
+            android:name=".DetailTransactionViewActivity"
+            android:label="@string/title_activity_detail_transaction_view" >
+        </activity>
     </application>
 
 </manifest>

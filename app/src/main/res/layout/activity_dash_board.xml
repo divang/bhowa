@@ -75,14 +75,6 @@
             android:text="@string/manageUsersIconText"
             />
 
-        <!--Button
-            android:id="@+id/home_activity_btn_expenditure_type"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_expenditure_type"
-            android:onClick="onButtonClicker"
-            android:text="@string/expenditureTypeIconText"
-            /-->
-
     </LinearLayout>
 
     <LinearLayout
@@ -99,7 +91,40 @@
             android:text="@string/uploadPdfIconText"
             />
 
-        <!--Button
+        <Button
+            android:id="@+id/home_activity_btn_detail_transactions"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_detail_transactions"
+            android:onClick="onButtonClicker"
+            android:text="@string/detailTransactionsIconText"
+            />
+
+        <Button
+            android:id="@+id/transaction_report_activity_btn_save_verified_transactions"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_verified_transactions"
+            android:onClick="onButtonClicker"
+            android:text="@string/verifiedTransactionsIconText"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/home_activity_btn_my_transactions"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_my_expense"
+            android:onClick="onButtonClicker"
+            android:text="@string/myExpensesIconText"
+            />
+
+        <Button
             android:id="@+id/home_activity_btn_send_notification"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_notification"
@@ -108,12 +133,12 @@
             />
 
         <Button
-            android:id="@+id/home_activity_btn_my_expense"
+            android:id="@+id/home_activity_btn_expenditure_type"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_my_expense"
+            android:drawableTop="@drawable/ic_expenditure_type"
             android:onClick="onButtonClicker"
-            android:text="@string/myExpensesIconText"
-            /-->
+            android:text="@string/expenditureTypeIconText"
+            />
 
     </LinearLayout>
 

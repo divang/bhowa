@@ -2,6 +2,7 @@ package bhowa.dao;
 
 import java.util.List;
 
+import bhowa.dao.mysql.impl.BhowaTransaction;
 import bhowa.dao.mysql.impl.Flat;
 import bhowa.dao.mysql.impl.Login;
 import bhowa.dao.mysql.impl.UserDetails;
@@ -31,7 +32,7 @@ public interface IBhowaDatabase {
      * @param transactionsObj
      * @return
      */
-    boolean uploadMonthlyTransactions(Object transactionsObj) throws Exception;
+    void  uploadMonthlyTransactions(Object transactionsObj) throws Exception;
 
     /**
      * After parsing the PDF file, Parser generate a single libe for each transaction.
@@ -118,4 +119,24 @@ public interface IBhowaDatabase {
      */
     void addUserDetails(Object userDetails)  throws Exception;
 
+    /**
+     * It returns all details of transactions like user_id, flat_id.
+     * @return
+     * @throws Exception
+     */
+    List<BhowaTransaction> getAllDetailsTransactions() throws Exception;
+
+    /**
+     * It stores the verified transactions in DB
+     * @param obj
+     * @throws Exception
+     */
+    void saveVerifiedTransactions(Object obj) throws  Exception;
+
+    /**
+     * Return users all transactions
+     * @return
+     * @throws Exception
+     */
+    List<BhowaTransaction> getMyTransactions(String userId) throws Exception;
 }

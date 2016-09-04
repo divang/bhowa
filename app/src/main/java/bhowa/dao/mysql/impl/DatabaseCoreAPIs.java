@@ -552,4 +552,144 @@ public class DatabaseCoreAPIs extends Queries {
 		}
 	}
 
+	public List<BhowaTransaction> getAllDetailTransaction() throws Exception {
+		List<BhowaTransaction> list = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			/*
+			Transaction_ID,StatementID,ud.Name,Amount," +
+            "Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
+            "ud.User_Id,ud.Flat_Id,Admin_Approved,Admin_Comment," +
+                "User_Comment
+		    */
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(selectFinalTransactionQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				BhowaTransaction t = new BhowaTransaction();
+				t.transactionId = result.getInt(1);
+                t.srNo = result.getInt(2);
+                t.name = result.getString(3);
+                t.amount = result.getFloat(4);
+                t.transactionDate = result.getDate(5);
+                t.transactionFlow  = result.getString(6);
+                t.type  = result.getString(7);
+                t.reference  = result.getString(8);
+                t.userId  = result.getString(9);
+                t.flatId = result.getString(10);
+                t.isAdminApproved  = result.getBoolean(11);
+                t.adminComment  = result.getString(12);
+                t.userComment = result.getString(13);
+                list.add(t);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return list;
+	}
+
+    public boolean saveVerifiedTransactionsDB(Object transactions) throws Exception{
+
+        if(transactions instanceof BankStatement)
+        {
+            BankStatement bankStatement = (BankStatement) transactions;
+            Connection con = null;
+            PreparedStatement pStat = null;
+
+            try
+            {
+                con = getDBInstance();
+
+                pStat = con.prepareStatement(insertFinalTransactionQuery);
+                for(BhowaTransaction t : bankStatement.allTransactions)
+                {
+                    /*
+                    "Insert into Transactions_Verified (" +
+					"Amount, Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
+					"User_Id, Flat_Id,Admin_Comment,User_Comment) " +
+					"values (? , ?, ?, ?, ?, " +
+					"? , ?, ?, ?) ";
+                     */
+                    if(t.userId != null) {
+                        pStat.setFloat(1, t.amount);
+                        if (t.transactionDate != null)
+                            pStat.setDate(2, new Date(t.transactionDate.getTime()));
+                        else pStat.setDate(2, new Date(System.currentTimeMillis()));
+                        pStat.setString(3, t.transactionFlow);
+                        pStat.setString(4, t.type);
+                        pStat.setString(5, t.reference);
+                        pStat.setString(6, t.userId);
+                        pStat.setString(7, t.flatId);
+                        pStat.setString(8, t.adminComment);
+                        pStat.setString(9, t.userComment);
+
+                        pStat.addBatch();
+                        pStat.clearParameters();
+                    }
+
+                }
+
+                System.out.println("Executing Batch operations");
+                pStat.executeBatch();
+                System.out.println("Executed Batch operations");
+                saveStatementProcessedDB(bankStatement.bankStatementFileName);
+
+                return true;
+            }catch(Exception e) {
+                throw e;
+            }
+            finally {
+                close(con,pStat, null);
+            }
+
+        }
+        return false;
+    }
+
+    public List<BhowaTransaction> getMyTransactions(String userId) throws Exception {
+        List<BhowaTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try{
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(myTransactionsQuery);
+            pStat.setString(1, userId);
+            result = pStat.executeQuery();
+            while(result.next())
+            {
+                /*
+               SELECT `Transaction_ID`, `Amount`, `Transaction_Date`,
+               `Transaction_Flow`, `Transaction_Mode`, `Transaction_Reference`,
+               `Flat_Id`, `Admin_Comment`,`User_Comment`
+               FROM Transactions_Verified
+                 */
+                BhowaTransaction t = new BhowaTransaction();
+                t.transactionId = result.getInt(1);
+                t.amount = result.getFloat(2);
+                t.transactionDate = result.getDate(3);
+                t.transactionFlow  = result.getString(4);
+                t.type  = result.getString(5);
+                t.reference  = result.getString(6);
+                t.flatId = result.getString(7);
+                t.adminComment  = result.getString(8);
+                t.userComment = result.getString(9);
+                list.add(t);
+            }
+
+        }catch(Exception e){
+            throw e;
+        } finally {
+            close(connection,pStat,result);
+        }
+        return list;
+    }
+
 }

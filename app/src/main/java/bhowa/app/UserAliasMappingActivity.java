@@ -19,7 +19,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bhowa.dao.BhowaDatabaseFactory;
 import bhowa.dao.mysql.impl.BankStatement;
@@ -61,7 +63,6 @@ public class UserAliasMappingActivity extends AppCompatActivity {
 
                 String userId = getUserID(btName, users);
                 if (userId != null) {
-
                     TextView userIdText = new TextView(this);
                     userIdText.setText(userId);
                     row.addView(userIdText);

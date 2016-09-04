@@ -1,8 +1,11 @@
 package bhowa.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,12 +15,23 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public abstract class DashBoardActivity extends AppCompatActivity {
+import bhowa.app.util.BhowaConstant;
+
+public abstract class DashBoardActivity extends AppCompatActivity implements BhowaConstant{
+
+    private SharedPreferences prefs;
+
+    public String getLoginId() {
+        String v = prefs.getString(CONST_LOGIN_ID_KEY_PREF_MANAGER, "");
+        Log.d("info","login id from preference manager :" + v);
+        return v;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     public void setHeader(String title, boolean btnHomeVisible)

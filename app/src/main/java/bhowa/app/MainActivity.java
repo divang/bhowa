@@ -7,7 +7,9 @@ import android.app.ProgressDialog;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -21,16 +23,18 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import bhowa.app.util.BhowaConstant;
 import bhowa.dao.BhowaDatabaseFactory;
 import bhowa.dao.mysql.impl.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BhowaConstant {
 
     private ProgressDialog progress;
 
     //Permision code that will be checked in the method onRequestPermissionsResult
     private int STORAGE_PERMISSION_CODE = 23;
+
+    private SharedPreferences prefs;
 
     //We are calling this method to check the permission status
     private boolean isReadStorageAllowed() {
@@ -125,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
             userLogin.password = passwordText.getText().toString();
             boolean isLoginSuccess = BhowaDatabaseFactory.getDBInstance().login(userLogin);
             if (isLoginSuccess) {
+                prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, userLogin.userName).commit();
+
                 Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
                 startActivity(homeIntent);
                 progress.dismiss();

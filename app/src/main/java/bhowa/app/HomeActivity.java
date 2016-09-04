@@ -65,6 +65,36 @@ public class HomeActivity extends DashBoardActivity {
                     openFileBrowser();
                     break;
 
+                case  R.id.home_activity_btn_detail_transactions:
+                    intent = new Intent(this, DetailTransactionViewActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case  R.id.home_activity_btn_my_transactions:
+                    intent = new Intent(this, MyTransactionsActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case  R.id.transaction_report_activity_btn_save_verified_transactions:
+                    progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
+                    progress.show();
+                    final BankStatement verifiedBankStat = new BankStatement();
+                    verifiedBankStat.allTransactions = BhowaDatabaseFactory.getDBInstance().getAllDetailsTransactions();
+                    Thread verifiedTransTaskThread = new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                BhowaDatabaseFactory.getDBInstance().saveVerifiedTransactions(verifiedBankStat);
+                            }catch (Exception e)
+                            {
+                                Log.e("Error","Insert verified data has problem",e);
+                            }
+
+                            progress.dismiss();
+                            progress.cancel();
+                        }
+                    });
+                    verifiedTransTaskThread.start();
+                    break;
             }
         }catch (Exception e)
         {

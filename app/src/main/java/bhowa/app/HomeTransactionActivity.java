@@ -68,6 +68,8 @@ public class HomeTransactionActivity extends DashBoardActivity {
                         public void run() {
                             try {
                                 BhowaDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bankStat);
+                                Intent intentAllTrans = new Intent(getApplicationContext(), DetailTransactionViewActivity.class);
+                                startActivity(intentAllTrans);
                             }catch (Exception e)
                             {
                                 Log.e("Error", "Upload Monthly transaction has problem", e);
@@ -78,6 +80,29 @@ public class HomeTransactionActivity extends DashBoardActivity {
                     });
                     transactionsTaskThread.start();
                     break;
+
+                case R.id.transaction_report_activity_btn_save_verified_transactions:
+
+                    progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
+                    progress.show();
+                    final BankStatement verifiedBankStat = new BankStatement();
+                    verifiedBankStat.allTransactions = BhowaDatabaseFactory.getDBInstance().getAllDetailsTransactions();
+                    Thread verifiedTransTaskThread = new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                BhowaDatabaseFactory.getDBInstance().saveVerifiedTransactions(verifiedBankStat);
+                            }catch (Exception e)
+                            {
+                                Log.e("Error","Insert verified data has problem",e);
+                            }
+
+                            progress.dismiss();
+                            progress.cancel();
+                        }
+                    });
+                    verifiedTransTaskThread.start();
+                    break;
+
             }
         }catch (Exception e)
         {
