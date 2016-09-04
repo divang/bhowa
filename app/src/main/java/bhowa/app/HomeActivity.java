@@ -36,12 +36,23 @@ public class HomeActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
 
-                case R.id.home_activity_btn_upload_pdf:
-                    openFileBrowser();
+                case R.id.home_activity_btn_add_flat:
+                    intent = new Intent(this, AddFlatDetailsActivity.class);
+                    startActivity(intent);
                     break;
 
                 case R.id.home_activity_btn_add_user:
                     intent = new Intent(this, AddUserActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case R.id.home_activity_btn_view_all_login:
+                    intent = new Intent(this, ManageLoginActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case R.id.home_activity_btn_view_all_flat:
+                    intent = new Intent(this, ManageFlatActivity.class);
                     startActivity(intent);
                     break;
 
@@ -50,10 +61,10 @@ public class HomeActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
 
-                case R.id.home_activity_btn_add_flat:
-                    intent = new Intent(this, AddFlatDetailsActivity.class);
-                    startActivity(intent);
+                case R.id.home_activity_btn_upload_pdf:
+                    openFileBrowser();
                     break;
+
             }
         }catch (Exception e)
         {

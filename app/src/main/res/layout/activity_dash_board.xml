@@ -52,11 +52,19 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/home_activity_btn_upload_pdf"
+            android:id="@+id/home_activity_btn_view_all_login"
             style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_upload_pdf"
+            android:drawableTop="@drawable/ic_view_all_logins"
             android:onClick="onButtonClicker"
-            android:text="@string/uploadPdfIconText"
+            android:text="@string/viewAllLoginIconText"
+            />
+
+        <Button
+            android:id="@+id/home_activity_btn_view_all_flat"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_view_all_flat"
+            android:onClick="onButtonClicker"
+            android:text="@string/viewAllFlatIconText"
             />
 
         <Button
@@ -67,13 +75,13 @@
             android:text="@string/manageUsersIconText"
             />
 
-        <Button
+        <!--Button
             android:id="@+id/home_activity_btn_expenditure_type"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_expenditure_type"
             android:onClick="onButtonClicker"
             android:text="@string/expenditureTypeIconText"
-            />
+            /-->
 
     </LinearLayout>
 
@@ -84,6 +92,14 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/home_activity_btn_upload_pdf"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_upload_pdf"
+            android:onClick="onButtonClicker"
+            android:text="@string/uploadPdfIconText"
+            />
+
+        <!--Button
             android:id="@+id/home_activity_btn_send_notification"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_notification"
@@ -97,7 +113,7 @@
             android:drawableTop="@drawable/ic_my_expense"
             android:onClick="onButtonClicker"
             android:text="@string/myExpensesIconText"
-            />
+            /-->
 
     </LinearLayout>
 
