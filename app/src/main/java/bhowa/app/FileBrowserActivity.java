@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import java.io.File;
 import bhowa.app.util.FileChooser;
-import bhowa.dao.BhowaDatabaseFactory;
 import bhowa.dao.mysql.impl.BankStatement;
 import bhowa.parser.BhowaParserFactory;
 
@@ -36,7 +35,7 @@ public class FileBrowserActivity extends Activity implements View.OnClickListene
         new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
                 @Override public void fileSelected(final File file) {
                     String path = file.getPath();
-                    BankStatement bankStat = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);
+                    BankStatement bankStat = (BankStatement) BhowaParserFactory.getInstance().getAllTransaction(path);
                     Intent transactionReportIntent = new Intent(v.getContext(), HomeTransactionActivity.class);
                     transactionReportIntent.putExtra("bankStat",bankStat);
                     startActivityForResult(transactionReportIntent, 0);

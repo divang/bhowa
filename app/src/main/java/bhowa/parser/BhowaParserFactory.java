@@ -7,7 +7,7 @@ public class BhowaParserFactory {
 	private static IBhowaParser instance;
 	private static Object lock = new Object();
 	
-	public static IBhowaParser getDBInstance()
+	public static IBhowaParser getInstance()
 	{
 		if(instance != null) return instance;
 		

@@ -29,8 +29,8 @@ public class MyTransactionsActivity extends DashBoardActivity {
 
         try {
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int[] fixedColumnWidths      = new int[]{30, 5, 5, 20, 20, 20, 20, 20, 20, 20, 20, 20, 30};
-            int[] scrollableColumnWidths = new int[]{30, 5, 5, 20, 20, 20, 20, 20, 20, 20, 20, 20, 30};
+            int[] fixedColumnWidths      = new int[]{30, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 30};
+            int[] scrollableColumnWidths = new int[]{30, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 30};
             int fixedRowHeight = 50;
             int fixedHeaderHeight = 60;
 

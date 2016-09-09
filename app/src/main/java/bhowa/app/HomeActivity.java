@@ -114,7 +114,7 @@ public class HomeActivity extends DashBoardActivity {
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
 
-                        BankStatement bankStat = (BankStatement) BhowaParserFactory.getDBInstance().getAllTransaction(path);
+                        BankStatement bankStat = (BankStatement) BhowaParserFactory.getInstance().getAllTransaction(path);
                         Intent transactionReportIntent = new Intent(getApplicationContext(), HomeTransactionActivity.class);
                         transactionReportIntent.putExtra("bankStat",bankStat);
                         startActivityForResult(transactionReportIntent, 0);

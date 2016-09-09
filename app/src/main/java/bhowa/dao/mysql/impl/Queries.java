@@ -69,15 +69,15 @@ public class Queries {
 			"SELECT * FROM Flat";
 
 	public static final String selectFinalTransactionQuery =
-			"SELECT  Transaction_ID,StatementID,ud.Name,Amount," +
+			"SELECT  Transaction_ID,StatementID,tsd.Name,Amount," +
 					"Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
 					"ud.User_Id,ud.Flat_Id,Admin_Approved,Admin_Comment," +
 					"User_Comment " +
 					"FROM Transactions_Staging_Data as tsd " +
 					"left join " +
 					"User_Details as ud " +
-					"on (UPPER(tsd.Name) LIKE CONCAT('%', UPPER(ud.Name),'%')) " +
-					"OR (UPPER(tsd.Name) LIKE CONCAT('%', UPPER(ud.Name_Alias), '%'))";
+					"on (UPPER(ud.Name) LIKE CONCAT('%', UPPER(tsd.Name),'%')) " +
+					"OR (UPPER(ud.Name_Alias) LIKE CONCAT('%', UPPER(tsd.Name), '%'))";
 
 	public static final String insertFinalTransactionQuery =
 			"Insert into Transactions_Verified (" +
