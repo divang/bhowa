@@ -24,6 +24,7 @@
 
     <string name="expenditureTypeIconText">Expenditure Types</string>
     <string name="myExpensesIconText">My Transactions</string>
+    <string name="myDuesIconText">My Dues</string>
     <string name="notificationIconText">Send Notification</string>
     <string name="deleteRawDataIconText">Delete Raw Data</string>
     <string name="detailTransactionsIconText">Detail Transactions</string>
@@ -51,6 +52,7 @@
     <string name="title_activity_manage_login">ManageLoginActivity</string>
     <string name="title_activity_manage_flat">ManageFlatActivity</string>
     <string name="title_activity_detail_transaction_view">DetailTransactionViewActivity</string>
+    <string name="title_activity_my_dues">MyDuesActivity</string>
 
 
 

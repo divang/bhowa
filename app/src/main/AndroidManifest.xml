@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bhowa.app" >
 
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
     <!-- To access internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -37,10 +40,8 @@
         <activity android:name=".AddFlatDetailsActivity" />
         <activity android:name=".ManageLoginActivity" />
         <activity android:name=".ManageFlatActivity" />
-        <activity
-            android:name=".DetailTransactionViewActivity"
-            android:label="@string/title_activity_detail_transaction_view" >
-        </activity>
+        <activity android:name=".DetailTransactionViewActivity" />
+        <activity android:name=".MyDuesActivity"/>
     </application>
 
 </manifest>

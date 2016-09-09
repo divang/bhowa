@@ -131,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements BhowaConstant {
             if (isLoginSuccess) {
                 prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, userLogin.userName).commit();
-
+                UserDetails ud = BhowaDatabaseFactory.getDBInstance().getMyDetails(userLogin.userName);
+                prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, ud.flatId).commit();
                 Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
                 startActivity(homeIntent);
                 progress.dismiss();

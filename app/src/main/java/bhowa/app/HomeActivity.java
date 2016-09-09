@@ -2,7 +2,12 @@ package bhowa.app;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 
@@ -73,6 +78,26 @@ public class HomeActivity extends DashBoardActivity {
                 case  R.id.home_activity_btn_my_transactions:
                     intent = new Intent(this, MyTransactionsActivity.class);
                     startActivity(intent);
+                    break;
+
+                case  R.id.home_activity_btn_my_dues:
+                    progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
+                    progress.show();
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                float myDues = BhowaDatabaseFactory.getDBInstance().getMyDue(getFlatId());
+                                Intent intentMyDues = new Intent(getApplicationContext(), MyDuesActivity.class);
+                                intentMyDues.putExtra("MyDueAmount", myDues);
+                                startActivity(intentMyDues);
+                            }catch (Exception e)
+                            {
+                                Log.e("Error", "Fetching My dues verified data has problem", e);
+                            }
+                            progress.dismiss();
+                            progress.cancel();
+                        }
+                    }).start();
                     break;
 
                 case  R.id.transaction_report_activity_btn_save_verified_transactions:

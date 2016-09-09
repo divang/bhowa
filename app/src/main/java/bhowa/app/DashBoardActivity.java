@@ -27,6 +27,12 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Bho
         return v;
     }
 
+    public String getFlatId() {
+        String v = prefs.getString(CONST_FLAT_ID_KEY_PREF_MANAGER, "");
+        Log.d("info","flat id from preference manager :" + v);
+        return v;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

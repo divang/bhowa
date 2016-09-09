@@ -111,4 +111,32 @@ public class Queries {
                             "on l.Login_Id = ud.Login_Id " +
                             "where l.Login_Id = ?";
 
+	public static final String myDue =
+					"Select " +
+					"IFNULL((select sum(fwp.Amount) " +
+					"from Flat as f " +
+					"inner join " +
+					"Flat_Wise_Payable as fwp on f.Flat_ID = fwp.Flat_ID " +
+					"where f.Flat_Id = ? " +
+					"group by f.Flat_Id), 0) " +
+					" - " +
+					"IFNULL((select sum(up.Amount) " +
+					"from Flat as f " +
+					"inner join " +
+					"User_Paid as up on up.Flat_ID = f.Flat_Id " +
+					"where f.Flat_Id = ? " +
+					"group by f.Flat_Id), 0) " +
+					" - " +
+					"IFNULL((select sum(tv.Amount) " +
+					"from Flat as f " +
+					"inner join " +
+					"Transactions_Verified as tv on tv.Flat_Id = f.Flat_Id " +
+					"where f.Flat_Id = ? " +
+					"group by f.Flat_Id " +
+					"),0) as MyDue ";
+
+    public static final String myDetails =
+                    "SELECT User_Id,Login_Id,User_Type,Status,Flat_Id,Name,Name_Alias,Mobile_No," +
+                            "Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date " +
+                            "FROM User_Details where Login_Id = ?";
 }

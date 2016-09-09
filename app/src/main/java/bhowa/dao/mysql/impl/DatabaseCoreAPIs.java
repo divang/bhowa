@@ -692,4 +692,72 @@ public class DatabaseCoreAPIs extends Queries {
         return list;
     }
 
+
+	public float myDue(String flatId) throws Exception{
+
+		Connection con = null;
+		PreparedStatement pStat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			pStat = con.prepareStatement(myDue);
+			pStat.setString(1, flatId);
+			pStat.setString(2, flatId);
+			pStat.setString(3, flatId);
+			res = pStat.executeQuery();
+			if(res != null && res.next())
+			{
+				return res.getFloat("MyDue");
+			}
+
+		} catch(Exception e){
+			throw e;
+		} finally {
+			close(con,pStat,res);
+		}
+		return 0f;
+	}
+
+	public UserDetails getMyDetails(String loginId) throws Exception	{
+
+		UserDetails u = null;
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(myDetails);
+			pStat.setString(1, loginId);
+			result = pStat.executeQuery();
+			if(result.next())
+			{
+				u = new UserDetails();
+				u.userId = result.getString(1);
+				u.loginId = result.getString(2);
+				u.userType = result.getString(3);
+
+				u.isActive = result.getInt(4) == 1 ? true : false;
+				u.flatId = result.getString(5);
+				u.userName = result.getString(6);
+
+				u.nameAlias = result.getString(7);
+				u.mobileNo = result.getLong(8);
+				u.mobileNoAlternative = result.getLong(9);
+
+				u.emailId = result.getString(10);
+				u.address = result.getString(11);
+				u.flatJoinDate = result.getDate(12);
+
+				u.flatLeftDate = result.getDate(13);
+		}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return u;
+	}
 }

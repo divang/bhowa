@@ -125,6 +125,14 @@
             />
 
         <Button
+            android:id="@+id/home_activity_btn_my_dues"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_my_dues"
+            android:onClick="onButtonClicker"
+            android:text="@string/myDuesIconText"
+            />
+
+        <Button
             android:id="@+id/home_activity_btn_send_notification"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_notification"
@@ -132,14 +140,15 @@
             android:text="@string/notificationIconText"
             />
 
-        <Button
+
+
+        <!--Button
             android:id="@+id/home_activity_btn_expenditure_type"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_expenditure_type"
             android:onClick="onButtonClicker"
             android:text="@string/expenditureTypeIconText"
-            />
-
+            /-->
     </LinearLayout>
 
 </LinearLayout>

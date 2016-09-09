@@ -39,7 +39,9 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
         addUserDetails,
 		getAllDetailsTransactions,
 		saveVerifiedTransactions,
-		getMyTransactions
+		getMyTransactions,
+		getMyDue,
+        getMyDetails
 	}
 
 	@Override
@@ -139,6 +141,14 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 				case getMyTransactions:
 					result = dbCore.getMyTransactions(String.valueOf(params[1]));
 					break;
+
+				case getMyDue:
+					result = dbCore.myDue(String.valueOf(params[1]));
+					break;
+
+                case getMyDetails:
+                    result = dbCore.getMyDetails(String.valueOf(params[1]));
+                    break;
 			}
 		}catch(Exception e){
 			System.err.println("Error");
@@ -359,4 +369,24 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 			throw e;
 		}
 	}
+
+	@Override
+	public float getMyDue(String flatId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getMyDue.name(), flatId);
+		try {
+			return (float)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+    @Override
+    public UserDetails getMyDetails(String loginId) throws Exception {
+        AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getMyDetails.name(), loginId);
+        try {
+            return (UserDetails)aTask.get();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

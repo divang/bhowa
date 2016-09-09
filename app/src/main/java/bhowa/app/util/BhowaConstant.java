@@ -5,4 +5,5 @@ package bhowa.app.util;
  */
 public interface BhowaConstant {
     String CONST_LOGIN_ID_KEY_PREF_MANAGER = "loginId";
+    String CONST_FLAT_ID_KEY_PREF_MANAGER = "loginId";
 }

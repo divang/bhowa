@@ -139,4 +139,19 @@ public interface IBhowaDatabase {
      * @throws Exception
      */
     List<BhowaTransaction> getMyTransactions(String userId) throws Exception;
+
+    /**
+     * It returns the dues of particular flat.
+     * @param flatId
+     * @return
+     * @throws Exception
+     */
+    float getMyDue(String flatId) throws Exception;
+
+    /**
+     * Get user details of a login id
+     * @return
+     * @throws Exception
+     */
+    UserDetails getMyDetails(String loginId) throws Exception;
 }
