@@ -40,7 +40,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
 
-                case R.id.transaction_report_activity_btn_upload_raw_data:
+                /*case R.id.transaction_report_activity_btn_upload_raw_data:
 
                     progress = ProgressDialog.show(this, null, "Uploading Raw data to Database ...", true, false);
                     progress.show();
@@ -59,7 +59,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                     });
                     rawDataTaskThread.start();
                     break;
-
+                */
                 case R.id.transaction_report_activity_btn_upload_transactions:
 
                     progress = ProgressDialog.show(this, null, "Uploading transactions to Databases ...", true, false);

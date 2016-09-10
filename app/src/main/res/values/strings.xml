@@ -55,6 +55,8 @@
     <string name="title_activity_my_dues">MyDuesActivity</string>
 
 
+    <!-- Color -->
+    <color name="white">#FFFFFF</color>
 
 
 </resources>

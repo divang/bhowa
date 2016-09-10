@@ -8,16 +8,16 @@ Save raw data upload in DB  [done]
 http://www.chupamobile.com/tutorial-android/android-dashboard-design-pattern-implementation-156
 
 
-Show all transactions with matched user name.
-For non matched user, also show existing user name(list).
-Map the non matched user to actual user name.
-Store non matched user in actual user name's alias in DB.
+Show all transactions with matched user name. (done)
+For non matched user, also show existing user name(list). (done)
+Map the non matched user to actual user name. (done)
+Store non matched user in actual user name's alias in DB. (done)
 User/Admin can see non settled transactions.
 User/Admin settles his/her non settled transaction.
 Maintenance charge can be settled automatically.
 User can see all his/her settled amount.
 User can add cash expense with details like expense type.
-User can see how much dues on him/her.
+User can see how much dues on him/her. (done)
 
 
 New Expense applied
@@ -138,5 +138,7 @@ Sheets :
 	Gym Spending
 	Interest
 
+	
 Copy file from local to Emulator :
 D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /mnt
+	
