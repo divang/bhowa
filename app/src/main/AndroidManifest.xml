@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -41,7 +43,8 @@
         <activity android:name=".ManageLoginActivity" />
         <activity android:name=".ManageFlatActivity" />
         <activity android:name=".DetailTransactionViewActivity" />
-        <activity android:name=".MyDuesActivity"/>
+        <activity android:name=".MyDuesActivity" />
+        <activity android:name=".ManageFlatWisePayableActivity" />
     </application>
 
 </manifest>

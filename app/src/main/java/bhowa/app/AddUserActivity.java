@@ -58,6 +58,7 @@ public class AddUserActivity extends DashBoardActivity {
             final Button submitButton = (Button) findViewById(R.id.addUserBtn_AUA);
 
             final ProgressDialog progress = ProgressDialog.show(AddUserActivity.this, null, "Creating login in Database  ...", true, false);
+            progress.setCancelable(true);
             progress.hide();
 
             submitButton.setOnClickListener(new View.OnClickListener() {

@@ -99,12 +99,20 @@
             android:text="@string/detailTransactionsIconText"
             />
 
-        <Button
+        <!--Button
             android:id="@+id/transaction_report_activity_btn_save_verified_transactions"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_verified_transactions"
             android:onClick="onButtonClicker"
             android:text="@string/verifiedTransactionsIconText"
+            /-->
+
+        <Button
+            android:id="@+id/home_activity_btn_flat_wise_payable"
+            style="@style/HomeButton"
+            android:drawableTop="@drawable/ic_flat_wise_payable"
+            android:onClick="onButtonClicker"
+            android:text="@string/generateMaintenanceIconText"
             />
 
 

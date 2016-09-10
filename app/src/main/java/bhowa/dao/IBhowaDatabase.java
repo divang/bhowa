@@ -4,6 +4,7 @@ import java.util.List;
 
 import bhowa.dao.mysql.impl.BhowaTransaction;
 import bhowa.dao.mysql.impl.Flat;
+import bhowa.dao.mysql.impl.FlatWisePayable;
 import bhowa.dao.mysql.impl.Login;
 import bhowa.dao.mysql.impl.UserDetails;
 
@@ -154,4 +155,11 @@ public interface IBhowaDatabase {
      * @throws Exception
      */
     UserDetails getMyDetails(String loginId) throws Exception;
+
+    /**
+     * It adds the flat wise monthly maintenance
+     * @param obj
+     * @throws Exception
+     */
+    void addMonthlyMaintenance(Object obj) throws Exception;
 }

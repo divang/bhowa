@@ -41,7 +41,8 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 		saveVerifiedTransactions,
 		getMyTransactions,
 		getMyDue,
-        getMyDetails
+        getMyDetails,
+		addMonthlyMaintenance
 	}
 
 	@Override
@@ -149,6 +150,10 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
                 case getMyDetails:
                     result = dbCore.getMyDetails(String.valueOf(params[1]));
                     break;
+
+				case addMonthlyMaintenance:
+					dbCore.addMonthlyMaintenance(params[1]);
+					break;
 			}
 		}catch(Exception e){
 			System.err.println("Error");
@@ -389,4 +394,14 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
             throw e;
         }
     }
+
+	@Override
+	public void addMonthlyMaintenance(Object obj) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.addMonthlyMaintenance.name(), obj);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }

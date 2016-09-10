@@ -760,4 +760,33 @@ public class DatabaseCoreAPIs extends Queries {
 		}
 		return u;
 	}
+
+
+	public void addMonthlyMaintenance(Object objFwp) throws Exception {
+
+		if(objFwp instanceof  FlatWisePayable) {
+
+			FlatWisePayable fwp = (FlatWisePayable) objFwp;
+			Connection con = null;
+			PreparedStatement pStat = null;
+			ResultSet res = null;
+
+			try {
+				con = getDBInstance();
+				pStat = con.prepareStatement(addFlatWiseMaintenance);
+
+				pStat.setInt(1, fwp.month);
+				pStat.setInt(2, fwp.year);
+				pStat.setString(3, fwp.expenseType.name());
+
+				pStat.executeUpdate();
+
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				close(con, pStat, res);
+			}
+		}
+	}
+
 }

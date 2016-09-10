@@ -165,6 +165,7 @@ public class UserAliasMappingActivity extends AppCompatActivity {
             final String alias = u.nameAlias != null ? u.nameAlias + "," + aliasName : aliasName;
 
             progress = ProgressDialog.show(UserAliasMappingActivity.this, null, "Updating alias for UserId : " + userId + " alias : "+alias, true, false);
+            progress.setCancelable(true);
             progress.show();
             Thread taskThread = new Thread(new Runnable() {
                 public void run() {

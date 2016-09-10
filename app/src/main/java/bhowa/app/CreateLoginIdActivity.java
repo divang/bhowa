@@ -30,6 +30,7 @@ public class CreateLoginIdActivity extends DashBoardActivity {
         final Button loginButton = (Button) findViewById(R.id.submit_CLA_Btn);
 
         progress = ProgressDialog.show(CreateLoginIdActivity.this, null, "Creating login in Database  ...", true, false);
+        progress.setCancelable(true);
         progress.hide();
 
         loginButton.setOnClickListener(new View.OnClickListener() {

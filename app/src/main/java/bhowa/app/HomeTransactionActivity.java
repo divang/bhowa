@@ -63,6 +63,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                 case R.id.transaction_report_activity_btn_upload_transactions:
 
                     progress = ProgressDialog.show(this, null, "Uploading transactions to Databases ...", true, false);
+                    progress.setCancelable(true);
                     progress.show();
                     Thread transactionsTaskThread = new Thread(new Runnable() {
                         public void run() {
@@ -84,6 +85,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                 case R.id.transaction_report_activity_btn_save_verified_transactions:
 
                     progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
+                    progress.setCancelable(true);
                     progress.show();
                     final BankStatement verifiedBankStat = new BankStatement();
                     verifiedBankStat.allTransactions = BhowaDatabaseFactory.getDBInstance().getAllDetailsTransactions();

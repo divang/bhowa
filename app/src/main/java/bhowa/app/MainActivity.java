@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements BhowaConstant {
         final Button loginButton = (Button) findViewById(R.id.LoginButton);
 
         progress = ProgressDialog.show(MainActivity.this, null, "Connecting to Database  ...", true, false);
+        progress.setCancelable(true);
         progress.hide();
 
         loginButton.setOnClickListener(new View.OnClickListener() {

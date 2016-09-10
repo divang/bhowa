@@ -34,6 +34,7 @@ public class AddFlatDetailsActivity extends DashBoardActivity {
         final Button submitButton = (Button) findViewById(R.id.add_flat_details_AFD_Btn);
 
         progress = ProgressDialog.show(AddFlatDetailsActivity.this, null, "Adding Flat details in Database  ...", true, false);
+        progress.setCancelable(true);
         progress.hide();
 
         submitButton.setOnClickListener(new View.OnClickListener() {

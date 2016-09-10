@@ -75,6 +75,11 @@ public class HomeActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
 
+                case  R.id.home_activity_btn_flat_wise_payable:
+                    intent = new Intent(this, ManageFlatWisePayableActivity.class);
+                    startActivity(intent);
+                    break;
+
                 case  R.id.home_activity_btn_my_transactions:
                     intent = new Intent(this, MyTransactionsActivity.class);
                     startActivity(intent);
@@ -82,6 +87,7 @@ public class HomeActivity extends DashBoardActivity {
 
                 case  R.id.home_activity_btn_my_dues:
                     progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
+                    progress.setCancelable(true);
                     progress.show();
                     new Thread(new Runnable() {
                         public void run() {
@@ -100,7 +106,7 @@ public class HomeActivity extends DashBoardActivity {
                     }).start();
                     break;
 
-                case  R.id.transaction_report_activity_btn_save_verified_transactions:
+               /* case  R.id.transaction_report_activity_btn_save_verified_transactions:
                     progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
                     progress.show();
                     final BankStatement verifiedBankStat = new BankStatement();
@@ -120,6 +126,7 @@ public class HomeActivity extends DashBoardActivity {
                     });
                     verifiedTransTaskThread.start();
                     break;
+                */
             }
         }catch (Exception e)
         {
@@ -135,6 +142,7 @@ public class HomeActivity extends DashBoardActivity {
                 final String path = file.getPath();
 
                 progress = ProgressDialog.show(HomeActivity.this, null, "Parsing PDF ...", true, false);
+                progress.setCancelable(true);
                 progress.show();
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {

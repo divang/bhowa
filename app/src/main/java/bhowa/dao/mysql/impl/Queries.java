@@ -139,4 +139,10 @@ public class Queries {
                     "SELECT User_Id,Login_Id,User_Type,Status,Flat_Id,Name,Name_Alias,Mobile_No," +
                             "Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date " +
                             "FROM User_Details where Login_Id = ?";
+
+	public static final String addFlatWiseMaintenance =
+					"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type) " +
+					"select f.Flat_Id, f.Maintenance_Amount, ?, ?, ? " +
+					"from Flat f";
+
 }

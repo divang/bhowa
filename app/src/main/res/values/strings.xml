@@ -36,6 +36,7 @@
     <string name="uploadRawDataIconText">Upload Raw Data</string>
     <string name="uploadTransactionsIconText">Upload Transactions</string>
     <string name="verifiedTransactionsIconText">Verified Transactions</string>
+    <string name="generateMaintenanceIconText">Generate Maintenance</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_manage_user">ManageUserActivity</string>
@@ -57,6 +58,7 @@
 
     <!-- Color -->
     <color name="white">#FFFFFF</color>
+    <string name="title_activity_manage_flat_wise_payable">ManageFlatWisePayableActivity</string>
 
 
 </resources>
