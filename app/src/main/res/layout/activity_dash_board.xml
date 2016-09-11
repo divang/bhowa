@@ -124,13 +124,13 @@
     android:layout_weight="1"
     android:orientation="horizontal">
 
-        <Button
+        <!--Button
             android:id="@+id/home_activity_btn_my_transactions"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_my_expense"
             android:onClick="onButtonClicker"
             android:text="@string/myExpensesIconText"
-            />
+            /-->
 
         <Button
             android:id="@+id/home_activity_btn_my_dues"
@@ -140,13 +140,13 @@
             android:text="@string/myDuesIconText"
             />
 
-        <Button
+        <!--Button
             android:id="@+id/home_activity_btn_send_notification"
             style="@style/HomeButton"
             android:drawableTop="@drawable/ic_notification"
             android:onClick="onButtonClicker"
             android:text="@string/notificationIconText"
-            />
+            /-->
 
 
 

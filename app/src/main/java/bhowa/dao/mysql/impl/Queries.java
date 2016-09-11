@@ -131,7 +131,14 @@ public class Queries {
 					"from Flat as f " +
 					"inner join " +
 					"Transactions_Verified as tv on tv.Flat_Id = f.Flat_Id " +
-					"where f.Flat_Id = ? " +
+					"where f.Flat_Id = ? AND tv.Transaction_Flow = 'Credit' "+
+					"group by f.Flat_Id) , 0) " +
+					" + " +
+					"IFNULL((select sum(tv.Amount) " +
+					"from Flat as f " +
+					"inner join " +
+					"Transactions_Verified as tv on tv.Flat_Id = f.Flat_Id " +
+					"where f.Flat_Id = ? AND tv.Transaction_Flow = 'Debit'  " +
 					"group by f.Flat_Id " +
 					"),0) as MyDue ";
 
@@ -149,10 +156,12 @@ public class Queries {
 					"select * from " +
 							"( " +
 							"select Flat_Id as fid,'Payable', Amount, cast(rtrim(year *10000+ month) as datetime) as Date from Flat_Wise_Payable " +
-							"union " +
+							" union " +
 							"select Flat_Id as fid,'Paid', Amount, Paid_Date from User_Paid " +
-							"union " +
-							"select Flat_Id as fid,'Paid', Amount, Transaction_Date from Transactions_Verified  " +
+							" union " +
+							"select Flat_Id as fid,'Paid', Amount, Transaction_Date from Transactions_Verified where Transaction_Flow = 'Credit' " +
+							" union " +
+							"select Flat_Id as fid,'Payable', Amount, Transaction_Date from Transactions_Verified where Transaction_Flow = 'Debit' " +
 							") T " +
 							"where fid = ? ";
 

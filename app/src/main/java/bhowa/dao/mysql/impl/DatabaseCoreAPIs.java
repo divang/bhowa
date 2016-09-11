@@ -705,6 +705,7 @@ public class DatabaseCoreAPIs extends Queries {
 			pStat.setString(1, flatId);
 			pStat.setString(2, flatId);
 			pStat.setString(3, flatId);
+			pStat.setString(4, flatId);
 			res = pStat.executeQuery();
 			if(res != null && res.next())
 			{

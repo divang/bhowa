@@ -80,11 +80,11 @@ public class HomeActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
 
-                case  R.id.home_activity_btn_my_transactions:
+               /* case  R.id.home_activity_btn_my_transactions:
                     intent = new Intent(this, MyTransactionsActivity.class);
                     startActivity(intent);
                     break;
-
+                */
                 case  R.id.home_activity_btn_my_dues:
                     progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
                     progress.setCancelable(true);

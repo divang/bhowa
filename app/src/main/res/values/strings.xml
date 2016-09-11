@@ -18,7 +18,7 @@
     <string name="viewAllFlatIconText">View Flats</string>
     <string name="manageUsersIconText">View Users</string>
 
-    <string name="uploadPdfIconText">Upload PDF</string>
+    <string name="uploadPdfIconText">Monthly Bank Statement Upload</string>
     <string name="downloadRawDataIconText">Raw Data</string>
     <string name="allTransactionsIconText">All Transactions</string>
 
