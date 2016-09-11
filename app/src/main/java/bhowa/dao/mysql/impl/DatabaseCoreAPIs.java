@@ -8,7 +8,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -702,7 +701,7 @@ public class DatabaseCoreAPIs extends Queries {
 		try
 		{
 			con = getDBInstance();
-			pStat = con.prepareStatement(myDue);
+			pStat = con.prepareStatement(myDueQuery);
 			pStat.setString(1, flatId);
 			pStat.setString(2, flatId);
 			pStat.setString(3, flatId);
@@ -728,7 +727,7 @@ public class DatabaseCoreAPIs extends Queries {
 		ResultSet result = null;
 		try{
 			connection = getDBInstance();
-			pStat = connection.prepareStatement(myDetails);
+			pStat = connection.prepareStatement(myDetailsQuery);
 			pStat.setString(1, loginId);
 			result = pStat.executeQuery();
 			if(result.next())
@@ -773,7 +772,7 @@ public class DatabaseCoreAPIs extends Queries {
 
 			try {
 				con = getDBInstance();
-				pStat = con.prepareStatement(addFlatWiseMaintenance);
+				pStat = con.prepareStatement(addFlatWiseMaintenanceQuery);
 
 				pStat.setInt(1, fwp.month);
 				pStat.setInt(2, fwp.year);
@@ -787,6 +786,34 @@ public class DatabaseCoreAPIs extends Queries {
 				close(con, pStat, res);
 			}
 		}
+	}
+
+	public List<BhowaTransaction> getFlatWiseTransactions(String flatId) throws Exception {
+		List<BhowaTransaction> list = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(flatWiseTransactionsQuery);
+			pStat.setString(1, flatId);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				BhowaTransaction t = new BhowaTransaction();
+				t.flatId = result.getString(1);
+				t.transactionFlow = result.getString(2);
+				t.amount = result.getFloat(3);
+				t.transactionDate = result.getDate(4);
+				list.add(t);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return list;
 	}
 
 }

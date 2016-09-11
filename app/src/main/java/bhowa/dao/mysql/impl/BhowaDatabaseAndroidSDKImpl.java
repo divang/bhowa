@@ -42,7 +42,8 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 		getMyTransactions,
 		getMyDue,
         getMyDetails,
-		addMonthlyMaintenance
+		addMonthlyMaintenance,
+		getFlatWiseTransactions
 	}
 
 	@Override
@@ -153,6 +154,10 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 
 				case addMonthlyMaintenance:
 					dbCore.addMonthlyMaintenance(params[1]);
+					break;
+
+				case getFlatWiseTransactions:
+					result = dbCore.getFlatWiseTransactions(String.valueOf(params[1]));
 					break;
 			}
 		}catch(Exception e){
@@ -400,6 +405,16 @@ public class BhowaDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Obje
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.addMonthlyMaintenance.name(), obj);
 		try {
 			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<BhowaTransaction> getFlatWiseTransactions(String flatId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getFlatWiseTransactions.name(), flatId);
+		try {
+			return (List<BhowaTransaction>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

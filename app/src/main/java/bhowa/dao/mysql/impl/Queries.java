@@ -111,7 +111,7 @@ public class Queries {
                             "on l.Login_Id = ud.Login_Id " +
                             "where l.Login_Id = ?";
 
-	public static final String myDue =
+	public static final String myDueQuery =
 					"Select " +
 					"IFNULL((select sum(fwp.Amount) " +
 					"from Flat as f " +
@@ -135,14 +135,25 @@ public class Queries {
 					"group by f.Flat_Id " +
 					"),0) as MyDue ";
 
-    public static final String myDetails =
+    public static final String myDetailsQuery =
                     "SELECT User_Id,Login_Id,User_Type,Status,Flat_Id,Name,Name_Alias,Mobile_No," +
                             "Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date " +
                             "FROM User_Details where Login_Id = ?";
 
-	public static final String addFlatWiseMaintenance =
+	public static final String addFlatWiseMaintenanceQuery =
 					"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type) " +
 					"select f.Flat_Id, f.Maintenance_Amount, ?, ?, ? " +
 					"from Flat f";
+
+	public static final String flatWiseTransactionsQuery =
+					"select * from " +
+							"( " +
+							"select Flat_Id as fid,'Payable', Amount, cast(rtrim(year *10000+ month) as datetime) as Date from Flat_Wise_Payable " +
+							"union " +
+							"select Flat_Id as fid,'Paid', Amount, Paid_Date from User_Paid " +
+							"union " +
+							"select Flat_Id as fid,'Paid', Amount, Transaction_Date from Transactions_Verified  " +
+							") T " +
+							"where fid = ? ";
 
 }

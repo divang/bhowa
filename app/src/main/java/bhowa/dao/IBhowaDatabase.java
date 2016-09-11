@@ -162,4 +162,12 @@ public interface IBhowaDatabase {
      * @throws Exception
      */
     void addMonthlyMaintenance(Object obj) throws Exception;
+
+    /**
+     * Get Flat id wise all transactions
+     * @param flatId
+     * @return
+     * @throws Exception
+     */
+    List<BhowaTransaction> getFlatWiseTransactions(String flatId) throws Exception;
 }
