@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context="bhowa.app.HomeTransactionActivity">
+    tools:context="societyhelp.app.HomeTransactionActivity">
 
 
     <ViewStub
