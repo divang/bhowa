@@ -1,16 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "societyhelp"
-        minSdkVersion 19
-        targetSdkVersion 23
+        applicationId "societyhelp.app"
+        minSdkVersion 16
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
-        //multiDexEnabled true
     }
     buildTypes {
         release {
@@ -18,22 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-    }
-}
-
-repositories {
-
 }
 
 dependencies {
-    //compile 'com.android.support:multidex:1.0.0'
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/pdfbox-android-1.8.9.1-sources.jar')
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.google.android.gms:play-services:8.1.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:24.2.0'
 }

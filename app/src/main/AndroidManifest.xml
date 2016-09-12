@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="societyhelp.app" >
 
-    <!--uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" /-->
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
     <!-- To access internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

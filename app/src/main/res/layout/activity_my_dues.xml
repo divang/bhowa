@@ -20,7 +20,6 @@
         android:id="@+id/myDuesText"
         android:layout_below="@+id/backToReportBtn"
         android:layout_height="wrap_content"
-        android:textColor="@color/wallet_hint_foreground_holo_dark"
         />
 
     <TableLayout
