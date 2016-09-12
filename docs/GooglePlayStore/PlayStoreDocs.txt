@@ -1,0 +1,15 @@
+Society Help
+
+It helps to manage society maintenance.
+
+Through this APP, society admin can do the fallowing things :
+- Create Login
+- Create User details
+- Add Flat details
+- Map Login with User
+- Map User with Flat
+- Upload monthly bank statement of this society (pdf file)
+- Parsing of above statement file and convert into each transaction.
+- Mapping of each transaction to User.  
+- Users can see his/her all dues and payments.
+
