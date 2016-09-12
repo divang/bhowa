@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">Society Help</string>
 
     <string name="uploadPdfText">Please upload monthly kotak bank statement in PDF format!</string>
     <string name="action_settings">Settings</string>
