@@ -1,18 +1,25 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import android.os.AsyncTask;
-
 import societyhelp.dao.ISocietyHelpDatabase;
-
+import android.content.Context;
+import android.content.res.AssetManager;
+import java.io.IOException;
+import java.util.Properties;
 /**
  * Created by divang.sharma on 8/6/2016.
  */
 public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer, Object> implements ISocietyHelpDatabase {
 
-	private DatabaseCoreAPIs dbCore = new DatabaseCoreAPIs();
+	private DatabaseCoreAPIs dbCore;
+
+	public SocietyHelpDatabaseAndroidSDKImpl(String dburl, String userName, String password)
+	{
+		dbCore = new DatabaseCoreAPIs(dburl, userName, password);
+	}
 
 	enum QUERY_NAME
 	{

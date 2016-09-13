@@ -11,11 +11,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.dao.SocietyHelpDatabaseFactory;
+
 public class DatabaseCoreAPIs extends Queries {
 
-	private static final String databaseDBURL = "jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6134070";
-	private static final String databaseUser = "sql6134070";
-	private static final String databasePassword = "UAgCjcJ2d4";
+	private String databaseDBURL;
+	private String databaseUser;
+	private String databasePassword;
+	private boolean isInitialized;
 
 	static
     {
@@ -27,8 +30,24 @@ public class DatabaseCoreAPIs extends Queries {
         }
     }
 
+	public DatabaseCoreAPIs(String strDatabaseDBURL, String strDatabaseUser, String strDatabasePassword)
+	{
+		init(strDatabaseDBURL, strDatabaseUser, strDatabasePassword);
+		isInitialized = true;
+	}
+
+	private void init(String strDatabaseDBURL, String strDatabaseUser, String strDatabasePassword)
+	{
+		databaseDBURL = strDatabaseDBURL;
+		databaseUser = strDatabaseUser;
+		databasePassword = strDatabasePassword;
+	}
+
     public Connection getDBInstance() throws Exception {
-        try{
+
+		if(!isInitialized) throw new ExceptionInInitializerError("DBURL, User and Password are not initialize.");
+
+		try{
             Connection connection = DriverManager.getConnection(databaseDBURL, databaseUser, databasePassword);
             return connection;
         }catch(Exception e){
@@ -61,12 +80,32 @@ public class DatabaseCoreAPIs extends Queries {
         PreparedStatement pStat = null;
         ResultSet result = null;
         try{
+			/*
+			select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, l.Authorised_Activity from
+			Login l
+			inner join
+			Society s
+			on l.Society_Id = s.Society_Id
+			where l.Login_Id='divangd'
+			and l.Password = '1'
+			and l.Status = 1
+			 */
             connection = getDBInstance();
             pStat = connection.prepareStatement(loginQuery);
             pStat.setString(1, userName);
             pStat.setString(2, password);
             result = pStat.executeQuery();
-            if(result != null && result.next()) return true;
+            if(result != null && result.next())
+			{
+				//reset the DB URL, user and password
+				String url = result.getString(1);
+				String user = result.getString(2);
+				String pass = result.getString(3);
+				init(url, user, pass);
+				//Reinitialize the factory class, so always new instance will use these configuration.
+				SocietyHelpDatabaseFactory.init(url, user, pass);
+				return true;
+			}
 
         }catch(Exception e){
 			throw e;

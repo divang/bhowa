@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import societyhelp.app.util.PropertyReader;
 import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.*;
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                initDB();
                 progress.show();
                 progress.setMessage("Connecting to Database  ...");
 
@@ -129,14 +132,16 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                 prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, ud.flatId).commit();
                 Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
                 startActivity(homeIntent);
-                progress.dismiss();
-                progress.cancel();
             } else {
                 runOnUiThread(changeMessage);
             }
         }catch (Exception e)
         {
             Log.e("Error", "Login connectivity has problem", e);
+        }
+        finally {
+            progress.dismiss();
+            progress.cancel();
         }
     }
 
@@ -154,4 +159,13 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
             progress.cancel();
         }
     };
+
+    //Set the Master Database for login
+    private void initDB()
+    {
+        String dbUrl = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_URL, getApplicationContext());
+        String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
+        String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
+        SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
+    }
 }

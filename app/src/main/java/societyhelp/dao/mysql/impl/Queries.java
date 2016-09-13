@@ -4,7 +4,15 @@ public class Queries {
 
 	  //Queries
     public static final String loginQuery = 
-    		"select Login_Id FROM Login WHERE Login_Id = ? and Password = ? and Status = 1";
+    		//"select Login_Id FROM Login WHERE Login_Id = ? and Password = ? and Status = 1";
+			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, l.Authorised_Activity from " +
+					" Login l" +
+					" inner join " +
+					" Society s " +
+					" on l.Society_Id = s.Society_Id " +
+					" where l.Login_Id= ? " +
+					" and l.Password = ?" +
+					" and l.Status = 1";
 
     public static final String activityLoggingQuery = 
     		"Insert into User_Activity_Logging (UserName, Mobile, Activity, Comment, Time) values (? ,? ,?, ?, ?)";

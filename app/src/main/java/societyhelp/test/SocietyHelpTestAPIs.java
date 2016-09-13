@@ -4,7 +4,7 @@ import societyhelp.dao.mysql.impl.DatabaseCoreAPIs;
 
 public class SocietyHelpTestAPIs {
 
-	DatabaseCoreAPIs dbCore = new DatabaseCoreAPIs();
+	DatabaseCoreAPIs dbCore = new DatabaseCoreAPIs("","","");
 	
 	public static void main(String[] args) {
 		SocietyHelpTestAPIs testUtil = new SocietyHelpTestAPIs();

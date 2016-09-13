@@ -4,7 +4,7 @@
 # Server version:               5.5.49-0ubuntu0.14.04.1
 # Server OS:                    debian-linux-gnu
 # HeidiSQL version:             5.0.0.3031
-# Date/time:                    2016-09-13 01:45:41
+# Date/time:                    2016-09-13 06:14:40
 # --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -63,12 +63,13 @@ CREATE TABLE IF NOT EXISTS `Login` (
   `Password` varchar(20) NOT NULL,
   `Status` tinyint(1) NOT NULL DEFAULT '1',
   `Authorised_Activity` varchar(100) DEFAULT NULL,
+  `Society_Id` int(100) DEFAULT NULL,
   PRIMARY KEY (`Login_Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-# Dumping data for table sql6134070.Login: 42 rows
+# Dumping data for table sql6134070.Login: 45 rows
 /*!40000 ALTER TABLE `Login` DISABLE KEYS */;
-INSERT IGNORE INTO `Login` (`Login_Id`, `Password`, `Status`, `Authorised_Activity`) VALUES ('abhinav1', '1', 1, NULL), ('Amarjeet1', '1', 1, NULL), ('Anshuman1', '1', 1, NULL), ('Ashutosh1', '1', 1, NULL), ('Balaji1', '1', 1, NULL), ('Dhiman1', '1', 1, NULL), ('divang1', '1', 1, NULL), ('Gautam1', '1', 1, NULL), ('geetika', '1', 1, NULL), ('Gopa1', '1', 1, NULL), ('Ivin1', '1', 1, NULL), ('jay1', '1', 1, NULL), ('Jaya1', '1', 1, NULL), ('Karthik1', '1', 1, NULL), ('Krishna1', '1', 1, NULL), ('Krishnan1', '1', 1, NULL), ('Mahesh1', '1', 1, NULL), ('maheshwar1', '1', 1, NULL), ('Manas1', '1', 1, NULL), ('Manendra1', '1', 1, NULL), ('manoj1', '1', 1, NULL), ('Niteen1', '1', 1, NULL), ('Phani1', '1', 1, NULL), ('Philip1', '1', 1, NULL), ('poonam', '1', 1, NULL), ('Praveen1', '1', 1, NULL), ('Raghunandan1', '1', 1, NULL), ('Raj1', '1', 1, NULL), ('ramesh1', '1', 1, NULL), ('Sanjib1', '1', 1, NULL), ('Satheesh1', '1', 1, NULL), ('Shashi1', '1', 1, NULL), ('Sidda1', '1', 1, NULL), ('Subhash1', '1', 1, NULL), ('sudha', '1', 1, NULL), ('Sundarali1', '1', 1, NULL), ('test', '1', 1, NULL), ('Vinod1', '1', 1, NULL), ('vinoy1', '1', 1, NULL), ('vishesh1', '1', 1, NULL), ('vivek1', '1', 1, NULL), ('w', '1', 1, NULL);
+INSERT IGNORE INTO `Login` (`Login_Id`, `Password`, `Status`, `Authorised_Activity`, `Society_Id`) VALUES ('abhinav1', '1', 1, NULL, 1), ('Amarjeet1', '1', 1, NULL, 1), ('Anshuman1', '1', 1, NULL, 1), ('Ashutosh1', '1', 1, NULL, 1), ('Balaji1', '1', 1, NULL, 1), ('Dhiman1', '1', 1, NULL, 1), ('divang1', '1', 1, NULL, 1), ('divangd', '1', 1, NULL, 2), ('Gautam1', '1', 1, NULL, 1), ('geetika', '1', 1, NULL, 1), ('geetika1', '1', 1, NULL, 2), ('Gopa1', '1', 1, NULL, 1), ('Ivin1', '1', 1, NULL, 1), ('jay1', '1', 1, NULL, 1), ('Jaya1', '1', 1, NULL, 1), ('Karthik1', '1', 1, NULL, 1), ('Krishna1', '1', 1, NULL, 1), ('Krishnan1', '1', 1, NULL, 1), ('Mahesh1', '1', 1, NULL, 1), ('maheshwar1', '1', 1, NULL, 1), ('Manas1', '1', 1, NULL, 1), ('Manendra1', '1', 1, NULL, 1), ('manoj1', '1', 1, NULL, 1), ('Niteen1', '1', 1, NULL, 1), ('Phani1', '1', 1, NULL, 1), ('Philip1', '1', 1, NULL, 1), ('poonam', '1', 1, NULL, 1), ('Praveen1', '1', 1, NULL, 1), ('Raghunandan1', '1', 1, NULL, 1), ('Raj1', '1', 1, NULL, 1), ('ramesh1', '1', 1, NULL, 1), ('Sanjib1', '1', 1, NULL, 1), ('Satheesh1', '1', 1, NULL, 1), ('Shashi1', '1', 1, NULL, 1), ('Sidda1', '1', 1, NULL, 1), ('Subhash1', '1', 1, NULL, 1), ('sudha', '1', 1, NULL, 1), ('Sundarali1', '1', 1, NULL, 1), ('test', '1', 1, NULL, 1), ('vibhanshu1', '1', 1, NULL, 2), ('Vinod1', '1', 1, NULL, 1), ('vinoy1', '1', 1, NULL, 1), ('vishesh1', '1', 1, NULL, 1), ('vivek1', '1', 1, NULL, 1), ('w', '1', 1, NULL, 1);
 /*!40000 ALTER TABLE `Login` ENABLE KEYS */;
 
 
@@ -82,6 +83,27 @@ CREATE TABLE IF NOT EXISTS `Notification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # No rows in table sql6134070.Notification
+
+
+# Dumping structure for table sql6134070.Society
+DROP TABLE IF EXISTS `Society`;
+CREATE TABLE IF NOT EXISTS `Society` (
+  `Society_Id` int(100) NOT NULL,
+  `Society_Name` varchar(50) NOT NULL,
+  `Database_URL` varchar(200) NOT NULL,
+  `Database_User` varchar(50) NOT NULL,
+  `Database_Password` varchar(50) NOT NULL,
+  `Database_Port` int(4) NOT NULL DEFAULT '3306',
+  `Email_Id` varchar(100) NOT NULL,
+  PRIMARY KEY (`Society_Id`),
+  UNIQUE KEY `Society_Name` (`Society_Name`),
+  UNIQUE KEY `Database_URL_Database_User` (`Database_URL`,`Database_User`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+# Dumping data for table sql6134070.Society: 2 rows
+/*!40000 ALTER TABLE `Society` DISABLE KEYS */;
+INSERT IGNORE INTO `Society` (`Society_Id`, `Society_Name`, `Database_URL`, `Database_User`, `Database_Password`, `Database_Port`, `Email_Id`) VALUES (1, 'BHOWA', 'jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6135564', 'sql6135564', 'uTUgxGNjLx', 3306, 'bhowa.begurwoods@gmail.com'), (2, 'DEMO', 'jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6135566', 'sql6135566', 'liIWBN52LB', 3306, 'divang.sharma@gmail.com');
+/*!40000 ALTER TABLE `Society` ENABLE KEYS */;
 
 
 # Dumping structure for table sql6134070.Transactions_Staging_Data
