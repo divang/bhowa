@@ -12,151 +12,157 @@
         android:layout="@layout/header"
         />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        >
 
-        <Button
-            android:id="@+id/home_activity_btn_create_login"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_login_create"
-            android:onClick="onButtonClicker"
-            android:text="@string/createLoginIconText"
-            />
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            >
 
-        <Button
-            android:id="@+id/home_activity_btn_add_flat"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_add_flat"
-            android:onClick="onButtonClicker"
-            android:text="@string/addFlatIconText"
-            />
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
 
-        <Button
-            android:id="@+id/home_activity_btn_add_user"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_add_user"
-            android:onClick="onButtonClicker"
-            android:text="@string/addUserIconText"
-            />
+                <Button
+                    android:id="@+id/home_activity_btn_create_login"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_login_create"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/createLoginIconText"
+                    />
 
+                <Button
+                    android:id="@+id/home_activity_btn_add_flat"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_add_flat"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/addFlatIconText"
+                    />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/home_activity_btn_view_all_login"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_view_all_logins"
-            android:onClick="onButtonClicker"
-            android:text="@string/viewAllLoginIconText"
-            />
-
-        <Button
-            android:id="@+id/home_activity_btn_view_all_flat"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_view_all_flat"
-            android:onClick="onButtonClicker"
-            android:text="@string/viewAllFlatIconText"
-            />
-
-        <Button
-            android:id="@+id/home_activity_btn_manage_users"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_manage_user"
-            android:onClick="onButtonClicker"
-            android:text="@string/manageUsersIconText"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/home_activity_btn_upload_pdf"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_upload_pdf"
-            android:onClick="onButtonClicker"
-            android:text="@string/uploadPdfIconText"
-            />
-
-        <Button
-            android:id="@+id/home_activity_btn_detail_transactions"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_detail_transactions"
-            android:onClick="onButtonClicker"
-            android:text="@string/detailTransactionsIconText"
-            />
-
-        <!--Button
-            android:id="@+id/transaction_report_activity_btn_save_verified_transactions"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_verified_transactions"
-            android:onClick="onButtonClicker"
-            android:text="@string/verifiedTransactionsIconText"
-            /-->
-
-        <Button
-            android:id="@+id/home_activity_btn_flat_wise_payable"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_flat_wise_payable"
-            android:onClick="onButtonClicker"
-            android:text="@string/generateMaintenanceIconText"
-            />
+                <Button
+                    android:id="@+id/home_activity_btn_add_user"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_add_user"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/addUserIconText"
+                    />
 
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/home_activity_btn_view_all_login"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_view_all_logins"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/viewAllLoginIconText"
+                    />
 
-    <LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:orientation="horizontal">
+            </LinearLayout>
 
-        <!--Button
-            android:id="@+id/home_activity_btn_my_transactions"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_my_expense"
-            android:onClick="onButtonClicker"
-            android:text="@string/myExpensesIconText"
-            /-->
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
 
-        <Button
-            android:id="@+id/home_activity_btn_my_dues"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_my_dues"
-            android:onClick="onButtonClicker"
-            android:text="@string/myDuesIconText"
-            />
+                <Button
+                    android:id="@+id/home_activity_btn_view_all_flat"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_view_all_flat"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/viewAllFlatIconText"
+                    />
 
-        <!--Button
-            android:id="@+id/home_activity_btn_send_notification"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_notification"
-            android:onClick="onButtonClicker"
-            android:text="@string/notificationIconText"
-            /-->
+                <Button
+                    android:id="@+id/home_activity_btn_manage_users"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_manage_user"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/manageUsersIconText"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_upload_pdf"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_upload_pdf"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/uploadPdfIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_detail_transactions"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_detail_transactions"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/detailTransactionsIconText"
+                    />
+
+                <!--Button
+                    android:id="@+id/transaction_report_activity_btn_save_verified_transactions"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_verified_transactions"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/verifiedTransactionsIconText"
+                    /-->
 
 
 
-        <!--Button
-            android:id="@+id/home_activity_btn_expenditure_type"
-            style="@style/HomeButton"
-            android:drawableTop="@drawable/ic_expenditure_type"
-            android:onClick="onButtonClicker"
-            android:text="@string/expenditureTypeIconText"
-            /-->
-    </LinearLayout>
+            </LinearLayout>
 
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_flat_wise_payable"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_flat_wise_payable"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/generateMaintenanceIconText"
+                    />
+
+                <!--Button
+                    android:id="@+id/home_activity_btn_my_transactions"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_my_expense"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/myExpensesIconText"
+                    /-->
+
+                <Button
+                    android:id="@+id/home_activity_btn_my_dues"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_my_dues"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/myDuesIconText"
+                    />
+
+                <!--Button
+                    android:id="@+id/home_activity_btn_send_notification"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_notification"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/notificationIconText"
+                    /-->
+
+
+
+                <!--Button
+                    android:id="@+id/home_activity_btn_expenditure_type"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_expenditure_type"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/expenditureTypeIconText"
+                    /-->
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
