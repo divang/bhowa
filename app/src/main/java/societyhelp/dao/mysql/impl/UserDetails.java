@@ -1,6 +1,10 @@
 package societyhelp.dao.mysql.impl;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import societyhelp.core.SocietyAuthorization;
 
 public class UserDetails {
 
@@ -18,6 +22,14 @@ public class UserDetails {
 	public long  mobileNoAlternative;
 	public Date flatJoinDate;
 	public Date flatLeftDate;
+	public List<SocietyAuthorization.Type> sAuthorizations = new ArrayList<>();
+
+	public String getAuthorizationList()
+	{
+		StringBuilder str = new StringBuilder();
+		for(SocietyAuthorization.Type a : sAuthorizations) str.append(a).append(",");
+		return  str.toString();
+	}
 
 	@Override
 	public String toString() {
@@ -35,27 +47,7 @@ public class UserDetails {
 		str.append(" mobileNoAlternative=").append(mobileNoAlternative);
 		str.append(" flatJoinDate=").append(flatJoinDate);
 		str.append(" flatLeftDate=").append(flatLeftDate);
+		str.append(" sAuthorizations=").append(sAuthorizations);
 		return str.toString();
 	}
-	
-	/* Database Schema
-
-	CREATE TABLE IF NOT EXISTS `User_Details` (
-	  `User_Id` varchar(20) NOT NULL,
-	  `Login_Id` varchar(20) NOT NULL,
-	  `User_Type_Id` varchar(20) NOT NULL,
-	  `Status` tinyint(1) NOT NULL,
-	  `Flat_Id` int(10) DEFAULT NULL,
-	  `Name` varchar(50) NOT NULL,
-	  `Name_Alias` varchar(400) DEFAULT NULL,
-	  `Mobile_No` bigint(13) DEFAULT NULL,
-	  `Moble_No_Alternate` bigint(13) DEFAULT NULL,
-	  `Email_Id` varchar(30) DEFAULT NULL,
-	  `Address` varchar(100) DEFAULT NULL,
-	  `Flat_Join_Date` datetime DEFAULT NULL,
-	  `Flat_Left_Date` datetime DEFAULT NULL,
-	  PRIMARY KEY (`User_Id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-	 */
 }

@@ -5,7 +5,7 @@ public class Queries {
 	  //Queries
     public static final String loginQuery = 
     		//"select Login_Id FROM Login WHERE Login_Id = ? and Password = ? and Status = 1";
-			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, l.Authorised_Activity from " +
+			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name from " +
 					" Login l" +
 					" inner join " +
 					" Society s " +
@@ -152,7 +152,7 @@ public class Queries {
 
     public static final String myDetailsQuery =
                     "SELECT User_Id,Login_Id,User_Type,Status,Flat_Id,Name,Name_Alias,Mobile_No," +
-                            "Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date " +
+                            "Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date,Auth_Ids " +
                             "FROM User_Details where Login_Id = ?";
 
 	public static final String addFlatWiseMaintenanceQuery =

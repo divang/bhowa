@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 
 public class DatabaseCoreAPIs extends Queries {
@@ -790,7 +791,13 @@ public class DatabaseCoreAPIs extends Queries {
 				u.flatJoinDate = result.getDate(12);
 
 				u.flatLeftDate = result.getDate(13);
-		}
+				String userAuthIds = result.getString(14);
+
+				if(userAuthIds != null)
+					for(String authId :  userAuthIds.split(","))
+						u.sAuthorizations.add(SocietyAuthorization.Type.values()[Integer.valueOf(authId)]);
+
+		 	}
 
 		} catch (Exception e) {
 			throw e;
