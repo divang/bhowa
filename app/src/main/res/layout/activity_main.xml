@@ -35,6 +35,9 @@
         android:text="Login"
         android:id="@+id/LoginButton"
         android:layout_below="@+id/passwordText"
+        android:background="@color/btnLoginBgColor"
+        android:textColor="@color/btnTextColor"
+        android:textColorHighlight="@color/btnLoginBgClickColor"
         android:layout_centerHorizontal="true" />
 
     <TextView

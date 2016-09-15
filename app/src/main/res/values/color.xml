@@ -18,4 +18,13 @@
     <!-- whole screen backgroung color -->
     <color name="windowBackground">#ebeef4</color>
 
+    <!-- login button backgroung-->
+    <color name="btnLoginBgColor">#758ab6</color>
+
+    <!-- Top App Bar Text Color-->
+    <color name="btnTextColor">#f1fff4</color>
+
+    <!-- login button backgroung-->
+    <color name="btnLoginBgClickColor">#b0bcd5</color>
+
 </resources>
