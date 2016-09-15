@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--item name="title_background">blue </item>
-    <item name="foreground">green</item-->
+    <!-- Top Bar -->
+    <color name="colorPrimaryDark">#758ab6</color>
+
+    <!-- App Top Bar-->
+    <color name="colorPrimary">#3b5998</color>
+
+    <!-- Top App Bar Text Color-->
+    <color name="textColorPrimary">#f1fff4</color>
+
+    <!-- under line of chosen test box  -->
+    <color name="colorAccent">#9daccb</color>
+
+    <!-- under line of second unselected test box  -->
+    <color name="textColorSecondary">#d7ddea</color>
+
+    <!-- whole screen backgroung color -->
+    <color name="windowBackground">#ebeef4</color>
+
 </resources>
