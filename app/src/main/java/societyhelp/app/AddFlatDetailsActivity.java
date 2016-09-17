@@ -20,7 +20,7 @@ public class AddFlatDetailsActivity extends DashBoardActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_flat_details);
 
-        setHeader("", true);
+        setHeader("", true, false);
 
         final TextView flatIdText = (TextView) findViewById(R.id.flatId_AFD_Text);
         final TextView fNoText = (TextView) findViewById(R.id.flat_Number_AFD_Text);

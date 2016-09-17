@@ -27,13 +27,6 @@ public class ViewRawDataActivity extends AppCompatActivity {
             tableL.addView(row);
         }
 
-        final Button backButton = (Button)findViewById(R.id.backToReportBtn);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
 }

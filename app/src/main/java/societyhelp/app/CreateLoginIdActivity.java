@@ -18,7 +18,7 @@ public class CreateLoginIdActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_login_id);
-        setHeader("", true);
+        setHeader("", true, false);
 
         final TextView loginIdText = (TextView) findViewById(R.id.loginId_CLA_Text);
         final TextView passwordText = (TextView) findViewById(R.id.password_CLA_Text);

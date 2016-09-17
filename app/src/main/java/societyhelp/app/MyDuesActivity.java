@@ -26,7 +26,8 @@ public class MyDuesActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_dues);
-
+        setHeader("My Dues", false, true);
+        setCustomToolBarBack();
         try {
             final TextView duesText = (TextView) findViewById(R.id.myDuesText);
             float myDues = (float) getIntent().getSerializableExtra("MyDueAmount");
@@ -125,14 +126,6 @@ public class MyDuesActivity extends DashBoardActivity {
             scrollablePart.addView(row);
 
 
-            final Button backButton = (Button) findViewById(R.id.backToReportBtn);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-
         } catch (Exception e) {
             Log.e("Error", "Transaction Raw data activity has problem", e);
         }
@@ -152,4 +145,6 @@ public class MyDuesActivity extends DashBoardActivity {
         recyclableTextView.setGravity(Gravity.RIGHT);
         return recyclableTextView;
     }
+
+
 }

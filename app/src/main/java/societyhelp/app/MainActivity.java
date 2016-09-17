@@ -9,11 +9,15 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         }
 
         //And finally ask for the permission
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
     }
 
     //This method will be called when the user will tap on allow or deny
@@ -82,14 +86,13 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setCustomToolBar();
 
-        //First checking if the app is already having the permission
         if(isReadStorageAllowed()){
             //If permission is already having then showing the toast
             Toast.makeText(MainActivity.this,"You already have the permission",Toast.LENGTH_LONG).show();
             //Existing the method with return
-        }
-        else {
+        } else {
             //If the app has not the permission then asking for the permission
             requestStoragePermission();
             return;
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
                         doTask(v, userNameText, passwordText);
-                  }
+                    }
                 });
                 taskThread.start();
             }
@@ -170,5 +173,25 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
         String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
         SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
+    }
+
+    protected void setCustomToolBar()
+    {
+        /*
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        //displaying custom ActionBar
+        View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(mActionBarView);
+        */
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        //displaying custom ActionBar
+        View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
+        actionBar.setCustomView(mActionBarView);
+        actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 }

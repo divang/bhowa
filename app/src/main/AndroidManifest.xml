@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="societyhelp.app" >
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
     <!-- To access internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,32 +18,33 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="societyhelp.app.MainActivity" >
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="societyhelp.app.FileBrowserActivity" />
-        <activity android:name="societyhelp.app.HomeActivity" />
-        <activity android:name="societyhelp.app.HomeTransactionActivity" />
-        <activity android:name="societyhelp.app.ManageUserActivity" />
-        <activity android:name="societyhelp.app.ManageExpenditureTypeActivity" />
-        <activity android:name="societyhelp.app.MyTransactionsActivity" />
-        <activity android:name="societyhelp.app.NotificationActivity" />
-        <activity android:name="societyhelp.app.TransactionRawDataActivity" />
-        <activity android:name="societyhelp.app.ViewRawDataActivity" />
-        <activity android:name="societyhelp.app.MapUserToNameAlias" />
-        <activity android:name="societyhelp.app.UserAliasMappingActivity" />
-        <activity android:name="societyhelp.app.AddUserActivity" />
-        <activity android:name="societyhelp.app.CreateLoginIdActivity" />
-        <activity android:name="societyhelp.app.AddFlatDetailsActivity" />
-        <activity android:name="societyhelp.app.ManageLoginActivity" />
-        <activity android:name="societyhelp.app.ManageFlatActivity" />
-        <activity android:name="societyhelp.app.DetailTransactionViewActivity" />
-        <activity android:name="societyhelp.app.MyDuesActivity" />
-        <activity android:name="societyhelp.app.ManageFlatWisePayableActivity" />
+        <activity android:name=".FileBrowserActivity" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeTransactionActivity" />
+        <activity android:name=".ManageUserActivity" />
+        <activity android:name=".ManageExpenditureTypeActivity" />
+        <activity android:name=".MyTransactionsActivity" />
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".TransactionRawDataActivity" />
+        <activity android:name=".ViewRawDataActivity" />
+        <activity android:name=".MapUserToNameAlias" />
+        <activity android:name=".UserAliasMappingActivity" />
+        <activity android:name=".AddUserActivity" />
+        <activity android:name=".CreateLoginIdActivity" />
+        <activity android:name=".AddFlatDetailsActivity" />
+        <activity android:name=".ManageLoginActivity" />
+        <activity android:name=".ManageFlatActivity" />
+        <activity android:name=".DetailTransactionViewActivity" />
+        <activity android:name=".MyDuesActivity" />
+        <activity android:name=".ManageFlatWisePayableActivity" />
+
     </application>
 
 </manifest>

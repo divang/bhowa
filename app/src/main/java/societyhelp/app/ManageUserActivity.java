@@ -19,7 +19,7 @@ public class ManageUserActivity extends DashBoardActivity {
         try {
             setContentView(R.layout.activity_manage_user);
 
-            setHeader("", true);
+            setHeader("", true, false);
 
             final TableLayout tableL = (TableLayout) findViewById(R.id.allUsersTableLayout);
             tableL.invalidate();

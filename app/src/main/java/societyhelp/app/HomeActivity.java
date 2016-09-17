@@ -3,7 +3,10 @@ package societyhelp.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
@@ -22,7 +25,7 @@ public class HomeActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        setHeader(getString(R.string.title_activity_home), false);
+        setHeader(getString(R.string.title_activity_home), false, false);
     }
 
     public void onButtonClicker(View v)
@@ -154,4 +157,5 @@ public class HomeActivity extends DashBoardActivity {
 
             }}).showDialog();
     }
+
 }

@@ -128,14 +128,6 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
 
             }
 
-            final Button backButton = (Button) findViewById(R.id.backToReportBtn);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-
         }catch (Exception e)
         {
             Log.e("Error", "Transaction Raw data activity has problem", e);

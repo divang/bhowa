@@ -17,7 +17,7 @@ public class ManageLoginActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_login);
-        setHeader("", true);
+        setHeader("", true, false);
 
         try {
             final TableLayout tableL = (TableLayout) findViewById(R.id.allLoginTableLayout);

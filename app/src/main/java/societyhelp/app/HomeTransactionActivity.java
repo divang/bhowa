@@ -115,7 +115,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_transaction);
-        setHeader("", true);
+        setHeader("", true, false);
     }
 
 }

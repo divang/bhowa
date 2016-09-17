@@ -95,13 +95,6 @@ public class MyTransactionsActivity extends DashBoardActivity {
 
             }
 
-            final Button backButton = (Button) findViewById(R.id.backToReportBtn);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
 
         }catch (Exception e)
         {

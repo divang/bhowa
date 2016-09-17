@@ -7,13 +7,6 @@
     android:orientation="vertical"
     tools:context="societyhelp.app.AddFlatDetailsActivity">
 
-    <ViewStub
-        android:id="@+id/vsHeader"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inflatedId="@+id/header"
-        android:layout="@layout/header" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

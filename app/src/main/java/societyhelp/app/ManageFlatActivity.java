@@ -17,7 +17,7 @@ public class ManageFlatActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_flat);
-        setHeader("", true);
+        setHeader("", true, false);
 
         try {
             final TableLayout tableL = (TableLayout) findViewById(R.id.allFlatTableLayout);

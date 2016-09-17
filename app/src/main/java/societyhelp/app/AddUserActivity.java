@@ -27,7 +27,7 @@ public class AddUserActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
-        setHeader("", true);
+        setHeader("", true, false);
 
         final TextView userIdText = (TextView) findViewById(R.id.userIdText_AUA);
         final TextView nameText = (TextView) findViewById(R.id.nameText_AUA);
