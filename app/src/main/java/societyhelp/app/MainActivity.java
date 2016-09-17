@@ -134,8 +134,10 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                 prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, userLogin.userName).commit();
                 UserDetails ud = SocietyHelpDatabaseFactory.getDBInstance().getMyDetails(userLogin.userName);
-                prefs.edit().putString(CONST_FLAT_ID_KEY_PREF_MANAGER, ud.flatId).commit();
-                prefs.edit().putString(CONST_USER_AUTHS_PREF_MANAGER, ud.getAuthorizationList()).commit();
+                if(ud != null) {
+                    prefs.edit().putString(CONST_FLAT_ID_KEY_PREF_MANAGER, ud.flatId).commit();
+                    prefs.edit().putString(CONST_USER_AUTHS_PREF_MANAGER, ud.getAuthorizationList()).commit();
+                }
                 Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
                 startActivity(homeIntent);
             } else {
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
         String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
         SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
+        SocietyHelpDatabaseFactory.initMasterDB(dbUrl, dbUser, dbPass);
     }
 
     protected void setCustomToolBar()

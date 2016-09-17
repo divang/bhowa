@@ -102,6 +102,8 @@ public class DatabaseCoreAPIs extends Queries {
 				String url = result.getString(1);
 				String user = result.getString(2);
 				String pass = result.getString(3);
+				//String societyNmae = result.getString(4);
+				//int societyId = result.getInt(5);
 				init(url, user, pass);
 				//Reinitialize the factory class, so always new instance will use these configuration.
 				SocietyHelpDatabaseFactory.init(url, user, pass);
@@ -431,7 +433,7 @@ public class DatabaseCoreAPIs extends Queries {
 		}
 	}
 
-	public void createUserLogin(String loginId, String password) throws Exception	{
+	public void createUserLogin(String loginId, String password, String adminLoginId) throws Exception	{
 		Connection con = null;
 		PreparedStatement pStat = null;
 		ResultSet res = null;
@@ -442,6 +444,7 @@ public class DatabaseCoreAPIs extends Queries {
 			pStat = con.prepareStatement(createLoginQuery);
 			pStat.setString(1, loginId);
 			pStat.setString(2, password);
+			pStat.setString(3, adminLoginId);
 			pStat.executeUpdate();
 
 		} catch(Exception e){
@@ -478,7 +481,7 @@ public class DatabaseCoreAPIs extends Queries {
 		}
 	}
 
-	public List<Login> getAllLogin() throws Exception {
+	public List<Login> getAllLogin(String loginId) throws Exception {
 		List<Login> logins = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
@@ -489,6 +492,7 @@ public class DatabaseCoreAPIs extends Queries {
 			 */
 			connection = getDBInstance();
 			pStat = connection.prepareStatement(selectAllLoginQuery);
+			pStat.setString(1, loginId);
 			result = pStat.executeQuery();
 			while(result.next())
 			{
@@ -791,13 +795,13 @@ public class DatabaseCoreAPIs extends Queries {
 				u.flatJoinDate = result.getDate(12);
 
 				u.flatLeftDate = result.getDate(13);
+
 				String userAuthIds = result.getString(14);
 
 				if(userAuthIds != null)
 					for(String authId :  userAuthIds.split(","))
 						u.sAuthorizations.add(SocietyAuthorization.Type.values()[Integer.valueOf(authId)]);
-
-		 	}
+			}
 
 		} catch (Exception e) {
 			throw e;

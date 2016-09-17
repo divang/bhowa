@@ -89,7 +89,7 @@ public interface ISocietyHelpDatabase {
      * @param password
      * @throws Exception
      */
-    void createLogin(String loginId, String password) throws Exception;
+    void createLogin(String loginId, String password, String adminLoginId) throws Exception;
 
     /**
      * Add society flat details
@@ -103,7 +103,7 @@ public interface ISocietyHelpDatabase {
      * @return
      * @throws Exception
      */
-    List<Login> getAllLogins() throws Exception;
+    List<Login> getAllLogins(String loginId) throws Exception;
 
     /**
      * It returns all the flats

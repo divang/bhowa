@@ -12,6 +12,20 @@ public class SocietyHelpDatabaseFactory {
 	private static String databasePassword;
 	private static boolean isInitialized;
 
+
+	private static String masterDatabaseDBURL;
+	private static String masterDatabaseUser;
+	private static String masterDatabasePassword;
+	private static boolean isMasterDBInitialized;
+
+	public static void initMasterDB(String strDatabaseDBURL, String strDatabaseUser, String strDatabasePassword)
+	{
+		masterDatabaseDBURL = strDatabaseDBURL;
+		masterDatabaseUser = strDatabaseUser;
+		masterDatabasePassword = strDatabasePassword;
+		isMasterDBInitialized = true;
+	}
+
 	public static void init(String strDatabaseDBURL, String strDatabaseUser, String strDatabasePassword)
 	{
 		databaseDBURL = strDatabaseDBURL;
@@ -33,5 +47,11 @@ public class SocietyHelpDatabaseFactory {
 		}
 		*/
 		return new SocietyHelpDatabaseAndroidSDKImpl(databaseDBURL, databaseUser, databasePassword);
+	}
+
+	public static ISocietyHelpDatabase getMasterDBInstance()
+	{
+		if(!isMasterDBInitialized) throw new ExceptionInInitializerError("Factory does not have DBURL, user and password");
+		return new SocietyHelpDatabaseAndroidSDKImpl(masterDatabaseDBURL, masterDatabaseUser, masterDatabasePassword);
 	}
 }

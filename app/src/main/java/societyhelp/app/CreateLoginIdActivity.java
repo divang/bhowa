@@ -36,7 +36,7 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            SocietyHelpDatabaseFactory.getDBInstance().createLogin(loginIdText.getText().toString(), passwordText.getText().toString());
+                            SocietyHelpDatabaseFactory.getMasterDBInstance().createLogin(loginIdText.getText().toString(), passwordText.getText().toString(), getLoginId());
                             Intent intent = new Intent(getApplicationContext(), ManageLoginActivity.class);
                             startActivity(intent);
                         }catch (Exception e)

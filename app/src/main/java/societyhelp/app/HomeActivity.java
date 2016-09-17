@@ -107,7 +107,7 @@ public class HomeActivity extends DashBoardActivity {
             switch (v.getId()) {
 
                 case R.id.home_activity_btn_create_login:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_create_login))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_create_login))
                     {
                         intent = new Intent(this, CreateLoginIdActivity.class);
                         startActivity(intent);
@@ -117,7 +117,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case R.id.home_activity_btn_add_flat:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_add_flat))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_flat))
                     {
                         intent = new Intent(this, AddFlatDetailsActivity.class);
                         startActivity(intent);
@@ -127,7 +127,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case R.id.home_activity_btn_add_user:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_add_user)) {
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_user)) {
                         intent = new Intent(this, AddUserActivity.class);
                         startActivity(intent);
                     } else{
@@ -136,7 +136,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case R.id.home_activity_btn_view_all_login:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_view_all_login))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_login))
                     {
                     intent = new Intent(this, ManageLoginActivity.class);
                     startActivity(intent);
@@ -146,7 +146,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case R.id.home_activity_btn_view_all_flat:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_view_all_flat))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_flat))
                     {
                     intent = new Intent(this, ManageFlatActivity.class);
                     startActivity(intent);
@@ -156,7 +156,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case R.id.home_activity_btn_manage_users:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_manage_users))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_manage_users))
                     {
                     intent = new Intent(this, ManageUserActivity.class);
                     startActivity(intent);
@@ -166,7 +166,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case R.id.home_activity_btn_upload_pdf:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))
                     {
                         openFileBrowser();
                     } else{
@@ -175,7 +175,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case  R.id.home_activity_btn_detail_transactions:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_detail_transactions))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_detail_transactions))
                     {
                         intent = new Intent(this, DetailTransactionViewActivity.class);
                         startActivity(intent);
@@ -185,7 +185,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
 
                 case  R.id.home_activity_btn_flat_wise_payable:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_flat_wise_payable))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_flat_wise_payable))
                     {
                     intent = new Intent(this, ManageFlatWisePayableActivity.class);
                     startActivity(intent);
@@ -200,7 +200,7 @@ public class HomeActivity extends DashBoardActivity {
                     break;
                 */
                 case  R.id.home_activity_btn_my_dues:
-                    if(userAuthActivityIds.contains(R.id.home_activity_btn_my_dues))
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_my_dues))
                     {
                     progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
                     progress.setCancelable(true);

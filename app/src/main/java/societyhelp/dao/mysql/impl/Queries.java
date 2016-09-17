@@ -5,7 +5,7 @@ public class Queries {
 	  //Queries
     public static final String loginQuery = 
     		//"select Login_Id FROM Login WHERE Login_Id = ? and Password = ? and Status = 1";
-			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name from " +
+			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, s.Society_Id from " +
 					" Login l" +
 					" inner join " +
 					" Society s " +
@@ -64,14 +64,24 @@ public class Queries {
 			"UPDATE User_Details SET Name_Alias = ? WHERE User_Id = ?";
 
 	public static final String createLoginQuery =
-			"Insert into Login(Login_Id, Password) values (?, ?)";
+			//"Insert into Login(Login_Id, Password) values (?, ?)"; //old query single database
+			//New query with Master login database and Other Society database
+			"Insert into Login(Login_Id, Password, Society_Id) " +
+			" select  ?, ?, Society_Id from Login where login_id= ?";
 
 	public static final String insertFlatDetailsQuery =
 			"Insert into Flat(Flat_Id,Flat_Number,Area,Maintenance_Amount,Block_Number) " +
 					"values (?, ?, ?, ?,?)";
 
 	public static final String selectAllLoginQuery =
-			"SELECT * FROM Login";
+			//"SELECT * FROM Login"; //Old query
+			//Login is move to Master database;
+			"select l2.Login_Id, l2.Password, l2.Status, l2.Society_Id from Login l1 " +
+			"inner join " +
+			"Login l2 " +
+			"on l1.Society_Id = l2.Society_Id " +
+			"where " +
+			"l1.Login_Id = ? ";
 
 	public static final String selectAllFlatQuery =
 			"SELECT * FROM Flat";

@@ -114,7 +114,7 @@ public class AddUserActivity extends DashBoardActivity {
     {
         List<String> listIds = new ArrayList<>();
         listIds.add("Select Login Id");
-        List<Login> login = SocietyHelpDatabaseFactory.getDBInstance().getAllLogins();
+        List<Login> login = SocietyHelpDatabaseFactory.getDBInstance().getAllLogins(getLoginId());
         for(Login l : login)
         {
             listIds.add(l.loginId);

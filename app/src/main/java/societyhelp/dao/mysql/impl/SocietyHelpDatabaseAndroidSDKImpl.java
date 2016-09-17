@@ -116,7 +116,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 
 				case createLogin:
-					dbCore.createUserLogin(String.valueOf(params[1]), String.valueOf(params[2]));
+					dbCore.createUserLogin(String.valueOf(params[1]), String.valueOf(params[2]), String.valueOf(params[3]));
 					break;
 
 				case addFlatDetails:
@@ -124,7 +124,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 
                 case getAllLogins:
-                    result = dbCore.getAllLogin();
+                    result = dbCore.getAllLogin(String.valueOf(params[1]));
                     break;
 
                 case getAllFlats:
@@ -303,8 +303,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public void createLogin(String loginId, String password) throws Exception {
-		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createLogin.name(), loginId, password);
+	public void createLogin(String loginId, String password, String adminLoginId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createLogin.name(), loginId, password, adminLoginId);
 		try {
 			aTask.get();
 		} catch (Exception e) {
@@ -324,8 +324,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
     @Override
-    public List<Login> getAllLogins() throws Exception {
-        AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllLogins.name());
+    public List<Login> getAllLogins(String loginId) throws Exception {
+        AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllLogins.name(), loginId);
         try {
             return (List<Login>)aTask.get();
         } catch (Exception e) {

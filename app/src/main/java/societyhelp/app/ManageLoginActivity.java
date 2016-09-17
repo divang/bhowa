@@ -22,7 +22,7 @@ public class ManageLoginActivity extends DashBoardActivity {
         try {
             final TableLayout tableL = (TableLayout) findViewById(R.id.allLoginTableLayout);
             tableL.invalidate();
-            List<Login> logins = SocietyHelpDatabaseFactory.getDBInstance().getAllLogins();
+            List<Login> logins = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
 
             for (Login l : logins) {
                 TableRow row = new TableRow(this);
