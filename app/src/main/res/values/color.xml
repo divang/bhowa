@@ -27,4 +27,8 @@
     <!-- login button backgroung-->
     <color name="btnLoginBgClickColor">#b0bcd5</color>
 
+    <color name="btnDisableColor">#c4cde0</color>
+
+    <color name="btnEnableColor">#4e69a2</color>
+
 </resources>
