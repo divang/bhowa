@@ -177,16 +177,6 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
 
     protected void setCustomToolBar()
     {
-        /*
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setDisplayShowCustomEnabled(true);
-        //displaying custom ActionBar
-        View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(mActionBarView);
-        */
-
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         //displaying custom ActionBar

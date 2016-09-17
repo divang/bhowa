@@ -8,10 +8,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import societyhelp.app.util.FileChooser;
+import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.parser.SocietyHelpParserFactory;
@@ -20,12 +24,80 @@ public class HomeActivity extends DashBoardActivity {
 
     private ProgressDialog progress;
     final private int PICKFILE_RESULT_CODE = 1000;
+    protected List<Integer> userAuthActivityIds = new ArrayList<>();
+    protected boolean isAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
         setHeader(getString(R.string.title_activity_home), false, false);
+        setAuthorizedActivity();
+    }
+
+    protected void setAuthorizedActivity()
+    {
+        String userAuths = getAuthIds();
+        Log.d("info", " userAuths - " + userAuths);
+        if(userAuths == null || userAuths.length() == 0 ) return;
+        for(String auth : userAuths.split(","))
+        {
+            //SocietyAuthorization.Type authActivity = SocietyAuthorization.Type.values()[Integer.parseInt(auth)];
+            switch (SocietyAuthorization.Type.valueOf(auth))
+            {
+                case ADMIN: //0
+                    isAdmin = true;
+                    return;
+                case MY_DUES_VIEWS: //1
+                    userAuthActivityIds.add(R.id.home_activity_btn_my_dues);
+                    break;
+                case NOTIFICATION_SEND: //2
+//                    userAuthActivityIds.add(R.id.home_activit_btn_);
+                    break;
+                case USER_DETAIL_VIEW: //3
+                    userAuthActivityIds.add(R.id.home_activity_btn_manage_users);
+                    break;
+                case USER_DETAIL_CREATE: //4
+                    userAuthActivityIds.add(R.id.home_activity_btn_add_user);
+                    break;
+                case FLAT_DETAIL_VIEW: //5
+                    userAuthActivityIds.add(R.id.home_activity_btn_view_all_flat);
+                    break;
+                case FLAT_DETAIL_CREATE: //6
+                    userAuthActivityIds.add(R.id.home_activity_btn_add_flat);
+                    break;
+                case LOGIN_VIEW: //7
+                    userAuthActivityIds.add(R.id.home_activity_btn_view_all_login);
+                    break;
+                case LOGIN_CREATE: //8
+                    userAuthActivityIds.add(R.id.home_activity_btn_create_login);
+                    break;
+                case MONTHLY_STATEMENT_UPLOAD: //9
+                    userAuthActivityIds.add(R.id.home_activity_btn_upload_pdf);
+                    break;
+                case RAW_DATA_VIEW: //10
+                    userAuthActivityIds.add(R.id.transaction_report_activity_btn_view_raw_data);
+                    break;
+                case TRANSACTIONS_DETAIL_VIEW: //11
+                    userAuthActivityIds.add(R.id.home_activity_btn_detail_transactions);
+                    break;
+                case PDF_TRANSACTION_VIEW: //12
+                    break;
+                case PDF_TRANSACTION_UPLOAD_TO_STAGING_TABLE: //13
+                    userAuthActivityIds.add(R.id.transaction_report_activity_btn_save_verified_transactions);
+                    break;
+                case MAP_USER_WITH_MONTHLY_PDF_NAME: //14
+                    userAuthActivityIds.add(R.id.transaction_report_activity_btn_view_map_user_alias);
+                    break;
+                case MONTHLY_MAINTENANCE_GENERATOR: //15
+                    userAuthActivityIds.add(R.id.home_activity_btn_flat_wise_payable);
+                    break;
+                case VERIFIED_PDF_TRANSACTIONS_UPLOAD: //16
+                    userAuthActivityIds.add(R.id.transaction_report_activity_btn_upload_transactions);
+                    break;
+
+            }
+        }
     }
 
     public void onButtonClicker(View v)
@@ -35,47 +107,91 @@ public class HomeActivity extends DashBoardActivity {
             switch (v.getId()) {
 
                 case R.id.home_activity_btn_create_login:
-                    intent = new Intent(this, CreateLoginIdActivity.class);
-                    startActivity(intent);
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_create_login))
+                    {
+                        intent = new Intent(this, CreateLoginIdActivity.class);
+                        startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (create login). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_add_flat:
-                    intent = new Intent(this, AddFlatDetailsActivity.class);
-                    startActivity(intent);
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_add_flat))
+                    {
+                        intent = new Intent(this, AddFlatDetailsActivity.class);
+                        startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (add flat). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_add_user:
-                    intent = new Intent(this, AddUserActivity.class);
-                    startActivity(intent);
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_add_user)) {
+                        intent = new Intent(this, AddUserActivity.class);
+                        startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (add user). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_view_all_login:
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_view_all_login))
+                    {
                     intent = new Intent(this, ManageLoginActivity.class);
                     startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (view all login). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_view_all_flat:
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_view_all_flat))
+                    {
                     intent = new Intent(this, ManageFlatActivity.class);
                     startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (view all flat). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_manage_users:
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_manage_users))
+                    {
                     intent = new Intent(this, ManageUserActivity.class);
                     startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (manage users). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_upload_pdf:
-                    openFileBrowser();
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))
+                    {
+                        openFileBrowser();
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (upload month statement). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case  R.id.home_activity_btn_detail_transactions:
-                    intent = new Intent(this, DetailTransactionViewActivity.class);
-                    startActivity(intent);
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_detail_transactions))
+                    {
+                        intent = new Intent(this, DetailTransactionViewActivity.class);
+                        startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (view detail transactions). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case  R.id.home_activity_btn_flat_wise_payable:
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_flat_wise_payable))
+                    {
                     intent = new Intent(this, ManageFlatWisePayableActivity.class);
                     startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (generate monthly maintenance). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                /* case  R.id.home_activity_btn_my_transactions:
@@ -84,6 +200,8 @@ public class HomeActivity extends DashBoardActivity {
                     break;
                 */
                 case  R.id.home_activity_btn_my_dues:
+                    if(userAuthActivityIds.contains(R.id.home_activity_btn_my_dues))
+                    {
                     progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
                     progress.setCancelable(true);
                     progress.show();
@@ -102,6 +220,9 @@ public class HomeActivity extends DashBoardActivity {
                             progress.cancel();
                         }
                     }).start();
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (pay dues). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                /* case  R.id.transaction_report_activity_btn_save_verified_transactions:

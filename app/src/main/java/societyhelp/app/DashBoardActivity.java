@@ -34,6 +34,13 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         return v;
     }
 
+
+    public String getAuthIds() {
+        String v = prefs.getString(CONST_USER_AUTHS_PREF_MANAGER, "");
+        Log.d("info","flat id from preference manager :" + v);
+        return v;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
