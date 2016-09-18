@@ -4,10 +4,6 @@ Login credential [done]
 PDF parsing [done]
 Transaction raw line(data) generate [done]
 Save raw data upload in DB  [done]
-
-http://www.chupamobile.com/tutorial-android/android-dashboard-design-pattern-implementation-156
-
-
 Show all transactions with matched user name. (done)
 For non matched user, also show existing user name(list). (done)
 Map the non matched user to actual user name. (done)
@@ -18,6 +14,33 @@ Maintenance charge can be settled automatically.
 User can see all his/her settled amount.
 User can add cash expense with details like expense type.
 User can see how much dues on him/her. (done)
+Login check from Master Database(done)
+UserDetails from Society Database (done)
+
+
+Validation :
+-----------
+1) Login id creation and its validation (done)
+	- id already existing
+	- empty
+	- length
+	- char and digit only
+	- password
+	- confirm password
+
+	
+2) Flat 
+	
+	
+Beautification -
+--------------
+Logo design ic_launcher transparent for phone dash board(done)
+Custom Action bar creation (done)
+Logo creation for action bar (done)
+Old Home button clean up (done)
+Home button in action bar (done)
+Navigation of back in action bar (done) 
+Submit button disable and enable look & feel (done)
 
 
 New Expense applied
