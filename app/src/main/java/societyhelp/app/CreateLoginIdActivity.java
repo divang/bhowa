@@ -30,7 +30,7 @@ public class CreateLoginIdActivity extends DashBoardActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_login_id);
         setHeader("", true, false);
-
+        final String loginIds = (String) getIntent().getSerializableExtra(CONST_LOGIN_IDS);
         final EditText loginIdText = (EditText) findViewById(R.id.loginId_CLA_Text);
         final EditText passwordText = (EditText) findViewById(R.id.password_CLA_Text);
         final EditText confirmPasswordText = (EditText) findViewById(R.id.confirm_password_CLA_Text);
@@ -77,10 +77,14 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                 loginButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btnDisableColor));
                 if (s.toString().length() > 0 && s.toString().length() < 10) {
 
-                    isLoginIdValidate = true;
-                    if (isPasswordValidate) {
-                        loginButton.setEnabled(true);
-                        loginButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btnEnableColor));
+                    if (!loginIds.contains(s.toString())) {
+                        isLoginIdValidate = true;
+                        if (isPasswordValidate) {
+                            loginButton.setEnabled(true);
+                            loginButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btnEnableColor));
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Login Id already exist.", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {

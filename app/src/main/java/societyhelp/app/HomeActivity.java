@@ -18,6 +18,7 @@ import societyhelp.app.util.FileChooser;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
+import societyhelp.dao.mysql.impl.Login;
 import societyhelp.parser.SocietyHelpParserFactory;
 
 public class HomeActivity extends DashBoardActivity {
@@ -109,8 +110,24 @@ public class HomeActivity extends DashBoardActivity {
                 case R.id.home_activity_btn_create_login:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_create_login))
                     {
-                        intent = new Intent(this, CreateLoginIdActivity.class);
-                        startActivity(intent);
+                        progress = ProgressDialog.show(this, null, "Login creation activity ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<Login> logins = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+                                    Intent intentCreateLogin = new Intent(getApplicationContext(), CreateLoginIdActivity.class);
+                                    intentCreateLogin.putExtra(CONST_LOGIN_IDS, Login.getLogIds(logins));
+                                    startActivity(intentCreateLogin);
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching My dues verified data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (create login). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
@@ -202,24 +219,24 @@ public class HomeActivity extends DashBoardActivity {
                 case  R.id.home_activity_btn_my_dues:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_my_dues))
                     {
-                    progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
-                    progress.setCancelable(true);
-                    progress.show();
-                    new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                float myDues = SocietyHelpDatabaseFactory.getDBInstance().getMyDue(getFlatId());
-                                Intent intentMyDues = new Intent(getApplicationContext(), MyDuesActivity.class);
-                                intentMyDues.putExtra("MyDueAmount", myDues);
-                                startActivity(intentMyDues);
-                            }catch (Exception e)
-                            {
-                                Log.e("Error", "Fetching My dues verified data has problem", e);
-                            }
-                            progress.dismiss();
-                            progress.cancel();
-                        }
-                    }).start();
+                        progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    float myDues = SocietyHelpDatabaseFactory.getDBInstance().getMyDue(getFlatId());
+                                    Intent intentMyDues = new Intent(getApplicationContext(), MyDuesActivity.class);
+                                    intentMyDues.putExtra("MyDueAmount", myDues);
+                                    startActivity(intentMyDues);
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching My dues verified data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                                }
+                        }).start();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (pay dues). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }

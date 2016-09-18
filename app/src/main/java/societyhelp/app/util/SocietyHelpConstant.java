@@ -10,5 +10,6 @@ public interface SocietyHelpConstant {
     String CONST_DB_URL = "db_url";
     String CONST_DB_USER = "db_user";
     String CONST_DB_PASSWORD = "db_pass";
+    String CONST_LOGIN_IDS = "loginIds";
 
 }
