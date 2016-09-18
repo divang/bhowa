@@ -16,7 +16,8 @@ User can add cash expense with details like expense type.
 User can see how much dues on him/her. (done)
 Login check from Master Database(done)
 UserDetails from Society Database (done)
-
+Dashboad redesign (done)
+Dashboard activity response as per User authorization. (done)
 
 Validation :
 -----------
