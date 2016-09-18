@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 
 public class CreateLoginIdActivity extends DashBoardActivity {
@@ -75,7 +77,7 @@ public class CreateLoginIdActivity extends DashBoardActivity {
             public void afterTextChanged(Editable s) {
                 loginButton.setEnabled(false);
                 loginButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btnDisableColor));
-                if (s.toString().length() > 0 && s.toString().length() < 10) {
+                if (s.toString().length() > 0 && s.toString().length() <= 10) {
 
                     if (!loginIds.contains(s.toString())) {
                         isLoginIdValidate = true;
@@ -84,11 +86,11 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                             loginButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btnEnableColor));
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Login Id already exist.", Toast.LENGTH_SHORT).show();
+                        Util.CustomToast(getApplicationContext(), "Login Id already exist.", 800);
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Login Id length should be in between 0 and 10.", Toast.LENGTH_SHORT).show();
+                    Util.CustomToast(getApplicationContext(), "Login Id length should be in between 1 and 10.", 800);
                 }
 
             }
@@ -117,12 +119,12 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                                 loginButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btnEnableColor));
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Password and Confirm Password should match.", Toast.LENGTH_SHORT).show();
+                            Util.CustomToast(getApplicationContext(), "Password and Confirm Password should match.", 800);
                         }
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Login Id length should be in between 0 and 10.", Toast.LENGTH_SHORT).show();
+                    Util.CustomToast(getApplicationContext(), "Login Id length should be in between 6 and 10.", 800);
                 }
             }
         });
@@ -151,11 +153,11 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                         }
                     }
                     else{
-                        Toast.makeText(getApplicationContext(), "Password and Confirm Password should match.", Toast.LENGTH_SHORT).show();
+                        Util.CustomToast(getApplicationContext(), "Password and Confirm Password should match.", 800);
                     }
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Login Id length should be in between 0 and 10.", Toast.LENGTH_SHORT).show();
+                    Util.CustomToast(getApplicationContext(), "Login Id length should be in between 6 and 10.", 800);
                 }
             }
         });
