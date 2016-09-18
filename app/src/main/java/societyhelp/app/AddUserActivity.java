@@ -1,5 +1,9 @@
 package societyhelp.app;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,10 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import societyhelp.dao.SocietyHelpDatabaseFactory;
@@ -35,8 +43,33 @@ public class AddUserActivity extends DashBoardActivity {
         final TextView mobileNoText = (TextView) findViewById(R.id.mobileNoText_AUA);
         final TextView mobileNoAlternateText = (TextView) findViewById(R.id.mobileNoAlternateText_AUA);
         final TextView emailIdText = (TextView) findViewById(R.id.emailIdText_AUA);
-        final TextView flatJoinDateText = (TextView) findViewById(R.id.flatJoinDateText_AUA);
-        final TextView flatLeftDateText = (TextView) findViewById(R.id.flatLeftDateText_AUA);
+        final EditText flatJoinDateText = (EditText) findViewById(R.id.flatJoinDateText_AUA);
+
+        flatJoinDateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialogTheme() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int day){
+                        flatJoinDateText.setText(day + ":" + (month + 1) + ":" + year);
+                    }
+                }.show(getFragmentManager(), "Calendar Theme");
+            }
+        });
+
+        final EditText flatLeftDateText = (EditText) findViewById(R.id.flatLeftDateText_AUA);
+        flatLeftDateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialogTheme() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int day){
+                        flatLeftDateText.setText(day + ":" + (month + 1) + ":" + year);
+                    }
+                }.show(getFragmentManager(), "Calendar Theme");
+            }
+        });
+
 
         final Spinner flatIdSpinner = (Spinner) findViewById(R.id.flatIdSpinner_AUA);
         final Spinner loginIdSpinner = (Spinner) findViewById(R.id.loginIdSpinner_AUA);
@@ -44,6 +77,9 @@ public class AddUserActivity extends DashBoardActivity {
 
 
         try {
+            List<String> userTypes = getUserType();
+            userTypeSpinner.setAdapter(new ListViewAdaptor(userTypes));
+
             List<String> flatIds = getFlatIds();
             flatIdSpinner.setAdapter(new ListViewAdaptor(flatIds));
 
@@ -98,6 +134,15 @@ public class AddUserActivity extends DashBoardActivity {
         }
     }
 
+    protected  List<String> getUserType() throws Exception
+    {
+        List<String> types = new ArrayList<>();
+        types.add("Select User Type");
+        types.add("Owner");
+        types.add("Tenant");
+        return  types;
+    }
+
     protected  List<String> getFlatIds() throws Exception
     {
         List<String> listFlatIds = new ArrayList<>();
@@ -114,7 +159,8 @@ public class AddUserActivity extends DashBoardActivity {
     {
         List<String> listIds = new ArrayList<>();
         listIds.add("Select Login Id");
-        List<Login> login = SocietyHelpDatabaseFactory.getDBInstance().getAllLogins(getLoginId());
+        List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+
         for(Login l : login)
         {
             listIds.add(l.loginId);
@@ -143,5 +189,24 @@ public class AddUserActivity extends DashBoardActivity {
 
             return v;
         }
+
     }
+
+    public abstract class DatePickerDialogTheme extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState){
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
+                    R.style.CalendarDialogTheme,this,year,month,day);
+
+            return datepickerdialog;
+        }
+
+    }
+
 }
