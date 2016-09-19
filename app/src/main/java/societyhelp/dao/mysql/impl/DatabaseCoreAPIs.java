@@ -500,7 +500,7 @@ public class DatabaseCoreAPIs extends Queries {
 				l.loginId = result.getString(1);
 				l.password = result.getString(2);
 				l.status = result.getBoolean(3);
-				l.authorisedActivity = result.getString(4);
+				l.societyId = result.getString(4);
 				logins.add(l);
 			}
 
@@ -867,4 +867,30 @@ public class DatabaseCoreAPIs extends Queries {
 		return list;
 	}
 
+	public List<Login> getAllAssignedLogin() throws Exception {
+		List<Login> logins = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+			/*
+			SELECT `Login_Id`, `Password`, `Status`, `Authorised_Activity` FROM `sql6134070`.`Login` LIMIT 0, 1000;
+			 */
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(selectAllAssignedLoginIdsQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				Login l = new Login();
+				l.loginId = result.getString(1);
+				logins.add(l);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return logins;
+	}
 }

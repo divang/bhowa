@@ -46,7 +46,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		getMyDue,
         getMyDetails,
 		addMonthlyMaintenance,
-		getFlatWiseTransactions
+		getFlatWiseTransactions,
+		getAllAssignedLogins
 	}
 
 	@Override
@@ -161,6 +162,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 
 				case getFlatWiseTransactions:
 					result = dbCore.getFlatWiseTransactions(String.valueOf(params[1]));
+					break;
+
+				case getAllAssignedLogins:
+					result = dbCore.getAllAssignedLogin();
 					break;
 			}
 		}catch(Exception e){
@@ -418,6 +423,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getFlatWiseTransactions.name(), flatId);
 		try {
 			return (List<SocietyHelpTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<String> getAllAssignedLogins() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllAssignedLogins.name());
+		try {
+			return (List<String>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

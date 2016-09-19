@@ -18,7 +18,9 @@ import societyhelp.app.util.FileChooser;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
+import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.parser.SocietyHelpParserFactory;
 
 public class HomeActivity extends DashBoardActivity {
@@ -33,6 +35,7 @@ public class HomeActivity extends DashBoardActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
         setHeader(getString(R.string.title_activity_home), false, false);
+        setCustomToolBar();
         setAuthorizedActivity();
     }
 
@@ -145,8 +148,28 @@ public class HomeActivity extends DashBoardActivity {
 
                 case R.id.home_activity_btn_add_user:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_user)) {
-                        intent = new Intent(this, AddUserActivity.class);
-                        startActivity(intent);
+                        progress = ProgressDialog.show(this, null, "Going to add User activity ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    Intent innerIntent = new Intent(getApplicationContext(), AddUserActivity.class);
+                                    innerIntent.putExtra(CONST_LOGIN_IDS, getLoginIds());
+                                    innerIntent.putExtra(CONST_USER_IDS, getUserIds());
+                                    innerIntent.putExtra(CONST_FLAT_IDS, getFlatIds());
+                                    startActivity(innerIntent);
+
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching My dues verified data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
+
+
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (add user). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
@@ -294,6 +317,56 @@ public class HomeActivity extends DashBoardActivity {
                 taskThread.start();
 
             }}).showDialog();
+    }
+
+    protected  String getFlatIds() throws Exception
+    {
+        StringBuilder listFlatIds = new StringBuilder();
+        listFlatIds.append("Select Flat Id").append(",");
+        List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats();
+        for(Flat f : flats)
+        {
+            listFlatIds.append(f.flatId).append(",");
+        }
+        return  listFlatIds.toString();
+    }
+
+    protected  String getLoginIds() throws Exception
+    {
+        StringBuilder listIds = new StringBuilder();
+        listIds.append("Select Login Id").append(",");
+        List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+        List<String> assignedLogin = SocietyHelpDatabaseFactory.getDBInstance().getAllAssignedLogins();
+
+        for(Login l : login)
+        {
+            if(!assignedLogin.contains(l.loginId))
+                listIds.append(l.loginId).append(",");
+        }
+        return  listIds.toString();
+    }
+
+    protected  String getUserIds() throws Exception
+    {
+        StringBuilder listIds = new StringBuilder();
+        listIds.append("Select Login Id").append(",");
+        List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+
+        for(UserDetails u : users)
+        {
+            listIds.append(u.userId).append(",");
+        }
+        return  listIds.toString();
+    }
+
+    protected void setCustomToolBar()
+    {
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        //displaying custom ActionBar
+        View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
+        actionBar.setCustomView(mActionBarView);
+        actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
 }

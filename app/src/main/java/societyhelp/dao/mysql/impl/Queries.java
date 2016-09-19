@@ -83,6 +83,10 @@ public class Queries {
 			"where " +
 			"l1.Login_Id = ? ";
 
+
+	public static final String selectAllAssignedLoginIdsQuery =
+			"select Login_Id from User_Details";
+
 	public static final String selectAllFlatQuery =
 			"SELECT * FROM Flat";
 

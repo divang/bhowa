@@ -36,7 +36,7 @@ public class ManageLoginActivity extends DashBoardActivity {
                 status.setText(Boolean.toString(l.status));
                 row.addView(status);
                 TextView auth = new TextView(this);
-                auth.setText(l.authorisedActivity);
+                auth.setText(l.societyId);
                 row.addView(auth);
                 tableL.addView(row);
             }

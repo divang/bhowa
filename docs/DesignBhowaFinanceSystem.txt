@@ -8,33 +8,11 @@ Show all transactions with matched user name. (done)
 For non matched user, also show existing user name(list). (done)
 Map the non matched user to actual user name. (done)
 Store non matched user in actual user name's alias in DB. (done)
-User/Admin can see non settled transactions.
-User/Admin settles his/her non settled transaction.
-Maintenance charge can be settled automatically.
-User can see all his/her settled amount.
-User can add cash expense with details like expense type.
 User can see how much dues on him/her. (done)
 Login check from Master Database(done)
 UserDetails from Society Database (done)
 Dashboad redesign (done)
 Dashboard activity response as per User authorization. (done)
-
-Validation :
------------
-1) Login id creation and its validation (done)
-	- id already existing
-	- empty
-	- length
-	- char and digit only
-	- password
-	- confirm password
-
-	
-2) Flat 
-	
-	
-Beautification -
---------------
 Logo design ic_launcher transparent for phone dash board(done)
 Custom Action bar creation (done)
 Logo creation for action bar (done)
@@ -42,6 +20,39 @@ Old Home button clean up (done)
 Home button in action bar (done)
 Navigation of back in action bar (done) 
 Submit button disable and enable look & feel (done)
+Login id creation and its validation : id already existing, empty, length, char and digit only, password, confirm password (done)
+Add User : Add Datepicker in Add user with custom style (done)
+	
+
+Upcoming features :
+=================
+
+--- Till 24 Sep ---
+
+Validation add user
+	- only non assign login id should display
+	- if no login id available, then move to login create activity. 
+Expense Type
+Amount splitting according to Expense Type priority
+Transaction Expense Type mapping
+Cash payment Add
+Validate cash payment 
+Validation add flat
+Expense report
+Cash payment report
+Flat user wise dues report
+Authorization assign by Admin
+
+
+--- End of Task till 24 Sep ---
+
+User/Admin can see non settled transactions.
+User/Admin settles his/her non settled transaction.
+Maintenance charge can be settled automatically.
+User can see all his/her settled amount.
+User can add cash expense with details like expense type.
+
+
 
 
 New Expense applied

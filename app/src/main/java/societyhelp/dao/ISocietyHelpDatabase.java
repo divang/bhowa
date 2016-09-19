@@ -169,4 +169,11 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     List<SocietyHelpTransaction> getFlatWiseTransactions(String flatId) throws Exception;
+
+    /**
+     * Returns all assigned login Ids from a society
+     * @return
+     * @throws Exception
+     */
+    List<String> getAllAssignedLogins() throws Exception;
 }

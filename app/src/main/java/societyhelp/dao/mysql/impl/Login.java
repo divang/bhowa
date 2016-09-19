@@ -10,7 +10,7 @@ public class Login {
     public String loginId;
     public String password;
     public boolean status;
-    public String authorisedActivity;
+    public String societyId;
 
     @Override
     public String toString() {
@@ -18,7 +18,7 @@ public class Login {
         str.append("loginId=").append(loginId);
         str.append(" password=").append(password);
         str.append(" status=").append(status);
-        str.append(" authorisedActivity=").append(authorisedActivity);
+        str.append(" societyId=").append(societyId);
         return str.toString();
     }
 

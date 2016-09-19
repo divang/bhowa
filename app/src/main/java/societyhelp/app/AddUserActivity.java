@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -20,10 +21,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
@@ -31,19 +36,36 @@ import societyhelp.dao.mysql.impl.UserDetails;
 
 public class AddUserActivity extends DashBoardActivity {
 
+    protected TextView userIdText;
+    protected TextView nameText;
+    protected TextView nameAliasText;
+    protected TextView mobileNoText;
+    protected TextView mobileNoAlternateText;
+    protected TextView emailIdText;
+    protected TextView addressText;
+    protected EditText flatJoinDateText;
+    protected EditText flatLeftDateText;
+    protected Spinner flatIdSpinner;
+    protected Spinner loginIdSpinner;
+    protected Spinner userTypeSpinner;
+
+
+    protected final SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
         setHeader("", true, false);
 
-        final TextView userIdText = (TextView) findViewById(R.id.userIdText_AUA);
-        final TextView nameText = (TextView) findViewById(R.id.nameText_AUA);
-        final TextView nameAliasText = (TextView) findViewById(R.id.nameAliasText_AUA);
-        final TextView mobileNoText = (TextView) findViewById(R.id.mobileNoText_AUA);
-        final TextView mobileNoAlternateText = (TextView) findViewById(R.id.mobileNoAlternateText_AUA);
-        final TextView emailIdText = (TextView) findViewById(R.id.emailIdText_AUA);
-        final EditText flatJoinDateText = (EditText) findViewById(R.id.flatJoinDateText_AUA);
+        userIdText = (TextView) findViewById(R.id.userIdText_AUA);
+        nameText = (TextView) findViewById(R.id.nameText_AUA);
+        nameAliasText = (TextView) findViewById(R.id.nameAliasText_AUA);
+        mobileNoText = (TextView) findViewById(R.id.mobileNoText_AUA);
+        mobileNoAlternateText = (TextView) findViewById(R.id.mobileNoAlternateText_AUA);
+        emailIdText = (TextView) findViewById(R.id.emailIdText_AUA);
+        addressText = (TextView) findViewById(R.id.AddressText_AUA);
+        flatJoinDateText = (EditText) findViewById(R.id.flatJoinDateText_AUA);
 
         flatJoinDateText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +79,7 @@ public class AddUserActivity extends DashBoardActivity {
             }
         });
 
-        final EditText flatLeftDateText = (EditText) findViewById(R.id.flatLeftDateText_AUA);
+        flatLeftDateText = (EditText) findViewById(R.id.flatLeftDateText_AUA);
         flatLeftDateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,11 +92,9 @@ public class AddUserActivity extends DashBoardActivity {
             }
         });
 
-
-        final Spinner flatIdSpinner = (Spinner) findViewById(R.id.flatIdSpinner_AUA);
-        final Spinner loginIdSpinner = (Spinner) findViewById(R.id.loginIdSpinner_AUA);
-        final Spinner userTypeSpinner = (Spinner) findViewById(R.id.userTypeSpinner_AUA);
-
+        flatIdSpinner = (Spinner) findViewById(R.id.flatIdSpinner_AUA);
+        loginIdSpinner = (Spinner) findViewById(R.id.loginIdSpinner_AUA);
+        userTypeSpinner = (Spinner) findViewById(R.id.userTypeSpinner_AUA);
 
         try {
             List<String> userTypes = getUserType();
@@ -95,36 +115,49 @@ public class AddUserActivity extends DashBoardActivity {
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
+
+                    //validate values
+                    if(validationFailed()) return;
+
                     progress.show();
 
                     final UserDetails ud = new UserDetails();
 
-                    ud.userId = nameText.getText().toString();
+                    ud.userId = userIdText.getText().toString();
                     ud.userName = nameText.getText().toString();
                     ud.nameAlias = nameAliasText.getText().toString();
                     ud.mobileNo = Long.valueOf(mobileNoText.getText().toString());
                     ud.mobileNoAlternative = Long.valueOf(mobileNoAlternateText.getText().toString());
                     ud.emailId = emailIdText.getText().toString();
-                    //ud.flatJoinDate = Date.valueOf(flatJoinDateText.getText().toString());
-                    //ud.flatLeftDate = Date.valueOf(flatLeftDateText.getText().toString());
+                    ud.address = addressText.getText().toString();
                     ud.flatId = flatIdSpinner.getSelectedItem().toString();
                     ud.loginId = loginIdSpinner.getSelectedItem().toString();
                     ud.userType = userTypeSpinner.getSelectedItem().toString();
 
-                    Thread taskThread = new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                SocietyHelpDatabaseFactory.getDBInstance().addUserDetails(ud);
-                                Intent intent = new Intent(getApplicationContext(), ManageUserActivity.class);
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                Log.e("Error", "Login creation failed", e);
+                    try {
+                        ud.flatJoinDate = new Date(dateFormat.parse(flatJoinDateText.getText().toString()).getTime());
+
+                        if(flatLeftDateText.getText().toString().trim().length() > 0)
+                            ud.flatLeftDate = new Date(dateFormat.parse(flatLeftDateText.getText().toString()).getTime());
+
+                        Thread taskThread = new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    SocietyHelpDatabaseFactory.getDBInstance().addUserDetails(ud);
+                                    Intent intent = new Intent(getApplicationContext(), ManageUserActivity.class);
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    Log.e("Error", "Login creation failed", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
                             }
-                            progress.dismiss();
-                            progress.cancel();
-                        }
-                    });
-                    taskThread.start();
+                        });
+                        taskThread.start();
+
+                    } catch (ParseException e) {
+                        Log.e("Error","User details dates have some problem", e);
+                    }
                 }
             });
 
@@ -145,12 +178,11 @@ public class AddUserActivity extends DashBoardActivity {
 
     protected  List<String> getFlatIds() throws Exception
     {
+        String strList = (String) getIntent().getSerializableExtra(CONST_FLAT_IDS);
         List<String> listFlatIds = new ArrayList<>();
-        listFlatIds.add("Select Flat Id");
-        List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats();
-        for(Flat f : flats)
+        for(String flatId : strList.split(","))
         {
-            listFlatIds.add(f.flatId);
+            listFlatIds.add(flatId);
         }
         return  listFlatIds;
     }
@@ -158,12 +190,11 @@ public class AddUserActivity extends DashBoardActivity {
     protected  List<String> getLoginIds() throws Exception
     {
         List<String> listIds = new ArrayList<>();
-        listIds.add("Select Login Id");
-        List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+        String strList = (String) getIntent().getSerializableExtra(CONST_LOGIN_IDS);
 
-        for(Login l : login)
+        for(String loginId : strList.split(","))
         {
-            listIds.add(l.loginId);
+            listIds.add(loginId);
         }
         return  listIds;
     }
@@ -209,4 +240,85 @@ public class AddUserActivity extends DashBoardActivity {
 
     }
 
+    private boolean validationFailed() {
+        boolean validationFailed = false;
+
+        if (userIdText.getText().toString().length() == 0) {
+            Util.CustomToast(getApplicationContext(), "User Id should not be empty", 1000);
+            validationFailed = true;
+            return validationFailed;
+        } else if (userIdText.getText().toString().trim().length() > 0){
+            String allUserIds = (String) getIntent().getSerializableExtra(CONST_USER_IDS);
+            for(String userId : allUserIds.split(","))
+            {
+                if(userId.contains(userIdText.getText().toString().trim()))
+                {
+                    Util.CustomToast(getApplicationContext(), "User Id is already exist.", 1000);
+                    validationFailed = true;
+                    return validationFailed;
+                }
+            }
+        }
+
+        if (nameText.getText().toString().length() == 0) {
+            Util.CustomToast(getApplicationContext(), "User Name should not be empty", 1000);
+            validationFailed = true;
+        } else if (mobileNoText.getText().toString().length() > 0 &&
+                mobileNoText.getText().toString().length() < 5 && mobileNoText.getText().toString().length() > 12) {
+            Util.CustomToast(getApplicationContext(), "Mobile number should be inbetween 6 to 12 digits", 1000);
+            validationFailed = true;
+        } else if (mobileNoAlternateText.getText().toString().length() > 0 &&
+                mobileNoAlternateText.getText().toString().length() < 5 || mobileNoAlternateText.getText().toString().length() > 12) {
+            Util.CustomToast(getApplicationContext(), "Alternate Mobile number should be inbetween 6 to 12 digits", 1000);
+            validationFailed = true;
+        } else if (emailIdText.getText().toString().length() > 0 &&
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(emailIdText.getText().toString()).matches()) {
+            Util.CustomToast(getApplicationContext(), "Invalid Mail Id", 1000);
+            validationFailed = true;
+        } else if (flatJoinDateText.getText().toString().trim().length() == 0) {
+            Util.CustomToast(getApplicationContext(), "Flat join date should enter.", 1000);
+            validationFailed = true;
+        } else if (flatIdSpinner.getSelectedItemId() == 0) {
+            Util.CustomToast(getApplicationContext(), "Flat Id must select.", 1000);
+            validationFailed = true;
+        } else if (loginIdSpinner.getSelectedItemId() == 0) {
+            Util.CustomToast(getApplicationContext(), "Login Id must select.", 1000);
+            validationFailed = true;
+        } else if (userTypeSpinner.getSelectedItemId() == 0) {
+            Util.CustomToast(getApplicationContext(), "User Type must select.", 1000);
+            validationFailed = true;
+        } else if (flatJoinDateText.getText().toString().trim().length() > 0) {
+
+            java.util.Date joinDate = null;
+            try {
+                joinDate = dateFormat.parse(flatJoinDateText.getText().toString());
+                if(joinDate.compareTo(new java.util.Date(System.currentTimeMillis())) > 0) {
+                    Util.CustomToast(getApplicationContext(), "Flat join date should lesser then the current date.", 1000);
+                    validationFailed = true;
+                }
+            } catch (ParseException e) {
+                Util.CustomToast(getApplicationContext(), "Flat join date is in incorrect format.", 1000);
+                validationFailed = true;
+            }
+
+            if(joinDate != null && flatLeftDateText.getText().toString().length() > 0)
+            {
+                java.util.Date leftDate = null;
+                try {
+                    leftDate = dateFormat.parse(flatLeftDateText.getText().toString());
+                    if(joinDate.compareTo(leftDate) > 0) {
+                        Util.CustomToast(getApplicationContext(), "Left join date should lesser then the join date.", 1000);
+                        validationFailed = true;
+                    } else if(leftDate.compareTo(new Date(System.currentTimeMillis())) > 0) {
+                        Util.CustomToast(getApplicationContext(), "Left join date should lesser then the current date.", 1000);
+                        validationFailed = true;
+                    }
+                } catch (ParseException e) {
+                    Util.CustomToast(getApplicationContext(), "Flat left date is in incorrect format.", 1000);
+                    validationFailed = true;
+                }
+            }
+        }
+        return validationFailed;
+    }
 }

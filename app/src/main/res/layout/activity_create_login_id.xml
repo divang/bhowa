@@ -4,6 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_marginLeft="@dimen/activity_left_margin"
     android:orientation="vertical"
     tools:context="societyhelp.app.CreateLoginIdActivity">
 
@@ -17,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:inputType="text"
-        android:digits="0,1,2,3,4,5,6,7,8,9,qwertzuiopasdfghjklyxcvbnm,ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ_"
         android:hint="Login Id"
         />
 
