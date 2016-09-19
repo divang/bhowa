@@ -429,10 +429,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public List<String> getAllAssignedLogins() throws Exception {
+	public List<Login> getAllAssignedLogins() throws Exception {
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllAssignedLogins.name());
 		try {
-			return (List<String>)aTask.get();
+			return (List<Login>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

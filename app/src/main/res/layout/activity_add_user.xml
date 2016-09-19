@@ -112,7 +112,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:dropDownWidth="200dp"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:windowSoftInputMode="stateHidden"/>
 
 
         <Spinner
@@ -126,7 +127,8 @@
             android:dropDownWidth="200dp"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:windowSoftInputMode="stateHidden"/>
 
         <Spinner
             android:hint="Login Ids"
@@ -137,7 +139,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:dropDownWidth="200dp"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:windowSoftInputMode="stateHidden"/>
 
         <EditText
             android:layout_width="match_parent"

@@ -251,7 +251,7 @@ public class AddUserActivity extends DashBoardActivity {
             String allUserIds = (String) getIntent().getSerializableExtra(CONST_USER_IDS);
             for(String userId : allUserIds.split(","))
             {
-                if(userId.contains(userIdText.getText().toString().trim()))
+                if(userId.contentEquals(userIdText.getText().toString().trim()))
                 {
                     Util.CustomToast(getApplicationContext(), "User Id is already exist.", 1000);
                     validationFailed = true;

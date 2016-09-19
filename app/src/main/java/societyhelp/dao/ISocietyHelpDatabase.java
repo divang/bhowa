@@ -175,5 +175,5 @@ public interface ISocietyHelpDatabase {
      * @return
      * @throws Exception
      */
-    List<String> getAllAssignedLogins() throws Exception;
+    List<Login> getAllAssignedLogins() throws Exception;
 }

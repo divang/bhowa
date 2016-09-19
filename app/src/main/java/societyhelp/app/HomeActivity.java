@@ -336,12 +336,20 @@ public class HomeActivity extends DashBoardActivity {
         StringBuilder listIds = new StringBuilder();
         listIds.append("Select Login Id").append(",");
         List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
-        List<String> assignedLogin = SocietyHelpDatabaseFactory.getDBInstance().getAllAssignedLogins();
+        List<Login> assignedLogin = SocietyHelpDatabaseFactory.getDBInstance().getAllAssignedLogins();
 
+        boolean found;
         for(Login l : login)
         {
-            if(!assignedLogin.contains(l.loginId))
-                listIds.append(l.loginId).append(",");
+            found = false;
+            for(Login assignedL : assignedLogin){
+                if(assignedL.loginId.contentEquals(l.loginId))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) listIds.append(l.loginId).append(",");
         }
         return  listIds.toString();
     }
