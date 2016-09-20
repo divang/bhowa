@@ -23,5 +23,6 @@ public class SocietyAuthorization {
            MAP_USER_WITH_MONTHLY_PDF_NAME,
            MONTHLY_MAINTENANCE_GENERATOR,
            VERIFIED_PDF_TRANSACTIONS_UPLOAD,
+           ADD_USER_EXPEND
     }
 }

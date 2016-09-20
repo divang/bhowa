@@ -155,6 +155,27 @@
                     /-->
             </LinearLayout>
 
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_user_expense"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_my_expense"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/generateMaintenanceIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_validate_user_expense"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_user_expend"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/generateMaintenanceIconText"
+                    />
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

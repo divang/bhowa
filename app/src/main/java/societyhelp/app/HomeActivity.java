@@ -99,7 +99,9 @@ public class HomeActivity extends DashBoardActivity {
                 case VERIFIED_PDF_TRANSACTIONS_UPLOAD: //16
                     userAuthActivityIds.add(R.id.transaction_report_activity_btn_upload_transactions);
                     break;
-
+                case ADD_USER_EXPEND:
+                    userAuthActivityIds.add(R.id.home_activity_btn_user_expense);
+                    break;
             }
         }
     }
@@ -204,6 +206,18 @@ public class HomeActivity extends DashBoardActivity {
                         Toast.makeText(this, "Permission denied to access this link (manage users). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
+
+
+                case R.id.home_activity_btn_user_expense:
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_user_expense))
+                    {
+                        intent = new Intent(this, AddCashExpenseActivity.class);
+                        startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (user expend). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+
 
                 case R.id.home_activity_btn_upload_pdf:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))

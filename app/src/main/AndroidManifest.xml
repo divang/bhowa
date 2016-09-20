@@ -44,7 +44,10 @@
         <activity android:name=".DetailTransactionViewActivity" />
         <activity android:name=".MyDuesActivity" />
         <activity android:name=".ManageFlatWisePayableActivity" />
-
+        <activity
+            android:name=".AddCashExpenseActivity"
+            android:label="@string/title_activity_add_cash_expense" >
+        </activity>
     </application>
 
 </manifest>
