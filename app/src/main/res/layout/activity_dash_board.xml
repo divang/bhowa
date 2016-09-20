@@ -163,7 +163,7 @@
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_my_expense"
                     android:onClick="onButtonClicker"
-                    android:text="@string/generateMaintenanceIconText"
+                    android:text="@string/myExpenseIconText"
                     />
 
                 <Button
@@ -171,7 +171,7 @@
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_user_expend"
                     android:onClick="onButtonClicker"
-                    android:text="@string/generateMaintenanceIconText"
+                    android:text="@string/validateUserExpenseIconText"
                     />
 
             </LinearLayout>

@@ -2,9 +2,12 @@ package societyhelp.dao;
 
 import java.util.List;
 
+import societyhelp.dao.mysql.impl.ExpenseType;
+import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.UserCashPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 
 /**
@@ -62,7 +65,7 @@ public interface ISocietyHelpDatabase {
      * All type of expenses which user can do.
      * @return
      */
-    List<String> getExpenseType() throws Exception;
+    List<ExpenseType> getExpenseType() throws Exception;
 
     /**
      * Any kind of error occurred it APP, it should capture in DB
@@ -176,4 +179,10 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     List<Login> getAllAssignedLogins() throws Exception;
+
+    /**
+     *
+     * @param payment
+     */
+    void addUserCashPayment(Object payment) throws Exception;
 }

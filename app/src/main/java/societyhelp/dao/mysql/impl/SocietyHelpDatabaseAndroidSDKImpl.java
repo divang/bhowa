@@ -47,7 +47,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
         getMyDetails,
 		addMonthlyMaintenance,
 		getFlatWiseTransactions,
-		getAllAssignedLogins
+		getAllAssignedLogins,
+		addUserCashPayment
 	}
 
 	@Override
@@ -167,6 +168,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 				case getAllAssignedLogins:
 					result = dbCore.getAllAssignedLogin();
 					break;
+
+				case addUserCashPayment:
+					dbCore.addUserCashPaymentDB(params[1]);
+					break;
 			}
 		}catch(Exception e){
 			System.err.println("Error");
@@ -268,10 +273,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public List<String> getExpenseType()  throws Exception{
+	public List<ExpenseType> getExpenseType()  throws Exception{
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getExpenseType.name());
 		try {
-			return (List<String>)aTask.get();
+			return (List<ExpenseType>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -433,6 +438,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllAssignedLogins.name());
 		try {
 			return (List<Login>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void addUserCashPayment(Object payment) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.addUserCashPayment.name(), payment);
+		try {
+			aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

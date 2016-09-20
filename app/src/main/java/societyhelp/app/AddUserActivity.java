@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import societyhelp.app.util.DatePickerDialogTheme;
+import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.Flat;
@@ -48,9 +50,6 @@ public class AddUserActivity extends DashBoardActivity {
     protected Spinner flatIdSpinner;
     protected Spinner loginIdSpinner;
     protected Spinner userTypeSpinner;
-
-
-    protected final SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,13 +97,13 @@ public class AddUserActivity extends DashBoardActivity {
 
         try {
             List<String> userTypes = getUserType();
-            userTypeSpinner.setAdapter(new ListViewAdaptor(userTypes));
+            userTypeSpinner.setAdapter(new ListViewAdaptor(getApplicationContext(), userTypes));
 
             List<String> flatIds = getFlatIds();
-            flatIdSpinner.setAdapter(new ListViewAdaptor(flatIds));
+            flatIdSpinner.setAdapter(new ListViewAdaptor(getApplicationContext(), flatIds));
 
             List<String> loginIds = getLoginIds();
-            loginIdSpinner.setAdapter(new ListViewAdaptor(loginIds));
+            loginIdSpinner.setAdapter(new ListViewAdaptor(getApplicationContext(), loginIds));
 
             final Button submitButton = (Button) findViewById(R.id.addUserBtn_AUA);
 
@@ -135,10 +134,10 @@ public class AddUserActivity extends DashBoardActivity {
                     ud.userType = userTypeSpinner.getSelectedItem().toString();
 
                     try {
-                        ud.flatJoinDate = new Date(dateFormat.parse(flatJoinDateText.getText().toString()).getTime());
+                        ud.flatJoinDate = new Date(Util.dateFormat.parse(flatJoinDateText.getText().toString()).getTime());
 
                         if(flatLeftDateText.getText().toString().trim().length() > 0)
-                            ud.flatLeftDate = new Date(dateFormat.parse(flatLeftDateText.getText().toString()).getTime());
+                            ud.flatLeftDate = new Date(Util.dateFormat.parse(flatLeftDateText.getText().toString()).getTime());
 
                         Thread taskThread = new Thread(new Runnable() {
                             public void run() {
@@ -199,46 +198,8 @@ public class AddUserActivity extends DashBoardActivity {
         return  listIds;
     }
 
-    class ListViewAdaptor extends  ArrayAdapter{
 
-        ListViewAdaptor(List<String> ids) {
-            super(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, ids);
-        }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View v = super.getView(position, convertView, parent);
-            ((TextView) v).setTextSize(16);
-            ((TextView) v).setTextColor(Color.BLACK);
-
-            return v;
-        }
-
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View v = super.getDropDownView(position, convertView, parent);
-            ((TextView) v).setTextColor(Color.BLACK);
-            ((TextView) v).setGravity(Gravity.LEFT);
-
-            return v;
-        }
-
-    }
-
-    public abstract class DatePickerDialogTheme extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
-                    R.style.CalendarDialogTheme,this,year,month,day);
-
-            return datepickerdialog;
-        }
-
-    }
 
     private boolean validationFailed() {
         boolean validationFailed = false;
@@ -291,7 +252,7 @@ public class AddUserActivity extends DashBoardActivity {
 
             java.util.Date joinDate = null;
             try {
-                joinDate = dateFormat.parse(flatJoinDateText.getText().toString());
+                joinDate = Util.dateFormat.parse(flatJoinDateText.getText().toString());
                 if(joinDate.compareTo(new java.util.Date(System.currentTimeMillis())) > 0) {
                     Util.CustomToast(getApplicationContext(), "Flat join date should lesser then the current date.", 1000);
                     validationFailed = true;
@@ -305,7 +266,7 @@ public class AddUserActivity extends DashBoardActivity {
             {
                 java.util.Date leftDate = null;
                 try {
-                    leftDate = dateFormat.parse(flatLeftDateText.getText().toString());
+                    leftDate = Util.dateFormat.parse(flatLeftDateText.getText().toString());
                     if(joinDate.compareTo(leftDate) > 0) {
                         Util.CustomToast(getApplicationContext(), "Left join date should lesser then the join date.", 1000);
                         validationFailed = true;

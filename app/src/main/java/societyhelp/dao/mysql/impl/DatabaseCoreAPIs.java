@@ -348,8 +348,8 @@ public class DatabaseCoreAPIs extends Queries {
 	}
 
 
-	public List<String> getExpenseType() throws Exception {
-		List<String> types = new ArrayList<>();
+	public List<ExpenseType> getExpenseType() throws Exception {
+		List<ExpenseType> types = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
 		ResultSet result = null;
@@ -359,7 +359,11 @@ public class DatabaseCoreAPIs extends Queries {
 			result = pStat.executeQuery();
 			while(result.next())
 			{
-				types.add(result.getString(1));
+				ExpenseType t = new ExpenseType();
+				t.expenseTypeId = result.getInt(1);
+				t.type = result.getString(2);
+				t.transactionPriority = result.getInt(3);
+				types.add(t);
 			}
 
 		}catch(Exception e){
@@ -892,5 +896,35 @@ public class DatabaseCoreAPIs extends Queries {
 			close(connection,pStat,result);
 		}
 		return logins;
+	}
+
+	public void addUserCashPaymentDB(Object payment) throws Exception
+	{
+		if(payment instanceof  UserCashPaid) {
+
+			UserCashPaid userPaid = (UserCashPaid) payment;
+			Connection con = null;
+			PreparedStatement pStat = null;
+			ResultSet res = null;
+
+			try {
+				con = getDBInstance();
+				pStat = con.prepareStatement(addUserPaymentQuery);
+
+				pStat.setString(1, userPaid.userId);
+				pStat.setString(2, userPaid.flatId);
+				pStat.setFloat(3, userPaid.amount);
+				pStat.setDate(4, userPaid.expendDate);
+				pStat.setString(5, userPaid.userComment);
+				pStat.setString(6, userPaid.expenseType);
+
+				pStat.executeUpdate();
+
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				close(con, pStat, res);
+			}
+		}
 	}
 }

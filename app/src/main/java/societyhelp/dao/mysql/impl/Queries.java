@@ -187,4 +187,9 @@ public class Queries {
 							") T " +
 							"where fid = ? ";
 
+	public static final String addUserPaymentQuery =
+			"insert into User_Paid (User_ID,Flat_ID, Amount, Paid_Date, User_Comment, Expense_Type_Id) " +
+					" select ? ,?, ?, ?, ?, et.Expense_Type_Id " +
+					" from Expense_Type et where type = ? ";
+
 }

@@ -37,7 +37,7 @@
     <string name="uploadTransactionsIconText">Upload Transactions</string>
     <string name="verifiedTransactionsIconText">Verified Transactions</string>
     <string name="generateMaintenanceIconText">Generate Maintenance</string>
-    <string name="myExpenseIconText">Add Our Expenditure</string>
+    <string name="myExpenseIconText">Add your Expends</string>
     <string name="validateUserExpenseIconText">Validate User Expense</string>
 
     <string name="title_activity_home">HomeActivity</string>

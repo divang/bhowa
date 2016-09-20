@@ -30,8 +30,6 @@ Upcoming features :
 --- Till 24 Sep ---
 
 Validation add user (done)
-	- only non assign login id should display 
-	- if no login id available, then move to login create activity. 
 Expense Type
 Amount splitting according to Expense Type priority
 Transaction Expense Type mapping

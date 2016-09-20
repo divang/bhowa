@@ -18,6 +18,7 @@ import societyhelp.app.util.FileChooser;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
+import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.UserDetails;
@@ -211,8 +212,24 @@ public class HomeActivity extends DashBoardActivity {
                 case R.id.home_activity_btn_user_expense:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_user_expense))
                     {
-                        intent = new Intent(this, AddCashExpenseActivity.class);
-                        startActivity(intent);
+                        progress = ProgressDialog.show(this, null, "Waiting for add user expend activity ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    String expenseTypes = getExpenseTypes();
+                                    Intent intentMyDues = new Intent(getApplicationContext(), AddCashExpenseActivity.class);
+                                    intentMyDues.putExtra(CONST_EXPENSE_TYPES, expenseTypes);
+                                    startActivity(intentMyDues);
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching My dues verified data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (user expend). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
@@ -333,7 +350,7 @@ public class HomeActivity extends DashBoardActivity {
             }}).showDialog();
     }
 
-    protected  String getFlatIds() throws Exception
+    protected String getFlatIds() throws Exception
     {
         StringBuilder listFlatIds = new StringBuilder();
         listFlatIds.append("Select Flat Id").append(",");
@@ -345,7 +362,7 @@ public class HomeActivity extends DashBoardActivity {
         return  listFlatIds.toString();
     }
 
-    protected  String getLoginIds() throws Exception
+    protected String getLoginIds() throws Exception
     {
         StringBuilder listIds = new StringBuilder();
         listIds.append("Select Login Id").append(",");
@@ -368,7 +385,7 @@ public class HomeActivity extends DashBoardActivity {
         return  listIds.toString();
     }
 
-    protected  String getUserIds() throws Exception
+    protected String getUserIds() throws Exception
     {
         StringBuilder listIds = new StringBuilder();
         listIds.append("Select Login Id").append(",");
@@ -377,6 +394,19 @@ public class HomeActivity extends DashBoardActivity {
         for(UserDetails u : users)
         {
             listIds.append(u.userId).append(",");
+        }
+        return  listIds.toString();
+    }
+
+    protected String getExpenseTypes() throws Exception
+    {
+        StringBuilder listIds = new StringBuilder();
+        listIds.append("Select Expense Type").append(",");
+        List<ExpenseType> eList = SocietyHelpDatabaseFactory.getDBInstance().getExpenseType();
+
+        for(ExpenseType e : eList)
+        {
+            listIds.append(e.type).append(",");
         }
         return  listIds.toString();
     }

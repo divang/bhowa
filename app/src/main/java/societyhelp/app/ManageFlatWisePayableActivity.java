@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import societyhelp.dao.SocietyHelpDatabaseFactory;
+import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
 
 public class ManageFlatWisePayableActivity extends DashBoardActivity {
@@ -36,7 +37,7 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
                     public void run() {
 
                         FlatWisePayable fwp = new FlatWisePayable();
-                        fwp.expenseType = FlatWisePayable.ExpenseType.Monthly_Maintenance;
+                        fwp.expenseType = ExpenseType.ExpenseTypeConst.Monthly_Maintenance;
                         fwp.month = Integer.parseInt(monthText.getText().toString());
                         fwp.year = Integer.parseInt(yearText.getText().toString());
                         try {

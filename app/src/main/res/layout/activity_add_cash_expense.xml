@@ -6,6 +6,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/activity_left_margin"
+    android:layout_marginRight="@dimen/activity_left_margin"
     tools:context="societyhelp.app.AddCashExpenseActivity">
 
     <LinearLayout
@@ -42,35 +43,36 @@
             android:digits="qwertzuiopasdfghjklyxcvbnm ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,"
             />
 
-        <Spinner
-            android:hint="Expense Type"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/expense_type_AUA"
-            android:layout_below="@+id/user_comment_ACE"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:dropDownWidth="200dp"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-            android:windowSoftInputMode="stateHidden"/>
-
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="20"
-            android:hint="Expend Date"
+            android:hint="Date"
             android:id="@+id/expend_DateText_AUA"
-            android:layout_below="@+id/expense_type_AUA"
+            android:layout_below="@+id/user_comment_ACE"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:dateTextAppearance="@android:style/TextAppearance.Large.Inverse"
             android:digits="0123456789/"/>
 
+        <Spinner
+            android:hint="Expense Type"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/expense_type_AUA"
+            android:layout_below="@+id/expense_type_AUA"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:dropDownWidth="200dp"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:windowSoftInputMode="stateHidden"/>
+
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/addUserBtn_AUA"
-            android:text="Add user" />
+            android:id="@+id/addMyPaidBtn_AUA"
+            android:text="Add my cash paid" />
     </LinearLayout>
 </ScrollView>

@@ -9,7 +9,7 @@ public class FlatWisePayable {
     public int year;
     public float amount;
     public String comments;
-    public ExpenseType expenseType;
+    public ExpenseType.ExpenseTypeConst expenseType;
 
     @Override
     public String toString() {
@@ -22,8 +22,5 @@ public class FlatWisePayable {
         return str.toString();
     }
 
-    public enum ExpenseType {
-        Intial_Payable,
-        Monthly_Maintenance
-    }
+
 }
