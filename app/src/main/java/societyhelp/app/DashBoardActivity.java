@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import societyhelp.app.util.SocietyHelpConstant;
@@ -130,13 +131,25 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         TextView recyclableTextView = new TextView(this);
         recyclableTextView.setText(text);
-        recyclableTextView.setTextColor(Color.BLACK);
-        recyclableTextView.setTextSize(10);
+        //recyclableTextView.setTextColor(Color.BLACK);
+        //recyclableTextView.setTextSize(10);
         recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
         recyclableTextView.setHeight(fixedHeightInPixels);
-        recyclableTextView.setGravity(Gravity.RIGHT);
+        recyclableTextView.setGravity(Gravity.CENTER);
         return recyclableTextView;
     }
 
+    public CheckBox makeTableRowWithCheckBox(String id, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        CheckBox recyclableCheckBox = new CheckBox(this);
+        recyclableCheckBox.setTag(id);
+        //recyclableCheckBox.setBackgroundColor(Color.WHITE);
+        recyclableCheckBox.setHighlightColor(Color.BLUE);
+        recyclableCheckBox.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
+        recyclableCheckBox.setHeight(fixedHeightInPixels);
+        recyclableCheckBox.setGravity(Gravity.CENTER);
+
+        return recyclableCheckBox;
+    }
 
 }

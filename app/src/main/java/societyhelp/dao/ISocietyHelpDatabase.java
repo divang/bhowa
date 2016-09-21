@@ -192,4 +192,12 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     List<UserCashPaid> getUnVerifiedCashPayment() throws Exception;
+
+    /**
+     * It set verified 1 in Database for supplied payment ids
+     * @param userId
+     * @param paymentIds
+     * @throws Exception
+     */
+    void saveVerifiedCashPayment(String userId, String paymentIds) throws Exception;
 }

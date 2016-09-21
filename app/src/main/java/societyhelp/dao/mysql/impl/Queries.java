@@ -192,11 +192,15 @@ public class Queries {
 					" select ? ,?, ?, ?, ?, et.Expense_Type_Id " +
 					" from Expense_Type et where type = ? ";
 
-	public static final String unVerifiedCashPaymentByUser =
+	public static final String unVerifiedCashPaymentByUserQuery =
 					"select " +
                     " Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment " +
                     " from User_Paid u " +
                     " left join Expense_Type e " +
                     " on u.Expense_Type_Id = e.Expense_Type_Id " +
                     " where Verified = 0";
+
+    public static final String saveVerifiedCashPaymentQuery =
+                    "update User_Paid set Verified=1, Verified_by=? " +
+                            "where Payment_Id in (?)";
 }

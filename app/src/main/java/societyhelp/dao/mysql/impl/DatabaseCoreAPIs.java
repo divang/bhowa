@@ -2,12 +2,14 @@ package societyhelp.dao.mysql.impl;
 
 import android.util.Log;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +77,26 @@ public class DatabaseCoreAPIs extends Queries {
         }
     }
 
-    public boolean loginDB(String userName, String password) throws Exception{
+	private void close(Connection connection, Statement pStat, ResultSet result) {
+
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+
+			if (pStat != null) {
+				pStat.close();
+			}
+
+			if(result != null) {
+				result.close();
+			}
+		} catch (SQLException e) {
+			Log.e("Error", "Connection close has some problem.", e);
+		}
+	}
+
+	public boolean loginDB(String userName, String password) throws Exception{
     	
     	Connection connection = null;
         PreparedStatement pStat = null;
@@ -938,7 +959,7 @@ public class DatabaseCoreAPIs extends Queries {
 			Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment
 			 */
 			connection = getDBInstance();
-			pStat = connection.prepareStatement(unVerifiedCashPaymentByUser);
+			pStat = connection.prepareStatement(unVerifiedCashPaymentByUserQuery);
 			result = pStat.executeQuery();
 			while(result.next())
 			{
@@ -960,6 +981,27 @@ public class DatabaseCoreAPIs extends Queries {
 			close(connection,pStat,result);
 		}
 		return payments;
+	}
+
+	public void saveVerifiedCashPayment(String userId, String paymentIds) throws Exception
+	{
+		Connection con = null;
+		Statement stat = null;
+		ResultSet res = null;
+
+		try
+		{
+			con = getDBInstance();
+			stat = con.createStatement();
+			String sqlQuery = "update User_Paid set Verified=1, Verified_by='"
+					+userId+"' where Payment_Id in ("+paymentIds+")";
+			stat.executeUpdate(sqlQuery);
+
+		} catch(Exception e){
+			throw e;
+		} finally {
+			close(con,stat,res);
+		}
 	}
 
 }
