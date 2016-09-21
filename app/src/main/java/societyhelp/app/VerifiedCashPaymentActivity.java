@@ -2,6 +2,7 @@ package societyhelp.app;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -30,7 +31,7 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verified_cash_payment);
         setHeader("", true, false);
-        setCustomToolBarBack();
+        //setCustomToolBarBack();
 
         List<UserCashPaid> userCashPaids = null;
         try {
@@ -43,8 +44,8 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
         try {
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             //User_ID,Payment_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment
-            int[] fixedColumnWidths = new int[]{30, 5, 30, 30, 60, 30, 70, 70};
-            int[] scrollableColumnWidths = new int[]{30, 5, 30, 30, 60, 30, 70, 70};
+            int[] fixedColumnWidths = new int[]{20, 5, 20, 20, 20, 30, 40, 40};
+            int[] scrollableColumnWidths = new int[]{20, 5, 20, 20, 20, 30, 40, 40};
 
             int fixedRowHeight = 50;
             int fixedHeaderHeight = 60;
@@ -52,10 +53,10 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("User ID", scrollableColumnWidths[0], fixedHeaderHeight);
-            fixedViewUserIdH.setBackgroundColor(Color.YELLOW);
+            fixedViewUserIdH.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
             fixedViewUserIdH.setLayoutParams(wrapWrapTableRowParams);
             fixedColumn.addView(fixedViewUserIdH);
-            fixedColumn.setBackgroundColor(Color.GREEN);
+            fixedColumn.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
 
             //rest of the table (within a scroll view)
             TableLayout scrollablePart = (TableLayout) findViewById(R.id.reportTableLayout);
@@ -63,7 +64,7 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
             //header (fixed vertically)
             row.setLayoutParams(wrapWrapTableRowParams);
             row.setGravity(Gravity.CENTER);
-            row.setBackgroundColor(Color.YELLOW);
+            row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
             row.addView(makeTableRowWithText("Payment ID", fixedColumnWidths[1], fixedHeaderHeight));
             row.addView(makeTableRowWithText("Flat ID", fixedColumnWidths[2], fixedHeaderHeight));
             row.addView(makeTableRowWithText("Amount", fixedColumnWidths[3], fixedHeaderHeight));
@@ -73,8 +74,11 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
             row.addView(makeTableRowWithText("Admin Comment", fixedColumnWidths[7], fixedHeaderHeight));
             scrollablePart.addView(row);
 
+            boolean rowColorFlip = true;
+
             for (UserCashPaid paid : userCashPaids) {
 
+                rowColorFlip = !rowColorFlip;
                 //Fixed Columns
                 TextView fixedViewUserId = makeTableRowWithText(paid.userId, scrollableColumnWidths[0], fixedRowHeight);
                 //fixedViewUserId.setBackgroundColor(Color.BLUE);
@@ -85,7 +89,8 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
                 row = new TableRow(this);
                 row.setLayoutParams(wrapWrapTableRowParams);
                 row.setGravity(Gravity.CENTER);
-                row.setBackgroundColor(Color.WHITE);
+                if(rowColorFlip) row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
+                else row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
                 //User_ID,Payment_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment
                 row.addView(makeTableRowWithText(String.valueOf(paid.paymentId), scrollableColumnWidths[1], fixedRowHeight));
                 row.addView(makeTableRowWithText(String.valueOf(paid.flatId), scrollableColumnWidths[2], fixedRowHeight));

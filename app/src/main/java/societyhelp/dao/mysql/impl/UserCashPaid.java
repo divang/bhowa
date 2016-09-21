@@ -7,7 +7,7 @@ import java.sql.Date;
  * Created by divang.sharma on 9/21/2016.
  */
 public class UserCashPaid implements Serializable {
-    
+
     public int paymentId;
     public float amount;
     public String userComment;

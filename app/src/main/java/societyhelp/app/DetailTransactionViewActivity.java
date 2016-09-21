@@ -3,6 +3,7 @@ package societyhelp.app;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -25,7 +26,7 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_transaction_view);
-
+        setHeader("", true, false);
         try {
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int[] fixedColumnWidths      = new int[]{20, 5, 5, 40, 20, 70, 60, 20, 20, 20, 20, 20, 30};
@@ -37,7 +38,7 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
             //header (fixed vertically)
             row.setLayoutParams(wrapWrapTableRowParams);
             row.setGravity(Gravity.CENTER);
-            row.setBackgroundColor(Color.YELLOW);
+            row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
 
             //row.addView(makeTableRowWithText("Transaction Id", fixedColumnWidths[1], fixedHeaderHeight));
             //row.addView(makeTableRowWithText("Sr", fixedColumnWidths[2], fixedHeaderHeight));
@@ -56,7 +57,7 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("User Id", scrollableColumnWidths[0], fixedHeaderHeight);
-            fixedViewUserIdH.setBackgroundColor(Color.YELLOW);
+            fixedViewUserIdH.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
             fixedViewUserIdH.setLayoutParams(wrapWrapTableRowParams);
             fixedColumn.addView(fixedViewUserIdH);
 
@@ -112,17 +113,17 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
 
 
                 if (bt.userId == null) {
-                    row.setBackgroundColor(Color.RED);
-                    fixedViewUserId.setBackgroundColor(Color.RED);
+                    row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRowNotVerifiedColor));
+                    fixedViewUserId.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRowNotVerifiedColor));
                 }
                 else if(isdimGreen) {
-                    row.setBackgroundColor(Color.argb(100, 143, 196, 162));
-                    fixedViewUserId.setBackgroundColor(Color.argb(100, 143, 196, 162));
+                    row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
+                    fixedViewUserId.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
                     isdimGreen = !isdimGreen;
                 }
                 else {
-                    row.setBackgroundColor(Color.argb(100, 178, 243, 202));
-                    fixedViewUserId.setBackgroundColor(Color.argb(100, 178, 243, 202));
+                    row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
+                    fixedViewUserId.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
                     isdimGreen = !isdimGreen;
                 }
 
@@ -132,20 +133,5 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
         {
             Log.e("Error", "Transaction Raw data activity has problem", e);
         }
-}
-
-//util method
-private TextView recyclableTextView;
-
-    public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        recyclableTextView = new TextView(this);
-        recyclableTextView.setText(text);
-        recyclableTextView.setTextColor(Color.BLACK);
-        recyclableTextView.setTextSize(10);
-        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
-        recyclableTextView.setHeight(fixedHeightInPixels);
-        return recyclableTextView;
     }
-
 }

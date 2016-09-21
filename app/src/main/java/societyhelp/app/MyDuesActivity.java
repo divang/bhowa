@@ -3,6 +3,7 @@ package societyhelp.app;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -26,8 +27,10 @@ public class MyDuesActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_dues);
-        setHeader("My Dues", true, false);
-        setCustomToolBarBack();
+
+        setHeader("", true, false);
+
+        //setCustomToolBarBack();
         try {
             final TextView duesText = (TextView) findViewById(R.id.myDuesText);
             float myDues = (float) getIntent().getSerializableExtra("MyDueAmount");
@@ -43,8 +46,8 @@ public class MyDuesActivity extends DashBoardActivity {
 
         try {
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int[] fixedColumnWidths = new int[]{30, 20, 30};
-            int[] scrollableColumnWidths = new int[]{30, 20, 30};
+            int[] fixedColumnWidths = new int[]{30, 20, 50};
+            int[] scrollableColumnWidths = new int[]{30, 20, 50};
 
             int fixedRowHeight = 50;
             int fixedHeaderHeight = 60;
@@ -53,17 +56,17 @@ public class MyDuesActivity extends DashBoardActivity {
             //header (fixed vertically)
             row.setLayoutParams(wrapWrapTableRowParams);
             row.setGravity(Gravity.CENTER);
-            row.setBackgroundColor(Color.YELLOW);
+            row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
 
             row.addView(makeTableRowWithText("Amount", fixedColumnWidths[1], fixedHeaderHeight));
             row.addView(makeTableRowWithText("Transaction Date", fixedColumnWidths[2], fixedHeaderHeight));
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("Type", scrollableColumnWidths[0], fixedHeaderHeight);
-            fixedViewUserIdH.setBackgroundColor(Color.YELLOW);
+            fixedViewUserIdH.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
             fixedViewUserIdH.setLayoutParams(wrapWrapTableRowParams);
             fixedColumn.addView(fixedViewUserIdH);
-            fixedColumn.setBackgroundColor(Color.GREEN);
+            fixedColumn.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
             //rest of the table (within a scroll view)
             TableLayout scrollablePart = (TableLayout) findViewById(R.id.reportTableLayout);
             scrollablePart.addView(row);
@@ -71,6 +74,7 @@ public class MyDuesActivity extends DashBoardActivity {
             final List<SocietyHelpTransaction> allTransactions = SocietyHelpDatabaseFactory.getDBInstance().getFlatWiseTransactions(getFlatId());
 
             float totalDues = 0;
+            boolean rowColorFlip = true;
             for (SocietyHelpTransaction bt : allTransactions) {
 
                 //Fixed Columns
@@ -83,7 +87,9 @@ public class MyDuesActivity extends DashBoardActivity {
                 row = new TableRow(this);
                 row.setLayoutParams(wrapWrapTableRowParams);
                 row.setGravity(Gravity.CENTER);
-                row.setBackgroundColor(Color.WHITE);
+
+                if(rowColorFlip) row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
+                else row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
 
                 if(bt.transactionFlow.equals("Payable"))
                 {
@@ -106,7 +112,7 @@ public class MyDuesActivity extends DashBoardActivity {
             }
 
             TextView fixedViewUserId = makeTableRowWithText("Total Dues", scrollableColumnWidths[0], fixedRowHeight);
-            fixedViewUserId.setBackgroundColor(Color.BLUE);
+            fixedViewUserId.setBackgroundColor(Color.WHITE);
             fixedColumn.addView(fixedViewUserId);
             //Fixed Columns
 
