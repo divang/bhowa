@@ -48,6 +48,10 @@
             android:name=".AddCashExpenseActivity"
             android:label="@string/title_activity_add_cash_expense" >
         </activity>
+        <activity
+            android:name=".VerifiedCashPaymentActivity"
+            android:label="@string/title_activity_verified_cash_payment" >
+        </activity>
     </application>
 
 </manifest>

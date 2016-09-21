@@ -62,6 +62,7 @@
     <color name="white">#FFFFFF</color>
     <string name="title_activity_manage_flat_wise_payable">ManageFlatWisePayableActivity</string>
     <string name="title_activity_add_cash_expense">AddCashExpenseActivity</string>
+    <string name="title_activity_verified_cash_payment">VerifiedCashPaymentActivity</string>
 
 
 </resources>

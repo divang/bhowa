@@ -3,12 +3,14 @@ package societyhelp.app;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,4 +125,18 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         finish();
         return super.onOptionsItemSelected(item);
     }
+
+    public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        TextView recyclableTextView = new TextView(this);
+        recyclableTextView.setText(text);
+        recyclableTextView.setTextColor(Color.BLACK);
+        recyclableTextView.setTextSize(10);
+        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
+        recyclableTextView.setHeight(fixedHeightInPixels);
+        recyclableTextView.setGravity(Gravity.RIGHT);
+        return recyclableTextView;
+    }
+
+
 }

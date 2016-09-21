@@ -26,7 +26,7 @@ public class MyDuesActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_dues);
-        setHeader("My Dues", false, true);
+        setHeader("My Dues", true, false);
         setCustomToolBarBack();
         try {
             final TextView duesText = (TextView) findViewById(R.id.myDuesText);
@@ -130,21 +130,4 @@ public class MyDuesActivity extends DashBoardActivity {
             Log.e("Error", "Transaction Raw data activity has problem", e);
         }
     }
-
-    //util method
-    private TextView recyclableTextView;
-
-    public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        recyclableTextView = new TextView(this);
-        recyclableTextView.setText(text);
-        recyclableTextView.setTextColor(Color.BLACK);
-        recyclableTextView.setTextSize(10);
-        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
-        recyclableTextView.setHeight(fixedHeightInPixels);
-        recyclableTextView.setGravity(Gravity.RIGHT);
-        return recyclableTextView;
-    }
-
-
 }

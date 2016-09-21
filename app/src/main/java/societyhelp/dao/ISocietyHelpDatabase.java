@@ -185,4 +185,11 @@ public interface ISocietyHelpDatabase {
      * @param payment
      */
     void addUserCashPayment(Object payment) throws Exception;
+
+    /**
+     * Return all un verified user cash transactions
+     * @return
+     * @throws Exception
+     */
+    List<UserCashPaid> getUnVerifiedCashPayment() throws Exception;
 }

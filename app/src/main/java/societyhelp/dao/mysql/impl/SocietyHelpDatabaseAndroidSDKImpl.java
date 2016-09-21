@@ -48,7 +48,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		addMonthlyMaintenance,
 		getFlatWiseTransactions,
 		getAllAssignedLogins,
-		addUserCashPayment
+		addUserCashPayment,
+		getUnVerifiedCashPayment
 	}
 
 	@Override
@@ -172,7 +173,11 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 				case addUserCashPayment:
 					dbCore.addUserCashPaymentDB(params[1]);
 					break;
+				case getUnVerifiedCashPayment:
+					result = dbCore.getUnVerifiedUserCashPayment();
+					break;
 			}
+
 		}catch(Exception e){
 			System.err.println("Error");
 		}
@@ -448,6 +453,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.addUserCashPayment.name(), payment);
 		try {
 			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<UserCashPaid> getUnVerifiedCashPayment() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getUnVerifiedCashPayment.name());
+		try {
+			return (List<UserCashPaid>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

@@ -3,10 +3,7 @@ package societyhelp.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,12 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import societyhelp.app.util.FileChooser;
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.UserCashPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.parser.SocietyHelpParserFactory;
 
@@ -235,6 +234,33 @@ public class HomeActivity extends DashBoardActivity {
                     }
                     break;
 
+                case R.id.home_activity_btn_validate_user_expense:
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_validate_user_expense))
+                    {
+                        progress = ProgressDialog.show(this, null, "Getting unverified user's cash payment ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<UserCashPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
+                                    Intent intentMyDues = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
+                                    byte[] sObj = CustomSerializer.serializeObject(payments);
+                                    intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);
+
+                                    startActivity(intentMyDues);
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching My dues verified data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (user expend). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
+                    break;
 
                 case R.id.home_activity_btn_upload_pdf:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))

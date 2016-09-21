@@ -188,8 +188,15 @@ public class Queries {
 							"where fid = ? ";
 
 	public static final String addUserPaymentQuery =
-			"insert into User_Paid (User_ID,Flat_ID, Amount, Paid_Date, User_Comment, Expense_Type_Id) " +
+					"insert into User_Paid (User_ID,Flat_ID, Amount, Paid_Date, User_Comment, Expense_Type_Id) " +
 					" select ? ,?, ?, ?, ?, et.Expense_Type_Id " +
 					" from Expense_Type et where type = ? ";
 
+	public static final String unVerifiedCashPaymentByUser =
+					"select " +
+                    " Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment " +
+                    " from User_Paid u " +
+                    " left join Expense_Type e " +
+                    " on u.Expense_Type_Id = e.Expense_Type_Id " +
+                    " where Verified = 0";
 }

@@ -1,11 +1,13 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 /**
  * Created by divang.sharma on 9/21/2016.
  */
-public class UserCashPaid {
+public class UserCashPaid implements Serializable {
+    
     public int paymentId;
     public float amount;
     public String userComment;

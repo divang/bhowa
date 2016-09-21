@@ -30,11 +30,11 @@ Upcoming features :
 --- Till 24 Sep ---
 
 Validation add user (done)
-Expense Type
+Expense Type (done)
+Cash payment Add (done)
+Validate cash payment 
 Amount splitting according to Expense Type priority
 Transaction Expense Type mapping
-Cash payment Add
-Validate cash payment 
 Validation add flat
 Expense report
 Cash payment report
@@ -174,4 +174,9 @@ Sheets :
 	
 Copy file from local to Emulator :
 D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /mnt
+	
+	
+	
+	
+	
 	
