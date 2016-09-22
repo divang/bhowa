@@ -32,7 +32,9 @@ Upcoming features :
 Validation add user (done)
 Expense Type (done)
 Cash payment Add (done)
-Validate cash payment 
+Validate cash payment (done)
+Bug fixing file chosen
+
 Amount splitting according to Expense Type priority
 Transaction Expense Type mapping
 Validation add flat
@@ -41,6 +43,12 @@ Cash payment report
 Flat user wise dues report
 Authorization assign by Admin
 
+Direct use of APP ----------
+On Login page :
+Create Login on first page
+Create Society
+Create User
+Need online database required (encrypted password) 
 
 --- End of Task till 24 Sep ---
 

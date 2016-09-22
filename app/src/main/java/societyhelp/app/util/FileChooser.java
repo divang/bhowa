@@ -1,9 +1,12 @@
 package societyhelp.app.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Environment;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
@@ -48,28 +51,13 @@ public class FileChooser {
         this.activity = activity;
         dialog = new Dialog(activity);
         list = new ListView(activity);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int which, long id) {
-                String fileChosen = (String) list.getItemAtPosition(which);
-                File chosenFile = getChosenFile(fileChosen);
-                if (chosenFile.isDirectory()) {
-                    refresh(chosenFile);
-                } else {
-                    if (fileListener != null) {
-                        fileListener.fileSelected(chosenFile);
-                    }
-                    dialog.dismiss();
-                }
-            }
-        });
         dialog.setContentView(list);
         dialog.getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         Log.d("Info", "External Storage Dir : " + Environment.getExternalStorageDirectory());
         Log.d("Info", "Internal Storage Dir : " + Environment.getDataDirectory());
         if(Environment.isExternalStorageRemovable()) Log.d("Info", "External Storage removed");
-      //  if(Environment.isExternalStorageEmulated(Environment.getExternalStorageDirectory())) Log.d("Info", "External Storage removed : " + Environment.getExternalStorageDirectory());
-       // checkExternalMedia();
+        //if(Environment.isExternalStorageEmulated(Environment.getExternalStorageDirectory())) Log.d("Info", "External Storage removed : " + Environment.getExternalStorageDirectory());
+        checkExternalMedia();
         refresh(Environment.getExternalStorageDirectory());
     }
 
@@ -81,7 +69,6 @@ public class FileChooser {
             Log.d("info"," Can only read the media");
         } else {
             Log.d("info"," Can't read or write");
-
         }
     }
 
@@ -98,12 +85,12 @@ public class FileChooser {
         Log.d("INFO","path-"+path);
         this.currentPath = path;
         if (path.exists()) {
-            File[] dirs = path.listFiles();
-            /*File[] dirs = path.listFiles(new FileFilter() {
+            //File[] dirs = path.listFiles();
+            File[] dirs = path.listFiles(new FileFilter() {
                 @Override public boolean accept(File file) {
                     return (file.isDirectory() && file.canRead());
                 }
-            });*/
+            });
             if (dirs != null) {
                 File[] files = path.listFiles(new FileFilter() {
                     @Override
@@ -148,8 +135,26 @@ public class FileChooser {
                     public View getView(int pos, View view, ViewGroup parent) {
                         view = super.getView(pos, view, parent);
                         ((TextView) view).setSingleLine(true);
+
+                        view.setClickable(true);
+                        view.setFocusable(true);
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                File chosenFile = getChosenFile(((TextView) v).getText().toString());
+                                if (chosenFile.isDirectory()) {
+                                    refresh(chosenFile);
+                                } else {
+                                    if (fileListener != null) {
+                                        fileListener.fileSelected(chosenFile);
+                                    }
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
                         return view;
                     }
+
                 });
             }
             else Log.d("INFO","dirs are null. path - " + path);
