@@ -22,6 +22,11 @@ Navigation of back in action bar (done)
 Submit button disable and enable look & feel (done)
 Login id creation and its validation : id already existing, empty, length, char and digit only, password, confirm password (done)
 Add User : Add Datepicker in Add user with custom style (done)
+Validation add user (done)
+Expense Type (done)
+Cash payment Add (done)
+Validate cash payment (done)
+Bug fixing file chosen (done)
 	
 
 Upcoming features :
@@ -29,15 +34,10 @@ Upcoming features :
 
 --- Till 24 Sep ---
 
-Validation add user (done)
-Expense Type (done)
-Cash payment Add (done)
-Validate cash payment (done)
-Bug fixing file chosen
-
 Amount splitting according to Expense Type priority
 Transaction Expense Type mapping
 Validation add flat
+Validation monthly expense generation
 Expense report
 Cash payment report
 Flat user wise dues report
