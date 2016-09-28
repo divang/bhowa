@@ -3,11 +3,10 @@ package societyhelp.dao;
 import java.util.List;
 
 import societyhelp.dao.mysql.impl.ExpenseType;
-import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
-import societyhelp.dao.mysql.impl.UserCashPaid;
+import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 
 /**
@@ -191,7 +190,7 @@ public interface ISocietyHelpDatabase {
      * @return
      * @throws Exception
      */
-    List<UserCashPaid> getUnVerifiedCashPayment() throws Exception;
+    List<UserPaid> getUnVerifiedCashPayment() throws Exception;
 
     /**
      * It set verified 1 in Database for supplied payment ids
@@ -200,4 +199,12 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     void saveVerifiedCashPayment(String userId, String paymentIds) throws Exception;
+
+    /**
+     * Returen splitted transactions flat wise.
+     *
+     * @return
+     * @throws Exception
+     */
+    public List<UserPaid> generateSplittedTransactionsFlatWise() throws Exception;
 }

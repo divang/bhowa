@@ -45,8 +45,8 @@ public class MyTransactionsActivity extends DashBoardActivity {
             row.addView(makeTableRowWithText("Type", fixedColumnWidths[5], fixedHeaderHeight));
 
             row.addView(makeTableRowWithText("Flat", fixedColumnWidths[6], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("User Comment", fixedColumnWidths[7], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Admin Comment", fixedColumnWidths[8], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Verified By", fixedColumnWidths[7], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Splitted", fixedColumnWidths[8], fixedHeaderHeight));
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("Reference", scrollableColumnWidths[0], fixedHeaderHeight);
@@ -87,9 +87,9 @@ public class MyTransactionsActivity extends DashBoardActivity {
 
                 row.addView(makeTableRowWithText(bt.flatId, scrollableColumnWidths[6], fixedRowHeight));
 
-                row.addView(makeTableRowWithText(bt.adminComment, scrollableColumnWidths[7], fixedRowHeight));
+                row.addView(makeTableRowWithText(bt.verifiedBy, scrollableColumnWidths[7], fixedRowHeight));
 
-                row.addView(makeTableRowWithText(bt.userComment, scrollableColumnWidths[8], fixedRowHeight));
+                row.addView(makeTableRowWithText(Boolean.toString(bt.splitted), scrollableColumnWidths[8], fixedRowHeight));
 
                 scrollablePart.addView(row);
 

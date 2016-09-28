@@ -2,17 +2,13 @@ package societyhelp.app;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -23,7 +19,8 @@ import societyhelp.app.util.DatePickerDialogTheme;
 import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.UserCashPaid;
+import societyhelp.dao.mysql.impl.ExpenseType;
+import societyhelp.dao.mysql.impl.UserPaid;
 
 public class AddCashExpenseActivity extends DashBoardActivity {
 
@@ -74,12 +71,12 @@ public class AddCashExpenseActivity extends DashBoardActivity {
             public void onClick(View v) {
                 if(validationFailed()) return;
 
-                final UserCashPaid payment = new UserCashPaid();
+                final UserPaid payment = new UserPaid();
                 payment.userId = getLoginId();
                 payment.flatId = getFlatId();
                 payment.amount = Float.valueOf(amountText.getText().toString());
                 payment.userComment = commentText.getText().toString();
-                payment.expenseType = expenseType.getSelectedItem().toString();
+                payment.expenseType = ExpenseType.ExpenseTypeConst.values()[Integer.parseInt(expenseType.getSelectedItem().toString())];
                 java.util.Date eDate;
                 try {
                     eDate = Util.dateFormat.parse(dateText.getText().toString());

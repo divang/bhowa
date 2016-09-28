@@ -46,12 +46,12 @@ public class MonthlyStatementDetailsFromiTextParser extends MonthlyStatementDeta
 			if(arrAmtDate.length > 1 )
 			{
 				String strDate = arrAmtDate[1];
-				t.transactionDate = dateFormat.parse(strDate);
+				t.transactionDate = new java.sql.Date(dateFormat.parse(strDate).getTime());
 			}
 			else
 			{
 				if(isLoggingEnable) System.out.println("i-"+strTransaction + " strAmountnDate-" + strAmountnDate);
-				t.transactionDate = getDateFromLine(strTransaction);
+				t.transactionDate = new java.sql.Date(getDateFromLine(strTransaction).getTime());
 			}
 		} catch (Exception e) {
 			if(isLoggingEnable) System.out.println("i-"+strTransaction);

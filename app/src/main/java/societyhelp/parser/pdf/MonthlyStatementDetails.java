@@ -255,7 +255,7 @@ public class MonthlyStatementDetails {
 		t.amount = Float.valueOf(strAmountnDate.substring(0, strAmountnDate.length()-8));
 		try {
 			String strDate = strAmountnDate.substring(strAmountnDate.length()-8,strAmountnDate.length());
-			t.transactionDate = dateFormat.parse(strDate);
+			t.transactionDate = new java.sql.Date(dateFormat.parse(strDate).getTime());
 		} catch (ParseException e) {
 			if(isLoggingEnable) System.out.println("i-"+strTransaction);
 			if(isLoggingEnable) System.out.println();

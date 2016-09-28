@@ -1,14 +1,10 @@
 package societyhelp.dao.mysql.impl;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import android.os.AsyncTask;
 import societyhelp.dao.ISocietyHelpDatabase;
-import android.content.Context;
-import android.content.res.AssetManager;
-import java.io.IOException;
-import java.util.Properties;
+
 /**
  * Created by divang.sharma on 8/6/2016.
  */
@@ -50,7 +46,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		getAllAssignedLogins,
 		addUserCashPayment,
 		getUnVerifiedCashPayment,
-		saveVerifiedCashPayment
+		saveVerifiedCashPayment,
+		generateSplittedTransactionsFlatWise
 	}
 
 	@Override
@@ -181,6 +178,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 
 				case saveVerifiedCashPayment:
 					dbCore.saveVerifiedCashPayment(String.valueOf(params[1]), String.valueOf(params[2]));
+					break;
+
+				case generateSplittedTransactionsFlatWise:
+					result = dbCore.generateSplittedTransactionsFlatWise();
 					break;
 			}
 
@@ -465,10 +466,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public List<UserCashPaid> getUnVerifiedCashPayment() throws Exception {
+	public List<UserPaid> getUnVerifiedCashPayment() throws Exception {
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getUnVerifiedCashPayment.name());
 		try {
-			return (List<UserCashPaid>)aTask.get();
+			return (List<UserPaid>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -479,6 +480,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.saveVerifiedCashPayment.name(), userId, paymentIds);
 		try {
 			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<UserPaid> generateSplittedTransactionsFlatWise() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.generateSplittedTransactionsFlatWise.name());
+		try {
+			return (List<UserPaid>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

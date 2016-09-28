@@ -51,9 +51,9 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
             row.addView(makeTableRowWithText("Type", fixedColumnWidths[8], fixedHeaderHeight));
 
             row.addView(makeTableRowWithText("Flat", fixedColumnWidths[9], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Approved", fixedColumnWidths[10], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("User Comment", fixedColumnWidths[11], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Admin Comment", fixedColumnWidths[12], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Verified By", fixedColumnWidths[10], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Splitted", fixedColumnWidths[11], fixedHeaderHeight));
+            //row.addView(makeTableRowWithText("Admin Comment", fixedColumnWidths[12], fixedHeaderHeight));
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("User Id", scrollableColumnWidths[0], fixedHeaderHeight);
@@ -103,11 +103,10 @@ public class DetailTransactionViewActivity extends DashBoardActivity {
 
                 row.addView(makeTableRowWithText(bt.flatId, scrollableColumnWidths[9], fixedRowHeight));
 
-                row.addView(makeTableRowWithText(Boolean.toString(bt.isAdminApproved), scrollableColumnWidths[10], fixedRowHeight));
+                row.addView(makeTableRowWithText(bt.verifiedBy, scrollableColumnWidths[10], fixedRowHeight));
 
-                row.addView(makeTableRowWithText(bt.adminComment, scrollableColumnWidths[11], fixedRowHeight));
+                row.addView(makeTableRowWithText(Boolean.toString(bt.splitted), scrollableColumnWidths[11], fixedRowHeight));
 
-                row.addView(makeTableRowWithText(bt.userComment, scrollableColumnWidths[12], fixedRowHeight));
 
                 scrollablePart.addView(row);
 

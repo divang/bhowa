@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                     prefs.edit().putString(CONST_FLAT_ID_KEY_PREF_MANAGER, ud.flatId).commit();
                     prefs.edit().putString(CONST_USER_AUTHS_PREF_MANAGER, ud.getAuthorizationList()).commit();
                 }
+                SocietyHelpDatabaseFactory.getDBInstance().generateSplittedTransactionsFlatWise();
                 Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
                 startActivity(homeIntent);
             } else {

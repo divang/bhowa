@@ -27,7 +27,7 @@ Expense Type (done)
 Cash payment Add (done)
 Validate cash payment (done)
 Bug fixing file chosen (done)
-	
+Bug fixing runtime exception (done)	
 
 Upcoming features :
 =================
@@ -36,8 +36,10 @@ Upcoming features :
 
 Amount splitting according to Expense Type priority
 Transaction Expense Type mapping
+
 Validation add flat
 Validation monthly expense generation
+
 Expense report
 Cash payment report
 Flat user wise dues report
@@ -182,6 +184,12 @@ Sheets :
 	
 Copy file from local to Emulator :
 D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /mnt
+	
+	
+	56k
+	sep 2015
+	
+	SELECT Payable_Id,Flat_Id,Status,Month,Year,Amount,et.Expense_Type_Id,Comments,Payment_IDs,Payment_Status_ID,et.Payable_Priority FROM Flat_Wise_Payable fwp left join Expense_Type et on et.Expense_Type_Id = fwp.Expense_Type_Id where Payment_Status_ID in (1,3)
 	
 	
 	

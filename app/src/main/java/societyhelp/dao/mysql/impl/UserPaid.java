@@ -6,18 +6,21 @@ import java.sql.Date;
 /**
  * Created by divang.sharma on 9/21/2016.
  */
-public class UserCashPaid implements Serializable {
+public class UserPaid implements Serializable {
 
     public int paymentId;
     public float amount;
-    public String userComment;
-    public Date expendDate;
-    public String expenseType;
+    public java.sql.Date expendDate;
+    public ExpenseType.ExpenseTypeConst expenseType;
     public String userId;
     public String flatId;
+    public String userComment;
     public String adminComment;
     public boolean isVerified;
     public String verifiedBy;
+    public int transactionId;
+    public boolean isUserVerified;
+
 
     @Override
     public String toString() {
@@ -32,6 +35,8 @@ public class UserCashPaid implements Serializable {
         str.append(" flatId=").append(flatId);
         str.append(" isVerified=").append(isVerified);
         str.append(" verifiedBy=").append(verifiedBy);
+        str.append(" transactionId=").append(transactionId);
+        str.append(" isUserVerified=").append(isUserVerified);
         return str.toString();
     }
 }

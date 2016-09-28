@@ -2,18 +2,10 @@ package societyhelp.app;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,8 +20,7 @@ import java.util.List;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
-import societyhelp.dao.mysql.impl.UserCashPaid;
+import societyhelp.dao.mysql.impl.UserPaid;
 
 public class VerifiedCashPaymentActivity extends DashBoardActivity {
 
@@ -43,10 +34,10 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
         setHeader("", true, false);
         //setCustomToolBarBack();
 
-        List<UserCashPaid> userCashPaids = null;
+        List<UserPaid> userPaids = null;
         try {
             byte[] sObjet = (byte[]) getIntent().getSerializableExtra(CONST_UN_VERIFIED_PAYMENT);
-            userCashPaids = (List<UserCashPaid>) CustomSerializer.deserializeObject(sObjet);
+            userPaids = (List<UserPaid>) CustomSerializer.deserializeObject(sObjet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +83,7 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
 
             boolean rowColorFlip = true;
 
-            for (UserCashPaid paid : userCashPaids) {
+            for (UserPaid paid : userPaids) {
 
                 rowColorFlip = !rowColorFlip;
                 //Fixed Columns
@@ -158,7 +149,7 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
                             public void run() {
                                 try {
                                     SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedCashPayment(getLoginId(), getStrPaymentIds());
-                                    List<UserCashPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
+                                    List<UserPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
                                     Intent intentInner = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(payments);
                                     intentInner.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);

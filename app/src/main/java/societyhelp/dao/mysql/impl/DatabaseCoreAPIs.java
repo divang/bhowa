@@ -1,8 +1,8 @@
 package societyhelp.dao.mysql.impl;
 
+import android.support.v7.util.SortedList;
 import android.util.Log;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
@@ -648,9 +650,6 @@ public class DatabaseCoreAPIs extends Queries {
                 t.reference  = result.getString(8);
                 t.userId  = result.getString(9);
                 t.flatId = result.getString(10);
-                t.isAdminApproved  = result.getBoolean(11);
-                t.adminComment  = result.getString(12);
-                t.userComment = result.getString(13);
                 list.add(t);
 			}
 
@@ -680,7 +679,7 @@ public class DatabaseCoreAPIs extends Queries {
                     /*
                     "Insert into Transactions_Verified (" +
 					"Amount, Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
-					"User_Id, Flat_Id,Admin_Comment,User_Comment) " +
+					"User_Id, Flat_Id,verified_by, splitted) " +
 					"values (? , ?, ?, ?, ?, " +
 					"? , ?, ?, ?) ";
                      */
@@ -694,8 +693,8 @@ public class DatabaseCoreAPIs extends Queries {
                         pStat.setString(5, t.reference);
                         pStat.setString(6, t.userId);
                         pStat.setString(7, t.flatId);
-                        pStat.setString(8, t.adminComment);
-                        pStat.setString(9, t.userComment);
+                        pStat.setString(8, t.verifiedBy);
+						pStat.setBoolean(9, t.splitted);
 
                         pStat.addBatch();
                         pStat.clearParameters();
@@ -747,8 +746,8 @@ public class DatabaseCoreAPIs extends Queries {
                 t.type  = result.getString(5);
                 t.reference  = result.getString(6);
                 t.flatId = result.getString(7);
-                t.adminComment  = result.getString(8);
-                t.userComment = result.getString(9);
+                t.verifiedBy  = result.getString(8);
+				t.splitted = result.getBoolean(9);
                 list.add(t);
             }
 
@@ -921,9 +920,9 @@ public class DatabaseCoreAPIs extends Queries {
 
 	public void addUserCashPaymentDB(Object payment) throws Exception
 	{
-		if(payment instanceof  UserCashPaid) {
+		if(payment instanceof UserPaid) {
 
-			UserCashPaid userPaid = (UserCashPaid) payment;
+			UserPaid userPaid = (UserPaid) payment;
 			Connection con = null;
 			PreparedStatement pStat = null;
 			ResultSet res = null;
@@ -937,7 +936,7 @@ public class DatabaseCoreAPIs extends Queries {
 				pStat.setFloat(3, userPaid.amount);
 				pStat.setDate(4, userPaid.expendDate);
 				pStat.setString(5, userPaid.userComment);
-				pStat.setString(6, userPaid.expenseType);
+				pStat.setInt(6, userPaid.expenseType.ordinal());
 
 				pStat.executeUpdate();
 
@@ -949,8 +948,8 @@ public class DatabaseCoreAPIs extends Queries {
 		}
 	}
 
-	public List<UserCashPaid> getUnVerifiedUserCashPayment() throws Exception {
-		List<UserCashPaid> payments = new ArrayList<>();
+	public List<UserPaid> getUnVerifiedUserCashPayment() throws Exception {
+		List<UserPaid> payments = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pStat = null;
 		ResultSet result = null;
@@ -963,13 +962,13 @@ public class DatabaseCoreAPIs extends Queries {
 			result = pStat.executeQuery();
 			while(result.next())
 			{
-				UserCashPaid paid = new UserCashPaid();
+				UserPaid paid = new UserPaid();
 				paid.paymentId = result.getInt(1);
 				paid.userId = result.getString(2);
 				paid.flatId = result.getString(3);
 				paid.amount = result.getFloat(4);
 				paid.expendDate = result.getDate(5);
-				paid.expenseType = result.getString(6);
+				paid.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(6)];
 				paid.userComment = result.getString(7);
 				paid.adminComment = result.getString(8);
 				payments.add(paid);
@@ -1003,5 +1002,143 @@ public class DatabaseCoreAPIs extends Queries {
 			close(con,stat,res);
 		}
 	}
+
+	public List<UserPaid> generateSplittedTransactionsFlatWise() throws Exception {
+		//If user has multiple flats? How to solve
+		//Validate one user per flat
+        List<UserPaid> splittedPaidAmountFlatWise = new ArrayList<>();
+		try {
+            List<SocietyHelpTransaction> unSolittedTransactions = getUnSplittedTransactions();
+            List<FlatWisePayable> unPaidAmountFlatWise = getUnPaidAmountFlatWise();
+
+            List<FlatWisePayable> alreadyProcessed = new ArrayList<>();
+
+            float remainAmount;
+            for (SocietyHelpTransaction transaction : unSolittedTransactions) {
+                remainAmount = transaction.amount;
+                for (FlatWisePayable fwp : getTransactionWiseFlatPayables(transaction, unPaidAmountFlatWise)) {
+                    if (remainAmount <= 0) break;
+                    if (alreadyProcessed.contains(fwp)) continue;
+
+                    UserPaid up = new UserPaid();
+                    up.expendDate = transaction.transactionDate;
+                    up.flatId = transaction.flatId;
+                    up.userId = transaction.userId;
+                    up.expenseType = fwp.expenseType;
+
+                    if (fwp.amount <= remainAmount) {
+                        up.amount = fwp.amount;
+                        remainAmount -= fwp.amount;
+                    } else {
+                        up.amount = remainAmount;
+                        remainAmount = 0;
+                    }
+
+                    splittedPaidAmountFlatWise.add(up);
+                    alreadyProcessed.add(fwp);
+                }
+            }
+        } catch (Exception e)
+        {
+            Log.e("error","Error while generating splitted transactions.",e);
+            throw e;
+        }
+		return splittedPaidAmountFlatWise;
+	}
+
+    public SortedSet<FlatWisePayable> getTransactionWiseFlatPayables(SocietyHelpTransaction transaction, List<FlatWisePayable> unPaidAmountFlatWise)
+    {
+        SortedSet<FlatWisePayable> flatWisePayables = new TreeSet<>();
+
+        for (FlatWisePayable fp : unPaidAmountFlatWise)
+        {
+            if(fp.flatId.equals(transaction.flatId)) flatWisePayables.add(fp);
+        }
+
+        return flatWisePayables;
+    }
+
+
+	public List<SocietyHelpTransaction> getUnSplittedTransactions() throws Exception {
+		List<SocietyHelpTransaction> list = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(unSplittedTransactionsQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+                /*
+                SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +
+				"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
+				"Verified_By,Splitted " +
+				"FROM Transactions_Verified " +
+				"where splitted=0";
+                 */
+				SocietyHelpTransaction t = new SocietyHelpTransaction();
+				t.transactionId = result.getInt(1);
+				t.amount = result.getFloat(2);
+				t.transactionDate = result.getDate(3);
+				t.transactionFlow  = result.getString(4);
+				t.type  = result.getString(5);
+				t.reference  = result.getString(6);
+				t.userId = result.getString(7);
+				t.flatId = result.getString(8);
+				t.verifiedBy  = result.getString(9);
+				t.splitted = result.getBoolean(10);
+				list.add(t);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return list;
+	}
+
+
+    public List<FlatWisePayable> getUnPaidAmountFlatWise() throws Exception {
+        List<FlatWisePayable> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try{
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(unPaidFlatWiseAmountQuery);
+            result = pStat.executeQuery();
+            while(result.next())
+            {
+                /*
+                Payable_Id,Flat_Id,Status,Month," +
+                        "Year,Amount,et.Expense_Type_Id,Comments," +
+                        "Payment_IDs,Payment_Status_ID,et.Payable_Priority
+                 */
+                FlatWisePayable t = new FlatWisePayable();
+                t.paymentId = result.getInt(1);
+                t.flatId  = result.getString(2);
+                t.status = result.getBoolean(3);
+                t.month = result.getInt(4);
+                t.year = result.getInt(5);
+                t.amount = result.getFloat(6);
+                t.expenseType  = ExpenseType.ExpenseTypeConst.values()[result.getInt(7)];
+                t.comments = result.getString(8);
+                t.paymentIds = result.getString(9);
+                t.paymentStatus = ExpenseType.PaymentStatusConst.values()[result.getInt(10)];
+                t.payablePriority = result.getInt(11);
+                list.add(t);
+            }
+
+        }catch(Exception e){
+            throw e;
+        } finally {
+            close(connection,pStat,result);
+        }
+        return list;
+    }
 
 }

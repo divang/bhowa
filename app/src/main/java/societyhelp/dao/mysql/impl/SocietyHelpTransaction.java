@@ -11,13 +11,12 @@ public class SocietyHelpTransaction implements Serializable {
 	public String reference;
 	public String type;
 	public float amount;
-	public Date transactionDate; 
+	public java.sql.Date transactionDate;
 	public String transactionFlow;
 	public String userId;
 	public String flatId;
-	public boolean isAdminApproved;
-	public String userComment;
-	public String adminComment;
+	public String verifiedBy;
+	public boolean splitted;
 
 	@Override
 	public String toString() {

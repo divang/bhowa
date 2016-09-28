@@ -19,7 +19,7 @@ import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
-import societyhelp.dao.mysql.impl.UserCashPaid;
+import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.parser.SocietyHelpParserFactory;
 
@@ -243,7 +243,7 @@ public class HomeActivity extends DashBoardActivity {
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
-                                    List<UserCashPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
+                                    List<UserPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
                                     Intent intentMyDues = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(payments);
                                     intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);

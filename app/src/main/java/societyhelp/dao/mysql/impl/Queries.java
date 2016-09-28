@@ -93,8 +93,7 @@ public class Queries {
 	public static final String selectFinalTransactionQuery =
 			"SELECT  Transaction_ID,StatementID,tsd.Name,Amount," +
 					"Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
-					"ud.User_Id,ud.Flat_Id,Admin_Approved,Admin_Comment," +
-					"User_Comment " +
+					"ud.User_Id,ud.Flat_Id " +
 					"FROM Transactions_Staging_Data as tsd " +
 					"left join " +
 					"User_Details as ud " +
@@ -105,7 +104,7 @@ public class Queries {
 			"Insert into Transactions_Verified (" +
 					"Amount, Transaction_Date,Transaction_Flow," +
 					"Transaction_Mode,Transaction_Reference,User_Id," +
-					"Flat_Id,Admin_Comment,User_Comment) " +
+					"Flat_Id,Verified_By,Splitted) " +
 					"values (" +
 					"? , ?, ?, " +
 					"?, ?, ?, " +
@@ -125,7 +124,7 @@ public class Queries {
 
     public static final String myTransactionsQuery =
                     "SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +
-                            "Transaction_Mode,Transaction_Reference, ud.Flat_Id,Admin_Comment,User_Comment " +
+                            "Transaction_Mode,Transaction_Reference, ud.Flat_Id,Verified_By,Splitted " +
                             "FROM Transactions_Verified tv inner " +
                             "join User_Details ud " +
                             "on tv.User_Id = ud.User_Id " +
@@ -203,4 +202,32 @@ public class Queries {
     public static final String saveVerifiedCashPaymentQuery =
                     "update User_Paid set Verified=1, Verified_by=? " +
                             "where Payment_Id in (?)";
+
+	/*
+	"Payment_Status_Id";"Status_Type"
+	"1";"Not Paid"
+	"2";"Full Paid"
+	"3";"Partial Paid"
+   */
+	public static final String unPaidFlatWiseAmountQuery =
+				"SELECT Payable_Id,Flat_Id,Status,Month," +
+                        "Year,Amount,et.Expense_Type_Id,Comments," +
+                        "Payment_IDs,Payment_Status_ID,et.Payable_Priority " +
+                        "FROM Flat_Wise_Payable fwp " +
+                        "left join " +
+                        "Expense_Type et " +
+                        "on et.Expense_Type_Id = fwp.Expense_Type_Id " +
+                        "where Payment_Status_ID in (1,3)";
+
+	/*
+	splitted=0 current transaction is not copied to User_Paid table.
+	 */
+	public static final String unSplittedTransactionsQuery =
+				"SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +
+						"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
+						"Verified_By,Splitted " +
+						"FROM Transactions_Verified " +
+						"where splitted=0";
+
+
 }
