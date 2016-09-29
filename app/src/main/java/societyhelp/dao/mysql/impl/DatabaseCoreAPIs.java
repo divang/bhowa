@@ -1025,6 +1025,7 @@ public class DatabaseCoreAPIs extends Queries {
                     up.flatId = transaction.flatId;
                     up.userId = transaction.userId;
                     up.expenseType = fwp.expenseType;
+					up.transactionId = transaction.transactionId;
 
                     if (fwp.amount <= remainAmount) {
                         up.amount = fwp.amount;

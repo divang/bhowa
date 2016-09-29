@@ -102,6 +102,9 @@ public class HomeActivity extends DashBoardActivity {
                 case ADD_USER_EXPEND:
                     userAuthActivityIds.add(R.id.home_activity_btn_user_expense);
                     break;
+                case VIEW_SPLIT_TRANSACTIONS:
+                    userAuthActivityIds.add(R.id.home_activity_btn_view_split_transaction);
+                    break;
             }
         }
     }
@@ -322,6 +325,33 @@ public class HomeActivity extends DashBoardActivity {
                     }
                     break;
 
+                case R.id.home_activity_btn_view_split_transaction:
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_split_transaction))
+                    {
+                        progress = ProgressDialog.show(this, null, "Fetching Split Transactions from Database ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<UserPaid> splipttedUserPaid = SocietyHelpDatabaseFactory.getDBInstance().generateSplittedTransactionsFlatWise();
+                                    Intent innerIntent = new Intent(getApplicationContext(), SplitTransactionsFlatWiseActivity.class);
+                                    byte[] sObj = CustomSerializer.serializeObject(splipttedUserPaid);
+                                    innerIntent.putExtra(CONST_SPLITTED_TRANSACTION, sObj);
+                                    startActivity(innerIntent);
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching spitted transaction flat wise has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (pay dues). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
+
+                    break;
                /* case  R.id.transaction_report_activity_btn_save_verified_transactions:
                     progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
                     progress.show();

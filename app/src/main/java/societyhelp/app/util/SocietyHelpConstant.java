@@ -15,5 +15,6 @@ public interface SocietyHelpConstant {
     String CONST_FLAT_IDS = "flatIds";
     String CONST_EXPENSE_TYPES = "expenseTypes";
     String CONST_UN_VERIFIED_PAYMENT = "unverifiedPayment";
+    String CONST_SPLITTED_TRANSACTION = "splittedTransactionFlatWise";
 
 }

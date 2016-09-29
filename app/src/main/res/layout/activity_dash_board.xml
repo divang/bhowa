@@ -176,6 +176,27 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_split_transaction"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_split_transaction"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/splitTransactionText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_save_splitted_transactions"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_save_splitted_transactions"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/saveSplitTransactionText"
+                    />
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

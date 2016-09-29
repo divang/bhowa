@@ -38,6 +38,8 @@
     <string name="verifiedTransactionsIconText">Verified Transactions</string>
     <string name="generateMaintenanceIconText">Generate Maintenance</string>
     <string name="myExpenseIconText">Add your Expends</string>
+    <string name="splitTransactionText">View Splitted Transaction</string>
+    <string name="saveSplitTransactionText">Save Splitted Transaction</string>
     <string name="validateUserExpenseIconText">Validate User Expense</string>
 
     <string name="title_activity_home">HomeActivity</string>
@@ -63,6 +65,8 @@
     <string name="title_activity_manage_flat_wise_payable">ManageFlatWisePayableActivity</string>
     <string name="title_activity_add_cash_expense">AddCashExpenseActivity</string>
     <string name="title_activity_verified_cash_payment">VerifiedCashPaymentActivity</string>
+    <string name="title_activity_split_transactions_flat_wise">SplitTransactionsFlatWiseActivity
+    </string>
 
 
 </resources>

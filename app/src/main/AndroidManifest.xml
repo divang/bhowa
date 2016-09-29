@@ -21,6 +21,7 @@
         <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,8 +44,10 @@
         <activity android:name=".DetailTransactionViewActivity" />
         <activity android:name=".MyDuesActivity" />
         <activity android:name=".ManageFlatWisePayableActivity" />
-        <activity android:name=".AddCashExpenseActivity"/>
-        <activity android:name=".VerifiedCashPaymentActivity"/>
+        <activity android:name=".AddCashExpenseActivity" />
+        <activity android:name=".VerifiedCashPaymentActivity" />
+        <activity android:name=".SplitTransactionsFlatWiseActivity" />
+
     </application>
 
 </manifest>
