@@ -1010,6 +1010,7 @@ public class DatabaseCoreAPIs extends Queries {
 		try {
             List<SocietyHelpTransaction> unSolittedTransactions = getUnSplittedTransactions();
             List<FlatWisePayable> unPaidAmountFlatWise = getUnPaidAmountFlatWise();
+			List<UserPaid> paidAmountFlatnExpenseTypeWise = getPaidFlatnExpenseTypeWisePayment();
 
             List<FlatWisePayable> alreadyProcessed = new ArrayList<>();
 
@@ -1141,5 +1142,39 @@ public class DatabaseCoreAPIs extends Queries {
         }
         return list;
     }
+
+	public List<UserPaid> getPaidFlatnExpenseTypeWisePayment() throws Exception {
+		List<UserPaid> payments = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try {
+			/*
+			Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment
+			 */
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(paidFlatnExpenseTypeWiseAmountQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+				UserPaid paid = new UserPaid();
+				paid.paymentId = result.getInt(1);
+				paid.userId = result.getString(2);
+				paid.flatId = result.getString(3);
+				paid.amount = result.getFloat(4);
+				paid.expendDate = result.getDate(5);
+				paid.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(6)];
+				paid.userComment = result.getString(7);
+				paid.adminComment = result.getString(8);
+				payments.add(paid);
+			}
+
+		} catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return payments;
+	}
 
 }

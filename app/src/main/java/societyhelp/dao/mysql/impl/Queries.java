@@ -229,5 +229,14 @@ public class Queries {
 						"FROM Transactions_Verified " +
 						"where splitted=0";
 
+	public static final String paidFlatnExpenseTypeWiseAmountQuery =
+				"select  Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +
+						"Paid_Date,Type,User_Comment,Admin_Comment " +
+						"from User_Paid u " +
+						"left join " +
+						"Expense_Type e " +
+						"on u.Expense_Type_Id = e.Expense_Type_Id " +
+						"where Verified = 1 " +
+						"group by u.Flat_ID, u.Expense_Type_Id";
 
 }
