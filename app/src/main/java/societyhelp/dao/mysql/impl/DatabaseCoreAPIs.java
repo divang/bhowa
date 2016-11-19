@@ -606,13 +606,16 @@ public class DatabaseCoreAPIs extends Queries {
                 pStat.setDate(11, ud.flatLeftDate == null ? new Date(System.currentTimeMillis()) : ud.flatLeftDate);
                 pStat.setString(12, ud.loginId);
 
-/*				if(ud.flatLeftDate == null)
+				StringBuilder au = new StringBuilder();
+				boolean isFirst = true;
+				for (SocietyAuthorization.Type auT : ud.sAuthorizations)
 				{
-					pStat.setNull(10, Types.DATE);
-				}else {
-					pStat.setDate(10, ud.flatLeftDate);
+					if(isFirst){
+						au.append(auT.ordinal());
+						isFirst = false;
+					} else au.append(",").append(auT.ordinal());
 				}
-*/
+				pStat.setString(13, au.toString());
 				pStat.executeUpdate();
 
 			} catch (Exception e) {

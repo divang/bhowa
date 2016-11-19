@@ -115,12 +115,12 @@ public class Queries {
 					"User_Id, User_Type, Flat_Id," +
 					"Name, Name_Alias,Mobile_No," +
 					"Moble_No_Alternate, Email_Id, Address," +
-					"Flat_Join_Date, Flat_Left_Date, Login_Id)" +
+					"Flat_Join_Date, Flat_Left_Date, Login_Id, Auth_Ids)" +
 					" values (" +
 					"?, ?, ?, " +
 					"?, ?, ?," +
 					"?, ?, ?," +
-					"?, ?, ? )";
+					"?, ?, ? , ?)";
 
     public static final String myTransactionsQuery =
                     "SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +

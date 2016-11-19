@@ -41,4 +41,5 @@
 
     <color name="tableRowNotVerifiedColor">#cb7e7a</color>
 
+    <color name="addUserAuthText">#8d484848</color>
 </resources>

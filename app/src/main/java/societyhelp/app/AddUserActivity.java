@@ -6,8 +6,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -16,8 +18,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,10 +32,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.DatePickerDialogTheme;
 import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.Util;
+import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
@@ -50,6 +59,7 @@ public class AddUserActivity extends DashBoardActivity {
     protected Spinner flatIdSpinner;
     protected Spinner loginIdSpinner;
     protected Spinner userTypeSpinner;
+    protected Set<String> userAuth = new TreeSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +121,26 @@ public class AddUserActivity extends DashBoardActivity {
             progress.setCancelable(true);
             progress.hide();
 
+            LinearLayout linearMain = (LinearLayout) findViewById(R.id.LinearLayoutAuthenticationBox);
+            for(SocietyAuthorization.Type t : SocietyAuthorization.Type.values()) {
+                CheckBox cb = new CheckBox(getApplicationContext());
+                cb.setText(t.toString());
+                cb.setTextColor(Color.GRAY);
+                cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            Log.d("Info", "Checked - " + buttonView.getText().toString());
+                            userAuth.add(buttonView.getText().toString());
+                        } else {
+                            Log.d("Info", "Unchecked - " + buttonView.getText().toString());
+                            userAuth.remove(buttonView.getText().toString());
+                        }
+                    }
+                });
+                linearMain.addView(cb);
+            }
+
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
@@ -132,7 +162,10 @@ public class AddUserActivity extends DashBoardActivity {
                     ud.flatId = flatIdSpinner.getSelectedItem().toString();
                     ud.loginId = loginIdSpinner.getSelectedItem().toString();
                     ud.userType = userTypeSpinner.getSelectedItem().toString();
-
+                    for(String au : userAuth)
+                    {
+                        ud.sAuthorizations.add(SocietyAuthorization.Type.valueOf(au));
+                    }
                     try {
                         ud.flatJoinDate = new Date(Util.dateFormat.parse(flatJoinDateText.getText().toString()).getTime());
 
@@ -143,8 +176,11 @@ public class AddUserActivity extends DashBoardActivity {
                             public void run() {
                                 try {
                                     SocietyHelpDatabaseFactory.getDBInstance().addUserDetails(ud);
-                                    Intent intent = new Intent(getApplicationContext(), ManageUserActivity.class);
-                                    startActivity(intent);
+                                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManageUserActivity.class);
+                                    byte[] sObj = CustomSerializer.serializeObject(users);
+                                    innerIntent.putExtra(CONST_ALL_USERS, sObj);
+                                    startActivity(innerIntent);
                                 } catch (Exception e) {
                                     Log.e("Error", "Login creation failed", e);
                                 }
@@ -280,6 +316,12 @@ public class AddUserActivity extends DashBoardActivity {
                 }
             }
         }
+
+        if(userAuth.size() == 0){
+            Util.CustomToast(getApplicationContext(), "Authorization is not set. Assign at least one authorization.", 1000);
+            validationFailed = true;
+        }
+
         return validationFailed;
     }
 }
