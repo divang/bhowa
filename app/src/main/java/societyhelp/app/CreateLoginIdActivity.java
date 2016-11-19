@@ -16,8 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.util.List;
+
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
+import societyhelp.dao.mysql.impl.Login;
 
 public class CreateLoginIdActivity extends DashBoardActivity {
 
@@ -52,6 +56,11 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                         try {
                             SocietyHelpDatabaseFactory.getMasterDBInstance().createLogin(loginIdText.getText().toString(), passwordText.getText().toString(), getLoginId());
                             Intent intent = new Intent(getApplicationContext(), ManageLoginActivity.class);
+
+                            List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+                            byte[] sObj = CustomSerializer.serializeObject(login);
+                            intent.putExtra(CONST_ALL_LOGINS, sObj);
+
                             startActivity(intent);
                         } catch (Exception e) {
                             Log.e("Error", "Login creation failed", e);

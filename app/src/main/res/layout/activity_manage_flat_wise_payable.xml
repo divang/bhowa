@@ -14,7 +14,8 @@
         android:id="@+id/MonthText_FWP"
         android:hint="Enter Month"
         android:layout_centerHorizontal="true"
-        android:textCursorDrawable="@null"/>
+        android:textCursorDrawable="@null"
+        android:digits="0123456789"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -24,7 +25,8 @@
         android:hint="Enter Year"
         android:layout_below="@+id/MonthText_FWP"
         android:layout_centerHorizontal="true"
-        android:textCursorDrawable="@null"/>
+        android:textCursorDrawable="@null"
+        android:digits="0123456789"/>
 
     <Button
         android:layout_width="wrap_content"

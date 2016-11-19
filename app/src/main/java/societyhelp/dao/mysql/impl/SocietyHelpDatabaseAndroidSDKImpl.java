@@ -47,7 +47,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		addUserCashPayment,
 		getUnVerifiedCashPayment,
 		saveVerifiedCashPayment,
-		generateSplittedTransactionsFlatWise
+		generateSplittedTransactionsFlatWise,
+		getFlatWisePayables
 	}
 
 	@Override
@@ -182,6 +183,9 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 
 				case generateSplittedTransactionsFlatWise:
 					result = dbCore.generateSplittedTransactionsFlatWise();
+					break;
+				case getFlatWisePayables:
+					result = dbCore.getFlatWisePayables();
 					break;
 			}
 
@@ -490,6 +494,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.generateSplittedTransactionsFlatWise.name());
 		try {
 			return (List<UserPaid>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<FlatWisePayable> getFlatWisePayables() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getFlatWisePayables.name());
+		try {
+			return (List<FlatWisePayable>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

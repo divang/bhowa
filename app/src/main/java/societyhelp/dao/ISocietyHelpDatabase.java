@@ -3,6 +3,7 @@ package societyhelp.dao;
 import java.util.List;
 
 import societyhelp.dao.mysql.impl.ExpenseType;
+import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
@@ -206,5 +207,12 @@ public interface ISocietyHelpDatabase {
      * @return
      * @throws Exception
      */
-    public List<UserPaid> generateSplittedTransactionsFlatWise() throws Exception;
+    List<UserPaid> generateSplittedTransactionsFlatWise() throws Exception;
+
+    /**
+     * Return all flat wise payables
+     * @return
+     * @throws Exception
+     */
+    List<FlatWisePayable> getFlatWisePayables() throws Exception;
 }

@@ -28,22 +28,21 @@ Cash payment Add (done)
 Validate cash payment (done)
 Bug fixing file chosen (done)
 Bug fixing runtime exception (done)	
+Validation add flat (done) 
+
 
 Upcoming features :
 =================
-
---- Till 24 Sep ---
-
-Amount splitting according to Expense Type priority
-Transaction Expense Type mapping
-
-Validation add flat
-Validation monthly expense generation
-
-Expense report
-Cash payment report
-Flat user wise dues report
-Authorization assign by Admin
+13 Nov :
+	Validation monthly expense generation
+	Amount splitting according to Expense Type priority (Partial)
+	
+	
+	Transaction Expense Type mapping 
+	Expense report
+	Cash payment report
+	Flat user wise dues report
+	Authorization assign by Admin
 
 Direct use of APP ----------
 On Login page :
@@ -52,7 +51,6 @@ Create Society
 Create User
 Need online database required (encrypted password) 
 
---- End of Task till 24 Sep ---
 
 User/Admin can see non settled transactions.
 User/Admin settles his/her non settled transaction.
@@ -183,16 +181,11 @@ Sheets :
 
 	
 Copy file from local to Emulator :
-D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /mnt
+D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /storage/self/primary/Download
 	
-	
-	56k
-	sep 2015
-	
-	SELECT Payable_Id,Flat_Id,Status,Month,Year,Amount,et.Expense_Type_Id,Comments,Payment_IDs,Payment_Status_ID,et.Payable_Priority FROM Flat_Wise_Payable fwp left join Expense_Type et on et.Expense_Type_Id = fwp.Expense_Type_Id where Payment_Status_ID in (1,3)
-	
-	
-	
-	
-	
-	
+Read only issue :
+$./adb shell
+$su
+mount -o rw,remount rootfs /
+chmod 777 /mnt/sdcard
+exit	

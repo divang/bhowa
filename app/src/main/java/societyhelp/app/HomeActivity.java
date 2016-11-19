@@ -183,8 +183,28 @@ public class HomeActivity extends DashBoardActivity {
                 case R.id.home_activity_btn_view_all_login:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_login))
                     {
-                    intent = new Intent(this, ManageLoginActivity.class);
-                    startActivity(intent);
+                        progress = ProgressDialog.show(this, null, "Fetching all login ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManageLoginActivity.class);
+
+                                    byte[] sObj = CustomSerializer.serializeObject(login);
+                                    innerIntent.putExtra(CONST_ALL_LOGINS, sObj);
+
+                                    startActivity(innerIntent);
+
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching all login data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (view all login). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
@@ -193,8 +213,26 @@ public class HomeActivity extends DashBoardActivity {
                 case R.id.home_activity_btn_view_all_flat:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_flat))
                     {
-                    intent = new Intent(this, ManageFlatActivity.class);
-                    startActivity(intent);
+                        progress = ProgressDialog.show(this, null, "Fetching all Flats' details ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats();
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManageFlatActivity.class);
+                                    byte[] sObj = CustomSerializer.serializeObject(flats);
+                                    innerIntent.putExtra(CONST_ALL_FLATS, sObj);
+                                    startActivity(innerIntent);
+
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching all flat data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (view all flat). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
@@ -203,8 +241,26 @@ public class HomeActivity extends DashBoardActivity {
                 case R.id.home_activity_btn_manage_users:
                     if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_manage_users))
                     {
-                    intent = new Intent(this, ManageUserActivity.class);
-                    startActivity(intent);
+                        progress = ProgressDialog.show(this, null, "Fetching all Users' details ...", true, true);
+                        progress.setCancelable(true);
+                        progress.show();
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManageUserActivity.class);
+                                    byte[] sObj = CustomSerializer.serializeObject(users);
+                                    innerIntent.putExtra(CONST_ALL_USERS, sObj);
+                                    startActivity(innerIntent);
+
+                                }catch (Exception e)
+                                {
+                                    Log.e("Error", "Fetching all user data has problem", e);
+                                }
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        }).start();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (manage users). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }

@@ -43,6 +43,7 @@ public class DatabaseCoreAPIs extends Queries {
 
 	private void init(String strDatabaseDBURL, String strDatabaseUser, String strDatabasePassword)
 	{
+        databaseDBURL = strDatabaseDBURL;
 		databaseDBURL = strDatabaseDBURL;
 		databaseUser = strDatabaseUser;
 		databasePassword = strDatabasePassword;
@@ -851,7 +852,7 @@ public class DatabaseCoreAPIs extends Queries {
 
 				pStat.setInt(1, fwp.month);
 				pStat.setInt(2, fwp.year);
-				pStat.setString(3, fwp.expenseType.name());
+				pStat.setInt(3, fwp.expenseType.ordinal());
 
 				pStat.executeUpdate();
 
@@ -1163,7 +1164,7 @@ public class DatabaseCoreAPIs extends Queries {
 				paid.flatId = result.getString(3);
 				paid.amount = result.getFloat(4);
 				paid.expendDate = result.getDate(5);
-				paid.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(6)];
+				paid.expenseType = ExpenseType.ExpenseTypeConst.valueOf(result.getString(6));
 				paid.userComment = result.getString(7);
 				paid.adminComment = result.getString(8);
 				payments.add(paid);
@@ -1175,6 +1176,40 @@ public class DatabaseCoreAPIs extends Queries {
 			close(connection,pStat,result);
 		}
 		return payments;
+	}
+
+	public List<FlatWisePayable> getFlatWisePayables() throws Exception {
+		List<FlatWisePayable> list = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try{
+
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(allFlatWiseAmountQuery);
+			result = pStat.executeQuery();
+			while(result.next())
+			{
+                FlatWisePayable t = new FlatWisePayable();
+				t.paymentId = result.getInt(1);
+				t.flatId  = result.getString(2);
+				t.status = result.getBoolean(3);
+				t.month = result.getInt(4);
+				t.year = result.getInt(5);
+				t.amount = result.getFloat(6);
+				t.expenseType  = ExpenseType.ExpenseTypeConst.valueOf(result.getString(7));
+                t.comments = result.getString(8);
+				t.paymentIds = result.getString(9);
+				t.paymentStatus = ExpenseType.PaymentStatusConst.valueOf(result.getString(10));
+				list.add(t);
+			}
+
+		}catch(Exception e){
+			throw e;
+		} finally {
+			close(connection,pStat,result);
+		}
+		return list;
 	}
 
 }

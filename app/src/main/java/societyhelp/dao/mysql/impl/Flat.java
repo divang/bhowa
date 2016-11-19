@@ -1,9 +1,11 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.Serializable;
+
 /**
  * Created by divang.sharma on 9/4/2016.
  */
-public class Flat {
+public class Flat implements Serializable {
     //SELECT `Flat_Id,Flat_Number,Area,Maintenance_Amount,Block_Number,Status` FROM `sql6134070`.`Flat` LIMIT 0, 1000;
 
     public String flatId;

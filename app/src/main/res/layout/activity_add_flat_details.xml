@@ -15,7 +15,8 @@
         android:id="@+id/flatId_AFD_Text"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ_"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -26,7 +27,8 @@
         android:layout_below="@+id/flatId_AFD_Text"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:digits="0123456789"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -37,7 +39,8 @@
         android:layout_below="@+id/flat_Number_AFD_Text"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:digits="0123456789"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -48,7 +51,8 @@
         android:layout_below="@+id/flat_Area_AFD_Text"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:digits="0123456789."/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -59,7 +63,8 @@
         android:layout_below="@+id/flat_Maintenance_Amount_AFD_Text"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ_"/>
 
     <Button
         android:layout_width="wrap_content"

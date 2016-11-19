@@ -1,11 +1,12 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by divang.sharma on 9/4/2016.
  */
-public class Login {
+public class Login implements Serializable {
 
     public String loginId;
     public String password;

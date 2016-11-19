@@ -47,7 +47,10 @@
         <activity android:name=".AddCashExpenseActivity" />
         <activity android:name=".VerifiedCashPaymentActivity" />
         <activity android:name=".SplitTransactionsFlatWiseActivity" />
-
+        <activity
+            android:name=".FlatWiseAllPayableActivity"
+            android:label="@string/title_activity_flat_wise_all_payable" >
+        </activity>
     </application>
 
 </manifest>

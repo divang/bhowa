@@ -1,12 +1,18 @@
 package societyhelp.app;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.List;
+
+import societyhelp.app.util.CustomSerializer;
+import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
@@ -14,14 +20,16 @@ import societyhelp.dao.mysql.impl.FlatWisePayable;
 public class ManageFlatWisePayableActivity extends DashBoardActivity {
 
     private ProgressDialog progress;
+    TextView monthText;
+    TextView yearText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_flat_wise_payable);
 
-        final TextView monthText = (TextView) findViewById(R.id.MonthText_FWP);
-        final TextView yearText = (TextView) findViewById(R.id.YearText_FWP);
+        monthText = (TextView) findViewById(R.id.MonthText_FWP);
+        yearText = (TextView) findViewById(R.id.YearText_FWP);
         Button generateMaintenanceBtn = (Button) findViewById(R.id.GenerateMaintenanceButton_FWP);
 
         progress = ProgressDialog.show(ManageFlatWisePayableActivity.this, null, "Generating Monthly Maintenance ...", true, false);
@@ -31,6 +39,7 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
         generateMaintenanceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(validationFailed()) return;
                 progress.show();
 
                 Thread taskThread = new Thread(new Runnable() {
@@ -40,8 +49,14 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
                         fwp.expenseType = ExpenseType.ExpenseTypeConst.Monthly_Maintenance;
                         fwp.month = Integer.parseInt(monthText.getText().toString());
                         fwp.year = Integer.parseInt(yearText.getText().toString());
+
                         try {
                             SocietyHelpDatabaseFactory.getDBInstance().addMonthlyMaintenance(fwp);
+                            Intent innerIntent = new Intent(getApplicationContext(), FlatWiseAllPayableActivity.class);
+                            List<FlatWisePayable> flatAllPayables = SocietyHelpDatabaseFactory.getDBInstance().getFlatWisePayables();
+                            byte[] sObj = CustomSerializer.serializeObject(flatAllPayables);
+                            innerIntent.putExtra(CONST_FLAT_WISE_PAYABLES, sObj);
+                            startActivity(innerIntent);
                         } catch (Exception e) {
                             Log.e("Error", "Monthly Maintenance Generation has problem", e);
                         }
@@ -55,4 +70,45 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
 
     }
 
+    private boolean validationFailed() {
+        boolean validationFailed = false;
+
+        if (monthText.getText().toString().length() == 0) {
+            Util.CustomToast(getApplicationContext(), "Month should not be empty", 1000);
+            validationFailed = true;
+            return validationFailed;
+        }
+
+        try {
+            int imonth = Integer.parseInt(monthText.getText().toString());
+            if(imonth < 1 || imonth > 12)
+            {
+                Util.CustomToast(getApplicationContext(), "Month should be between 1 to 12.", 1000);
+                validationFailed = true;
+            }
+        }catch (Exception e)
+        {
+            Util.CustomToast(getApplicationContext(), "Month should be a number.", 1000);
+            validationFailed = true;
+        }
+
+        if (yearText.getText().toString().length() == 0) {
+            Util.CustomToast(getApplicationContext(), "Year should not be empty", 1000);
+            validationFailed = true;
+            return validationFailed;
+        }
+        try {
+            int iyear = Integer.parseInt(yearText.getText().toString());
+            if(iyear != 2016)
+            {
+                Util.CustomToast(getApplicationContext(), "Year should be current year.", 1000);
+                validationFailed = true;
+            }
+        }catch (Exception e)
+        {
+            Util.CustomToast(getApplicationContext(), "Year should be a number.", 1000);
+            validationFailed = true;
+        }
+        return validationFailed;
+    }
 }

@@ -169,7 +169,7 @@ public class Queries {
                             "FROM User_Details where Login_Id = ?";
 
 	public static final String addFlatWiseMaintenanceQuery =
-					"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type) " +
+					"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type_Id) " +
 					"select f.Flat_Id, f.Maintenance_Amount, ?, ?, ? " +
 					"from Flat f";
 
@@ -239,4 +239,16 @@ public class Queries {
 						"where Verified = 1 " +
 						"group by u.Flat_ID, u.Expense_Type_Id";
 
+	public static final String allFlatWiseAmountQuery =
+				"SELECT Payable_Id,Flat_Id,Status,Month, " +
+						"Year,Amount,Type,Comments, " +
+						"Payment_IDs,Status_Type " +
+						"FROM flat_wise_payable fwp " +
+						"left join Expense_type et " +
+						"on fwp.Expense_Type_Id = et.Expense_Type_Id " +
+						"left join user_payment_status ups " +
+						"on ups.Payment_Status_Id =fwp.Payment_Status_ID";
+
+	public static final String allAuthorizationsQuery =
+				"SELECT Auth_Id,Type FROM Authorizations";
 }

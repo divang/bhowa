@@ -67,6 +67,7 @@
     <string name="title_activity_verified_cash_payment">VerifiedCashPaymentActivity</string>
     <string name="title_activity_split_transactions_flat_wise">SplitTransactionsFlatWiseActivity
     </string>
+    <string name="title_activity_flat_wise_all_payable">FlatWiseAllPayableActivity</string>
 
 
 </resources>

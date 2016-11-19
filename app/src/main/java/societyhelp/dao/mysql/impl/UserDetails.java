@@ -1,12 +1,13 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import societyhelp.core.SocietyAuthorization;
 
-public class UserDetails {
+public class UserDetails implements Serializable{
 
 	public String userId;
 	public String password;

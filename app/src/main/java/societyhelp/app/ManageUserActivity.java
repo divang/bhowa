@@ -6,9 +6,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
+import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.UserDetails;
 
 public class ManageUserActivity extends DashBoardActivity {
@@ -16,6 +19,14 @@ public class ManageUserActivity extends DashBoardActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        List<UserDetails> users = new ArrayList<>();
+        try {
+            byte[] sObjet = (byte[]) getIntent().getSerializableExtra(CONST_ALL_USERS);
+            users = (List<UserDetails>) CustomSerializer.deserializeObject(sObjet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             setContentView(R.layout.activity_manage_user);
 
@@ -23,7 +34,6 @@ public class ManageUserActivity extends DashBoardActivity {
 
             final TableLayout tableL = (TableLayout) findViewById(R.id.allUsersTableLayout);
             tableL.invalidate();
-            List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
 
             for (UserDetails user : users) {
                 TableRow row = new TableRow(this);

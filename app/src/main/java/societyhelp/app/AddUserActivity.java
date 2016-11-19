@@ -126,7 +126,7 @@ public class AddUserActivity extends DashBoardActivity {
                     ud.userName = nameText.getText().toString();
                     if(nameAliasText != null) ud.nameAlias = nameAliasText.getText().toString();
                     ud.mobileNo = Long.valueOf(mobileNoText.getText().toString());
-                    if(mobileNoAlternateText != null) ud.mobileNoAlternative = Long.valueOf(mobileNoAlternateText.getText().toString());
+                    if(mobileNoAlternateText != null && mobileNoAlternateText.length() > 6) ud.mobileNoAlternative = Long.valueOf(mobileNoAlternateText.getText().toString());
                     if(emailIdText != null) ud.emailId = emailIdText.getText().toString();
                     ud.address = addressText.getText().toString();
                     ud.flatId = flatIdSpinner.getSelectedItem().toString();
