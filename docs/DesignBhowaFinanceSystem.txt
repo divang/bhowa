@@ -29,11 +29,13 @@ Validate cash payment (done)
 Bug fixing file chosen (done)
 Bug fixing runtime exception (done)	
 Validation add flat (done) 
+Authorization assign by Admin (Done)
 
 
 Upcoming features :
 =================
 13 Nov :
+	Assign other expense to flat  
 	Validation monthly expense generation
 	Amount splitting according to Expense Type priority (Partial)
 	
@@ -42,7 +44,7 @@ Upcoming features :
 	Expense report
 	Cash payment report
 	Flat user wise dues report
-	Authorization assign by Admin
+	
 
 Direct use of APP ----------
 On Login page :

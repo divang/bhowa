@@ -13,7 +13,8 @@
         android:ems="10"
         android:id="@+id/MonthText_FWP"
         android:hint="Enter Month"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:textCursorDrawable="@null"
         android:digits="0123456789"/>
 
@@ -24,16 +25,46 @@
         android:id="@+id/YearText_FWP"
         android:hint="Enter Year"
         android:layout_below="@+id/MonthText_FWP"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:textCursorDrawable="@null"
         android:digits="0123456789"/>
+
+    <Spinner
+        android:hint="Expense Type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/expense_type_FWP"
+        android:layout_below="@+id/YearText_FWP"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:dropDownWidth="150dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:windowSoftInputMode="stateHidden"/>
+
+
+    <Spinner
+        android:hint="Flat Ids"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/flatIdSpinner_FWP"
+        android:layout_below="@+id/expense_type_FWP"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:dropDownWidth="150dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:windowSoftInputMode="stateHidden"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Generate Monthly Maintenance"
+        android:text="Generate Flat wise payable"
         android:id="@+id/GenerateMaintenanceButton_FWP"
-        android:layout_below="@+id/YearText_FWP"
+        android:layout_below="@+id/flatIdSpinner_FWP"
         android:layout_centerHorizontal="true" />
 
 
