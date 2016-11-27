@@ -165,13 +165,22 @@ public class Queries {
 
     public static final String myDetailsQuery =
                     "SELECT User_Id,Login_Id,User_Type,Status,Flat_Id,Name,Name_Alias,Mobile_No," +
-                            "Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date,Auth_Ids " +
-                            "FROM User_Details where Login_Id = ?";
+					"Moble_No_Alternate,Email_Id,Address,Flat_Join_Date,Flat_Left_Date,Auth_Ids " +
+					"FROM User_Details where Login_Id = ?";
 
-	public static final String addFlatWiseMaintenanceQuery =
+    public static final String addlatMaintenancePayablesQuery =
+            "insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type_Id) " +
+                    "select f.Flat_Id, f.Maintenance_Amount, ?, ?, ? " +
+                    "from Flat f";
+
+    public static final String addAllFlatPayablesQuery =
 					"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type_Id) " +
-					"select f.Flat_Id, f.Maintenance_Amount, ?, ?, ? " +
+					"select f.Flat_Id, ?, ?, ?, ? " +
 					"from Flat f";
+
+	public static final String addSingleFlatPayablesQuery =
+			"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type_Id) " +
+					"values (?, ?, ?, ?, ? )";
 
 	public static final String flatWiseTransactionsQuery =
 					"select * from " +
@@ -243,10 +252,10 @@ public class Queries {
 				"SELECT Payable_Id,Flat_Id,Status,Month, " +
 						"Year,Amount,Type,Comments, " +
 						"Payment_IDs,Status_Type " +
-						"FROM flat_wise_payable fwp " +
-						"left join Expense_type et " +
+						"FROM Flat_Wise_Payable fwp " +
+						"left join Expense_Type et " +
 						"on fwp.Expense_Type_Id = et.Expense_Type_Id " +
-						"left join user_payment_status ups " +
+						"left join User_Payment_Status ups " +
 						"on ups.Payment_Status_Id =fwp.Payment_Status_ID";
 
 	public static final String allAuthorizationsQuery =

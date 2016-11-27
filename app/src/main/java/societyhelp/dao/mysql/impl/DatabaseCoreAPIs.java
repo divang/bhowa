@@ -1,6 +1,5 @@
 package societyhelp.dao.mysql.impl;
 
-import android.support.v7.util.SortedList;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -16,9 +15,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import societyhelp.core.SocietyAuthorization;
+import societyhelp.dao.DatabaseConstant;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 
-public class DatabaseCoreAPIs extends Queries {
+public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 
 	private String databaseDBURL;
 	private String databaseUser;
@@ -851,13 +851,36 @@ public class DatabaseCoreAPIs extends Queries {
 
 			try {
 				con = getDBInstance();
-				pStat = con.prepareStatement(addFlatWiseMaintenanceQuery);
-
-				pStat.setInt(1, fwp.month);
-				pStat.setInt(2, fwp.year);
-				pStat.setInt(3, fwp.expenseType.ordinal());
-
-				pStat.executeUpdate();
+				if(fwp.flatId.equals(CONST_LIST_STR_ALL_FLATS))
+				{
+					if(fwp.expenseType.equals(ExpenseType.ExpenseTypeConst.Monthly_Maintenance))
+					{
+						pStat = con.prepareStatement(addlatMaintenancePayablesQuery);
+						pStat.setInt(1, fwp.month);
+						pStat.setInt(2, fwp.year);
+						pStat.setInt(3, fwp.expenseType.ordinal());
+						pStat.executeUpdate();
+					}
+					else
+					{
+						pStat = con.prepareStatement(addAllFlatPayablesQuery);
+						pStat.setFloat(1, fwp.amount);
+						pStat.setInt(2, fwp.month);
+						pStat.setInt(3, fwp.year);
+						pStat.setInt(4, fwp.expenseType.ordinal());
+						pStat.executeUpdate();
+					}
+				}
+				else
+				{
+					pStat = con.prepareStatement(addSingleFlatPayablesQuery);
+					pStat.setString(1, fwp.flatId);
+					pStat.setFloat(2, fwp.amount);
+					pStat.setInt(3, fwp.month);
+					pStat.setInt(4, fwp.year);
+					pStat.setInt(5, fwp.expenseType.ordinal());
+					pStat.executeUpdate();
+				}
 
 			} catch (Exception e) {
 				throw e;

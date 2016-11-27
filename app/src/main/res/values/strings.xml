@@ -36,7 +36,7 @@
     <string name="uploadRawDataIconText">Upload Raw Data</string>
     <string name="uploadTransactionsIconText">Upload Transactions</string>
     <string name="verifiedTransactionsIconText">Verified Transactions</string>
-    <string name="generateMaintenanceIconText">Generate Maintenance</string>
+    <string name="generateMaintenanceIconText">Generate Flat Payable</string>
     <string name="myExpenseIconText">Add your Expends</string>
     <string name="splitTransactionText">View Splitted Transaction</string>
     <string name="saveSplitTransactionText">Save Splitted Transaction</string>

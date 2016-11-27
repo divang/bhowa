@@ -20,12 +20,16 @@ import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
+import societyhelp.dao.DatabaseConstant;
 
-public class ManageFlatWisePayableActivity extends DashBoardActivity {
+public class ManageFlatWisePayableActivity extends DashBoardActivity implements DatabaseConstant {
 
     private ProgressDialog progress;
     TextView monthText;
     TextView yearText;
+    TextView amountText;
+    Spinner expenseTypeSpinner;
+    Spinner flatIdSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +38,9 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
         try {
                 monthText = (TextView) findViewById(R.id.MonthText_FWP);
                 yearText = (TextView) findViewById(R.id.YearText_FWP);
-                Spinner expenseTypeSpinner = (Spinner) findViewById(R.id.expense_type_FWP);
-                Spinner flatIdSpinner = (Spinner) findViewById(R.id.flatIdSpinner_FWP);
+                expenseTypeSpinner = (Spinner) findViewById(R.id.expense_type_FWP);
+                flatIdSpinner = (Spinner) findViewById(R.id.flatIdSpinner_FWP);
+                amountText = (TextView) findViewById(R.id.amount_FWP);
 
                 List<String> expTypes = new ArrayList<>();
                 expTypes.add("Select the Expense Type");
@@ -63,9 +68,11 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
                             public void run() {
 
                                 FlatWisePayable fwp = new FlatWisePayable();
-                                fwp.expenseType = ExpenseType.ExpenseTypeConst.Monthly_Maintenance;
+                                fwp.expenseType = ExpenseType.ExpenseTypeConst.valueOf(expenseTypeSpinner.getSelectedItem().toString());
                                 fwp.month = Integer.parseInt(monthText.getText().toString());
                                 fwp.year = Integer.parseInt(yearText.getText().toString());
+                                fwp.flatId = flatIdSpinner.getSelectedItem().toString();
+                                fwp.amount = Float.parseFloat(amountText.getText().toString());
 
                                 try {
                                     SocietyHelpDatabaseFactory.getDBInstance().addMonthlyMaintenance(fwp);
@@ -119,10 +126,11 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
             return validationFailed;
         }
         try {
-            int iyear = Integer.parseInt(yearText.getText().toString());
-            if(iyear != 2016)
+            int iYear = Integer.parseInt(yearText.getText().toString());
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            if(!(iYear == currentYear || iYear == currentYear -1))
             {
-                Util.CustomToast(getApplicationContext(), "Year should be current year.", 1000);
+                Util.CustomToast(getApplicationContext(), "Year should be current year or previous year.", 1000);
                 validationFailed = true;
             }
         }catch (Exception e)
@@ -130,6 +138,46 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
             Util.CustomToast(getApplicationContext(), "Year should be a number.", 1000);
             validationFailed = true;
         }
+
+        if(expenseTypeSpinner.getSelectedItemId() <=0)
+        {
+            Util.CustomToast(getApplicationContext(), "Expense type is not selected.", 1000);
+            validationFailed = true;
+        }
+        else
+        {
+            if(!ExpenseType.ExpenseTypeConst.Monthly_Maintenance.equals(
+                    ExpenseType.ExpenseTypeConst.valueOf(expenseTypeSpinner.getSelectedItem().toString())))
+            {
+                if (amountText.getText().toString().length() == 0) {
+                    Util.CustomToast(getApplicationContext(), "Amount should not be empty", 1000);
+                    validationFailed = true;
+                    return validationFailed;
+                }
+                else {
+                    try
+                    {
+                        float fAmount = Float.valueOf(amountText.getText().toString());
+                        if(fAmount <= 0)
+                        {
+                            Util.CustomToast(getApplicationContext(), "Amount should be greater then zero.", 1000);
+                            validationFailed = true;
+                        }
+                    }
+                    catch (Exception e) {
+                        Util.CustomToast(getApplicationContext(), "Amount should be a number.", 1000);
+                        validationFailed = true;
+                    }
+                }
+            }
+        }
+
+        if(flatIdSpinner.getSelectedItemId()<= 0)
+        {
+            Util.CustomToast(getApplicationContext(), "Flat is not selected.", 1000);
+            validationFailed = true;
+        }
+
         return validationFailed;
     }
 
@@ -137,7 +185,7 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity {
     {
         List<String> listFlatIds = new ArrayList<>();
         listFlatIds.add("Select Flat Id");
-        listFlatIds.add("All Flats");
+        listFlatIds.add(CONST_LIST_STR_ALL_FLATS);
         List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats();
         for(Flat f : flats) {
             listFlatIds.add(f.flatId);

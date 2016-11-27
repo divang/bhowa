@@ -1,11 +1,12 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Created by divang.sharma on 9/11/2016.
  */
-public class FlatWisePayable implements Comparable<FlatWisePayable>{
+public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializable {
 
     public int paymentId;
     public String flatId;

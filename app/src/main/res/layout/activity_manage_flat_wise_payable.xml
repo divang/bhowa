@@ -44,13 +44,24 @@
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:windowSoftInputMode="stateHidden"/>
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/amount_FWP"
+        android:hint="Enter Amount"
+        android:layout_below="@+id/expense_type_FWP"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textCursorDrawable="@null"
+        android:digits="0123456789"/>
 
     <Spinner
         android:hint="Flat Ids"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/flatIdSpinner_FWP"
-        android:layout_below="@+id/expense_type_FWP"
+        android:layout_below="@+id/amount_FWP"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:dropDownWidth="150dp"
