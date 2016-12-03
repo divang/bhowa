@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,9 +15,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import societyhelp.app.util.SocietyHelpConstant;
@@ -131,11 +134,24 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         TextView recyclableTextView = new TextView(this);
         recyclableTextView.setText(text);
-        //recyclableTextView.setTextColor(Color.BLACK);
+        recyclableTextView.setTextColor(Color.BLACK);
         //recyclableTextView.setTextSize(10);
         recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
         recyclableTextView.setHeight(fixedHeightInPixels);
         recyclableTextView.setGravity(Gravity.CENTER);
+        return recyclableTextView;
+    }
+
+    public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels, int iGravity) {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        TextView recyclableTextView = new TextView(this);
+        recyclableTextView.setText(text);
+        recyclableTextView.setTextColor(ContextCompat.getColor(this, R.color.tableTextColor));
+       // recyclableTextView.setTextSize(R.dimen.test_size_medium);
+        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
+        recyclableTextView.setHeight(fixedHeightInPixels);
+        recyclableTextView.setGravity(iGravity);
+        //recyclableTextView.setPadding(0,5,0,5);
         return recyclableTextView;
     }
 
@@ -152,4 +168,14 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         return recyclableCheckBox;
     }
 
+    public TableRow getTableRow()
+    {
+        TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        TableRow row = new TableRow(this);
+        row.setLayoutParams(wrapWrapTableRowParams);
+        row.setGravity(Gravity.CENTER);
+        row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
+
+        return row;
+    }
 }
