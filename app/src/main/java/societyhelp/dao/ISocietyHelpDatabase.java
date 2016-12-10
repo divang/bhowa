@@ -7,6 +7,7 @@ import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.StagingTransaction;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 
@@ -215,4 +216,11 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     List<FlatWisePayable> getFlatWisePayables() throws Exception;
+
+    /**
+     * Returns the staging transaction data
+     * @return
+     * @throws Exception
+     */
+    List<StagingTransaction> getAllStaggingTransaction() throws Exception;
 }

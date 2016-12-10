@@ -36,7 +36,7 @@ public class HomeActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        setHeader(getString(R.string.title_activity_home), true, false);
+        setHeader(getString(R.string.title_activity_home), false, false);
         setAuthorizedActivity();
     }
 

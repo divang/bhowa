@@ -33,7 +33,7 @@
                     android:id="@+id/view_pdf_data_th"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_transactions"
-                    android:onClick="onButtonClicker"
+                    android:onClick="viewPDFStagingTransactions"
                     android:text="@string/view_pdf_data_text"
                     />
 

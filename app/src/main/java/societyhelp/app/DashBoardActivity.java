@@ -84,11 +84,10 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
                 }
             });
         } else {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            //actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
             btnHome.setImageResource(R.drawable.ic_logo);
             btnHome.setVisibility(View.VISIBLE);
-
         }
 
         actionBar.setCustomView(mActionBarView);
@@ -134,6 +133,7 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
         recyclableTextView.setHeight(fixedHeightInPixels);
         recyclableTextView.setGravity(iGravity);
+
         //recyclableTextView.setPadding(0,5,0,5);
         return recyclableTextView;
     }

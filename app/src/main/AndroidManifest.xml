@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--android:uses-permission android:name="android.permission.READ_PHONE_STATE" /-->
 
     <application
         android:allowBackup="true"
@@ -49,18 +49,10 @@
         <activity android:name=".VerifiedCashPaymentActivity" />
         <activity android:name=".SplitTransactionsFlatWiseActivity" />
         <activity android:name=".FlatWiseAllPayableActivity" />
-        <activity
-            android:name=".transaction.TransactionHomeActivity"
-            android:label="@string/title_activity_transaction_home" >
-        </activity>
-        <activity
-            android:name=".transaction.CreditTransactionsActivity"
-            android:label="@string/title_activity_credit_transactions" >
-        </activity>
-        <activity
-            android:name=".transaction.DebitTransactionsActivity"
-            android:label="@string/title_activity_debit_transactions" >
-        </activity>
+        <activity android:name=".transaction.StagingTransactionViewActivity" />
+        <activity android:name=".transaction.TransactionHomeActivity"/>
+        <activity android:name=".transaction.CreditTransactionsActivity"/>
+        <activity android:name=".transaction.DebitTransactionsActivity"/>
     </application>
 
 </manifest>

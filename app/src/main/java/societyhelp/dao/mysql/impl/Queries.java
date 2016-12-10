@@ -1,5 +1,7 @@
 package societyhelp.dao.mysql.impl;
 
+import java.sql.Timestamp;
+
 public class Queries {
 
 	  //Queries
@@ -18,28 +20,28 @@ public class Queries {
     		"Insert into User_Activity_Logging (UserName, Mobile, Activity, Comment, Time) values (? ,? ,?, ?, ?)";
   
     public static final String statementProcessedQuery =
-    		"Insert into Bank_Statement(Bank_Statement_FileName, Uploaded_Date) values (?, ?)";
+    		"Insert into Bank_Statement(Bank_Statement_FileName, Uploaded_Date, Uploaded_LoginId) values (?, ?, ?)";
     
     public static final String isStatementProcessedQuery =
     		"Select * FROM Bank_Statement WHERE Statement_FileName = ?";
-    
-    public static final String transactionQuery =
-    	    "Insert into Transactions(StatementID, Name, Amount, "
-    	    + "Transaction_Date, Transaction_Flow, Transaction_Mode, Transaction_Reference) "
-    	    + "values(?, ?, ?, ?, ?, ?, ?)";
 
 	public static final String transactionStagingQuery =
 			"Insert into Transactions_Staging_Data(" +
 					"StatementID, Name, Amount, "
 					+ "Transaction_Date, Transaction_Flow, Transaction_Mode, " +
-					"Transaction_Reference) "
+					"Transaction_Reference, Upload_Date, Uploaded_LoginId) "
 					+ "values(" +
 					"?, ?, ?, " +
 					"?, ?, ?, " +
-					"?)";
+					"?, '" + new Timestamp(System.currentTimeMillis())+"', ?)";
 
 	public static final String cleanTransactionStagingDataQuery =
 			"delete from Transactions_Staging_Data";
+
+	public static final String allTransactionStagingDataQuery =
+					"SELECT Transaction_ID,StatementID,Name,Amount," +
+					"Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
+					"Upload_Date,Uploaded_LoginId FROM Transactions_Staging_Data";
 
 	public static final String insertRawDataQuery =
 			"Insert into Row_Data(Transaction_Raw_Line_Parse_From_PDF) values (?)";

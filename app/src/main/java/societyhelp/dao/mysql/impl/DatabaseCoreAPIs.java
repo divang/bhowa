@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -221,6 +222,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 					pStat.setString(5, t.transactionFlow);
 					pStat.setString(6, t.type);
 					pStat.setString(7, t.reference);
+					pStat.setString(8, bankStatement.uploadedLoginId);
 					pStat.addBatch();
 					pStat.clearParameters();
 				}
@@ -228,7 +230,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 				System.out.println("Executing Batch operations");
 				pStat.executeBatch();
 				System.out.println("Executed Batch operations");
-				saveStatementProcessedDB(bankStatement.bankStatementFileName);
+				saveStatementProcessedDB(bankStatement.bankStatementFileName,bankStatement.uploadedLoginId);
 				
 				return true;
 			}catch(Exception e) {
@@ -241,8 +243,48 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 		}
 		return false;
 	}
-	
-	public void saveStatementProcessedDB(String monthlyStatementFileName) throws Exception{
+
+    public List<StagingTransaction> getAllStaggingTransaction() throws Exception {
+        List<StagingTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try{
+			/*
+			SELECT `Transaction_ID`, `StatementID`, `Name`, `Amount`, `Transaction_Date`,
+			`Transaction_Flow`, `Transaction_Mode`, `Transaction_Reference`,
+			`Upload_Date`, `Uploaded_LoginId` FROM `Transactions_Staging_Data`
+			*/
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(allTransactionStagingDataQuery);
+            result = pStat.executeQuery();
+            while(result.next())
+            {
+                StagingTransaction t = new StagingTransaction();
+                t.transactionId = result.getInt(1);
+                t.srNo = result.getInt(2);
+                t.name = result.getString(3);
+                t.amount = result.getFloat(4);
+                t.transactionDate = result.getDate(5);
+                t.transactionFlow  = result.getString(6);
+                t.type  = result.getString(7);
+                t.reference  = result.getString(8);
+                t.updloadedDate  = result.getTimestamp(9);
+                t.uploadedBy = result.getString(10);
+                t.verifiedBy = "";
+                list.add(t);
+            }
+
+        }catch(Exception e){
+            throw e;
+        } finally {
+            close(connection,pStat,result);
+        }
+        return list;
+    }
+
+
+    public void saveStatementProcessedDB(String monthlyStatementFileName, String loginId) throws Exception{
 	
 		Connection con = null;
 		PreparedStatement pStat = null;
@@ -251,10 +293,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 		try
 		{
 			con = getDBInstance();
-			pStat = con.prepareStatement(statementProcessedQuery);
+            pStat = con.prepareStatement(statementProcessedQuery);
 			pStat.setString(1, monthlyStatementFileName);
-			pStat.setDate(2, new Date(System.currentTimeMillis()));
-			pStat.executeUpdate();
+            pStat.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            pStat.setString(3, loginId);
+            pStat.executeUpdate();
 			
 		} catch(Exception e){
 			throw e;
@@ -660,6 +703,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
                 t.reference  = result.getString(8);
                 t.userId  = result.getString(9);
                 t.flatId = result.getString(10);
+                t.verifiedBy = "";
                 list.add(t);
 			}
 
@@ -715,7 +759,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
                 System.out.println("Executing Batch operations");
                 pStat.executeBatch();
                 System.out.println("Executed Batch operations");
-                saveStatementProcessedDB(bankStatement.bankStatementFileName);
 
                 return true;
             }catch(Exception e) {

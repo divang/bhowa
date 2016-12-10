@@ -87,7 +87,7 @@
     <string name="title_activity_my_dues">MyDuesActivity</string>
     <string name="title_activity_manage_flat_wise_payable">ManageFlatWisePayableActivity</string>
     <string name="title_activity_add_cash_expense">AddCashExpenseActivity</string>
-    <string name="title_activity_verified_cash_payment">VerifiedCashPaymentActivity</string>
+    <string name="title_activity_verified_cash_payment">PDF Transaction</string>
     <string name="title_activity_split_transactions_flat_wise">SplitTransactionsFlatWiseActivity</string>
     <string name="title_activity_flat_wise_all_payable">FlatWiseAllPayableActivity</string>
     <string name="title_activity_transaction_home">Manage PDF Transactions</string>

@@ -50,14 +50,14 @@
                     android:id="@+id/credit_verifying_th"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_varifying_credit_transactions"
-                    android:onClick="onButtonClicker"
+                    android:onClick="verifyPDFStagingTransactions"
                     android:text="@string/verifying_credit_transaction_text" />
 
                 <Button
                     android:id="@+id/split_credit_transaction_th"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_varifying_credit_transactions"
-                    android:onClick="onButtonClicker"
+                    android:onClick="verifyPDFStagingTransactions"
                     android:text="@string/split_credit_transactions_text" />
 
             </LinearLayout>

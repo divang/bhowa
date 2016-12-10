@@ -20,4 +20,5 @@ public interface SocietyHelpConstant {
     String CONST_ALL_LOGINS = "allLogin";
     String CONST_ALL_FLATS = "allFlats";
     String CONST_ALL_USERS = "allUsers";
+    String CONST_PDF_ALL_STAGING_TRANSACTIONS = "allStagingPDFTransaction";
 }
