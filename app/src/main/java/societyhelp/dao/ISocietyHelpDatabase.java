@@ -135,7 +135,7 @@ public interface ISocietyHelpDatabase {
      * @param obj
      * @throws Exception
      */
-    void saveVerifiedTransactions(Object obj) throws  Exception;
+    List<SocietyHelpTransaction> saveVerifiedTransactions(Object obj) throws  Exception;
 
     /**
      * Return users all transactions

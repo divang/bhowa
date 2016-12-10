@@ -46,6 +46,14 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/pdf_debit_manage_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_debit_manage_home"
+                    android:onClick="autoSplitAndVerified"
+                    android:text="@string/debit_manage_home_text"
+                    />
+
+                <Button
                     android:id="@+id/pdf_credit_manage_th"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_credit_manage_home"
@@ -53,16 +61,31 @@
                     android:text="@string/credit_manage_home_text"
                     />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
                 <Button
-                    android:id="@+id/pdf_debit_manage_th"
+                    android:id="@+id/validating_user_cash_expense"
                     style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_debit_manage_home"
+                    android:drawableTop="@drawable/ic_user_cash_expense_validation"
+                    android:onClick="validateUserCashDeposit"
+                    android:text="@string/verify_user_cash_deposit"
+                    />
+
+                <Button
+                    android:id="@+id/validating_initial_data"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_validating_initial_data"
                     android:onClick="goToDebitTransactionActivity"
-                    android:text="@string/debit_manage_home_text"
+                    android:text="@string/credit_manage_home_text"
                     />
 
             </LinearLayout>
-
 
 
         </LinearLayout>

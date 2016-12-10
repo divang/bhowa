@@ -47,7 +47,8 @@
     <string name="view_pdf_data_text">View PDF File data</string>
 
     <string name="credit_manage_home_text">Manage PDF credit</string>
-    <string name="debit_manage_home_text">Manage PDF debit</string>
+    <string name="debit_manage_home_text">Auto Verify and Split Transaction</string>
+    <string name="verify_user_cash_deposit">Verify User Cash Debit</string>
 
     <string name="Balance_Sheet_text">View Balance Sheet</string>
 
@@ -91,7 +92,7 @@
     <string name="title_activity_split_transactions_flat_wise">SplitTransactionsFlatWiseActivity</string>
     <string name="title_activity_flat_wise_all_payable">FlatWiseAllPayableActivity</string>
     <string name="title_activity_transaction_home">Manage PDF Transactions</string>
-
+    <string name="title_activity_verify_user_cash_deposit">Verify User Cash Deposit</string>
     <!-- End Custom Tool bar Title  -->
 
 </resources>

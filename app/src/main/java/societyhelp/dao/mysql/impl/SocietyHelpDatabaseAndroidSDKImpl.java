@@ -143,7 +143,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 
 				case saveVerifiedTransactions:
-					dbCore.saveVerifiedTransactionsDB(params[1]);
+					result = dbCore.saveVerifiedTransactionsDB(params[1]);
 					break;
 
 				case getMyTransactions:
@@ -394,10 +394,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public void saveVerifiedTransactions(Object obj) throws Exception {
+	public List<SocietyHelpTransaction> saveVerifiedTransactions(Object obj) throws Exception {
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.saveVerifiedTransactions.name(),obj);
 		try {
-			aTask.get();
+			return (List<SocietyHelpTransaction>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

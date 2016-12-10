@@ -207,7 +207,7 @@ public class Queries {
 
 	public static final String unVerifiedCashPaymentByUserQuery =
 					"select " +
-                    " Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,Type,User_Comment,Admin_Comment " +
+                    " Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,u.Expense_Type_Id,User_Comment,Admin_Comment " +
                     " from User_Paid u " +
                     " left join Expense_Type e " +
                     " on u.Expense_Type_Id = e.Expense_Type_Id " +

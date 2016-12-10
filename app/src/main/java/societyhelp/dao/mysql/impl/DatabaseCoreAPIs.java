@@ -715,7 +715,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 		return list;
 	}
 
-    public boolean saveVerifiedTransactionsDB(Object transactions) throws Exception{
+    public List<SocietyHelpTransaction> saveVerifiedTransactionsDB(Object transactions) throws Exception{
+
+        List<SocietyHelpTransaction> uploadedTransactions = new ArrayList<>();
 
         if(transactions instanceof BankStatement)
         {
@@ -752,15 +754,14 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 
                         pStat.addBatch();
                         pStat.clearParameters();
+                        uploadedTransactions.add(t);
                     }
-
                 }
 
                 System.out.println("Executing Batch operations");
                 pStat.executeBatch();
                 System.out.println("Executed Batch operations");
 
-                return true;
             }catch(Exception e) {
                 throw e;
             }
@@ -769,7 +770,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
             }
 
         }
-        return false;
+        return uploadedTransactions;
     }
 
     public List<SocietyHelpTransaction> getMyTransactions(String userId) throws Exception {
