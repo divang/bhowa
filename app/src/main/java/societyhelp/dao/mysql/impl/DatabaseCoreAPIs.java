@@ -204,6 +204,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 			{
 				con = getDBInstance();
 
+				//cleanTransactionStagingDataQuery
+				System.out.println("Clearing Transaction Staging table data.");
+				pStat = con.prepareStatement(cleanTransactionStagingDataQuery);
+				pStat.execute();
+				System.out.println("Cleared Transaction Staging table data.");
+
 				pStat = con.prepareStatement(transactionStagingQuery);
 				for(SocietyHelpTransaction t : bankStatement.allTransactions)
 				{

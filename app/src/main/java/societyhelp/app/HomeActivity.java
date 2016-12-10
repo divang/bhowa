@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.transaction.TransactionHomeActivity;
 import societyhelp.app.util.FileChooser;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.core.SocietyAuthorization;
@@ -34,8 +36,7 @@ public class HomeActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        setHeader(getString(R.string.title_activity_home), false, false);
-        setCustomToolBar();
+        setHeader(getString(R.string.title_activity_home), true, false);
         setAuthorizedActivity();
     }
 
@@ -76,8 +77,8 @@ public class HomeActivity extends DashBoardActivity {
                 case LOGIN_CREATE: //8
                     userAuthActivityIds.add(R.id.home_activity_btn_create_login);
                     break;
-                case MONTHLY_STATEMENT_UPLOAD: //9
-                    userAuthActivityIds.add(R.id.home_activity_btn_upload_pdf);
+                case TRANSACTION_HOME_VIEW: //9
+                    userAuthActivityIds.add(R.id.home_activity_btn_transaction_view);
                     break;
                 case RAW_DATA_VIEW: //10
                     userAuthActivityIds.add(R.id.transaction_report_activity_btn_view_raw_data);
@@ -321,12 +322,21 @@ public class HomeActivity extends DashBoardActivity {
                     }
                     break;
 
-                case R.id.home_activity_btn_upload_pdf:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))
+                case R.id.home_activity_btn_transaction_view:
+                    /*if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_upload_pdf))
                     {
                         openFileBrowser();
                     } else{
                         Toast.makeText(this, "Permission denied to access this link (upload month statement). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                    */
+                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_transaction_view))
+                    {
+                        intent = new Intent(this, TransactionHomeActivity.class);
+                        startActivity(intent);
+                    } else{
+                        Toast.makeText(this, "Permission denied to access this link (generate monthly maintenance). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
@@ -408,7 +418,7 @@ public class HomeActivity extends DashBoardActivity {
                     }
 
                     break;
-               /* case  R.id.transaction_report_activity_btn_save_verified_transactions:
+                case  R.id.transaction_report_activity_btn_save_verified_transactions:
                     progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
                     progress.show();
                     final BankStatement verifiedBankStat = new BankStatement();
@@ -428,7 +438,7 @@ public class HomeActivity extends DashBoardActivity {
                     });
                     verifiedTransTaskThread.start();
                     break;
-                */
+
             }
         }catch (Exception e)
         {
@@ -436,33 +446,7 @@ public class HomeActivity extends DashBoardActivity {
         }
     }
 
-
-    public void openFileBrowser()
-    {
-        new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
-            @Override public void fileSelected(final File file) {
-                final String path = file.getPath();
-
-                progress = ProgressDialog.show(HomeActivity.this, null, "Parsing PDF ...", true, false);
-                progress.setCancelable(true);
-                progress.show();
-                Thread taskThread = new Thread(new Runnable() {
-                    public void run() {
-
-                        BankStatement bankStat = (BankStatement) SocietyHelpParserFactory.getInstance().getAllTransaction(path);
-                        Intent transactionReportIntent = new Intent(getApplicationContext(), HomeTransactionActivity.class);
-                        transactionReportIntent.putExtra("bankStat",bankStat);
-                        startActivityForResult(transactionReportIntent, 0);
-                        progress.dismiss();
-                        progress.cancel();
-                    }
-                });
-                taskThread.start();
-
-            }}).showDialog();
-    }
-
-    protected String getFlatIds() throws Exception
+  protected String getFlatIds() throws Exception
     {
         StringBuilder listFlatIds = new StringBuilder();
         listFlatIds.append("Select Flat Id").append(",");
@@ -522,15 +506,4 @@ public class HomeActivity extends DashBoardActivity {
         }
         return  listIds.toString();
     }
-
-    protected void setCustomToolBar()
-    {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        //displaying custom ActionBar
-        View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
-        actionBar.setCustomView(mActionBarView);
-        actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
-    }
-
 }

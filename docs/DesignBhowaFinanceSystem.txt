@@ -1,43 +1,27 @@
+Transaction design :
+------------------
+Bank monthly PDF statement upload and it save to DB Transactions_Staging_Data.
+Every time when PDF parsed and upload, old data will be flushed out.
+
+
+
+
+
 Upcoming features :
 =================
 	Amount splitting according to Expense Type priority (Partial)
-	Validate by admin and user 
+	Splitted amount validate by admin and user 
+	Edit Flat and User details.
+	Views make more relevant. 
 	Transaction Expense Type mapping 
 	Expense report
 	Cash payment report
 	Flat user wise dues report
+	Load existing maintenance and expenses from XLS.
 
 Challenging Task :
 ----------------
 Spinner List with multiple selection (item selection is not working).
-
-==========================================
-Start Setup Project and Contributors : 
--------------------------------------
-Amit : amit.joshi82@gmail.com
-Tanveer : tanveer.momin88@gmail.com [github id : tanveermomin]
-
-Created three new branches :
-developer_amit : Branch for Amit to develop his feature.
-developer_tanveer : Branch for Tanveer to develop his feature.
-developer_divang : Branch for Divang to develop his feature.
-Master branch in which we will merge our code after feature completion :
-master
- 
-Download 
-Android Studio
-JDK 7 or above
-Clone https://github.com/divang/societyhelp from your respective branch.
-Create a free Database in https://www.freemysqlhosting.net/
-Download HeidiSQL client (or any SQL client) and import the database from checkout (master branch) code path : societyhelp\docs\Master_Database_Schema_v_7.0.0.sql [Master branch]
-Open file : societyhelp\app\src\main\assets\do_not_commit_config.properties :
-Set your new Database URL, username and password.
-Now it is ready to run/develop in local system. 
-
---------------------------------------
-End Setup Project and Contributors 
-===========================================
-
 
 Design of BHOWA Finance Account Management :
 ------------------------------------------

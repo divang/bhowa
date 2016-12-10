@@ -1,6 +1,7 @@
 package societyhelp.app;
 
 import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -27,23 +29,24 @@ import societyhelp.app.util.SocietyHelpConstant;
 public abstract class DashBoardActivity extends AppCompatActivity implements SocietyHelpConstant {
 
     private SharedPreferences prefs;
+    protected ProgressDialog progress;
 
     public String getLoginId() {
         String v = prefs.getString(CONST_LOGIN_ID_KEY_PREF_MANAGER, "");
-        Log.d("info","login id from preference manager :" + v);
+        Log.d("info", "login id from preference manager :" + v);
         return v;
     }
 
     public String getFlatId() {
         String v = prefs.getString(CONST_FLAT_ID_KEY_PREF_MANAGER, "");
-        Log.d("info","flat id from preference manager :" + v);
+        Log.d("info", "flat id from preference manager :" + v);
         return v;
     }
 
 
     public String getAuthIds() {
         String v = prefs.getString(CONST_USER_AUTHS_PREF_MANAGER, "");
-        Log.d("info","flat id from preference manager :" + v);
+        Log.d("info", "flat id from preference manager :" + v);
         return v;
     }
 
@@ -51,34 +54,48 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        setCustomToolBar();
+        //setCustomToolBar();
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
 
-    public void setHeader(String title, boolean btnHomeVisible, boolean btnBackVisible)
-    {
+    public void setHeader(String title, boolean btnHomeVisible, boolean btnBackVisible) {
         View mActionBarView = getLayoutInflater().inflate(R.layout.custom_tool_bar, null);
 
-        TextView txtActionBar = (TextView)mActionBarView.findViewById(R.id.action_bar_text);
+        TextView txtActionBar = (TextView) mActionBarView.findViewById(R.id.action_bar_text);
         txtActionBar.setText(title);
-        View btnHome = mActionBarView.findViewById(R.id.action_bar_home);
+        ImageButton btnHome = (ImageButton)mActionBarView.findViewById(R.id.action_bar_home);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
-        if(btnHomeVisible) {
-            setCustomToolBarHome();
+        if (btnHomeVisible) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            btnHome.setVisibility(View.VISIBLE);
+        } else if (btnBackVisible) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            btnHome.setImageResource(R.drawable.ic_back);
+            btnHome.setVisibility(View.VISIBLE);
+            btnHome.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        } else {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            btnHome.setImageResource(R.drawable.ic_logo);
+            btnHome.setVisibility(View.VISIBLE);
+
         }
-        else if(btnBackVisible) {
-            btnHome.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            btnHome.setVisibility(View.INVISIBLE);
-        }
+
+        actionBar.setCustomView(mActionBarView);
+        actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
-    public void btnHomeClick(View v)
-    {
+    public void btnHomeClick(View v) {
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -87,47 +104,6 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
 
         View btnHome = mActionBarView.findViewById(R.id.action_bar_home);
         btnHome.setVisibility(View.INVISIBLE);
-    }
-
-    protected void setCustomToolBar()
-    {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
-        //displaying custom ActionBar
-        View mActionBarView = getLayoutInflater().inflate(R.layout.custom_tool_bar, null);
-        actionBar.setCustomView(mActionBarView);
-        actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
-    }
-
-    protected void setCustomToolBarBack()
-    {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        View mActionBarView = getLayoutInflater().inflate(R.layout.custom_tool_bar, null);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setCustomView(mActionBarView);
-
-        View btnHome = mActionBarView.findViewById(R.id.action_bar_home);
-        btnHome.setVisibility(View.GONE);
-    }
-
-    protected void setCustomToolBarHome()
-    {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        View mActionBarView = getLayoutInflater().inflate(R.layout.custom_tool_bar, null);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setCustomView(mActionBarView);
-
-        View btnHome = mActionBarView.findViewById(R.id.action_bar_home);
-        btnHome.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //Used only for setDisplayHomeAsUpEnabled(true) case
-        finish();
-        return super.onOptionsItemSelected(item);
     }
 
     public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
@@ -142,12 +118,19 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         return recyclableTextView;
     }
 
+    public TextView makeTableRowWithText(String text, int iGravity) {
+        int fixedRowHeight = 70;
+        int fixedHeaderHeight = 70;
+
+        return makeTableRowWithText(text, fixedRowHeight, fixedHeaderHeight, iGravity);
+    }
+
     public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels, int iGravity) {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         TextView recyclableTextView = new TextView(this);
         recyclableTextView.setText(text);
         recyclableTextView.setTextColor(ContextCompat.getColor(this, R.color.tableTextColor));
-       // recyclableTextView.setTextSize(R.dimen.test_size_medium);
+        // recyclableTextView.setTextSize(R.dimen.test_size_medium);
         recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
         recyclableTextView.setHeight(fixedHeightInPixels);
         recyclableTextView.setGravity(iGravity);
@@ -168,9 +151,9 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         return recyclableCheckBox;
     }
 
-    public TableRow getTableRow()
-    {
+    public TableRow getTableRow() {
         TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         TableRow row = new TableRow(this);
         row.setLayoutParams(wrapWrapTableRowParams);
         row.setGravity(Gravity.CENTER);

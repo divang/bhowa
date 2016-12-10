@@ -15,7 +15,7 @@ public class SocietyAuthorization {
            FLAT_DETAIL_CREATE,
            LOGIN_VIEW,
            LOGIN_CREATE,
-           MONTHLY_STATEMENT_UPLOAD,
+           TRANSACTION_HOME_VIEW,
            RAW_DATA_VIEW,
            TRANSACTIONS_DETAIL_VIEW,
            PDF_TRANSACTION_VIEW,

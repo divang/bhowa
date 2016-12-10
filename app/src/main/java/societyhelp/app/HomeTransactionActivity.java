@@ -13,8 +13,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
 
     private ProgressDialog progress;
 
-    public void onButtonClicker(View v)
-    {
+    public void onButtonClicker(View v) {
         try {
             final BankStatement bankStat = (BankStatement) getIntent().getSerializableExtra("bankStat");
 
@@ -70,8 +69,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                                 SocietyHelpDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bankStat);
                                 Intent intentAllTrans = new Intent(getApplicationContext(), DetailTransactionViewActivity.class);
                                 startActivity(intentAllTrans);
-                            }catch (Exception e)
-                            {
+                            } catch (Exception e) {
                                 Log.e("Error", "Upload Monthly transaction has problem", e);
                             }
                             progress.dismiss();
@@ -92,9 +90,8 @@ public class HomeTransactionActivity extends DashBoardActivity {
                         public void run() {
                             try {
                                 SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedTransactions(verifiedBankStat);
-                            }catch (Exception e)
-                            {
-                                Log.e("Error","Insert verified data has problem",e);
+                            } catch (Exception e) {
+                                Log.e("Error", "Insert verified data has problem", e);
                             }
 
                             progress.dismiss();
@@ -105,8 +102,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                     break;
 
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e("Error", "HomeTransactionActivity has some problem", e);
         }
     }

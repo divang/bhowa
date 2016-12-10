@@ -38,6 +38,9 @@ public class Queries {
 					"?, ?, ?, " +
 					"?)";
 
+	public static final String cleanTransactionStagingDataQuery =
+			"delete from Transactions_Staging_Data";
+
 	public static final String insertRawDataQuery =
 			"Insert into Row_Data(Transaction_Raw_Line_Parse_From_PDF) values (?)";
 
