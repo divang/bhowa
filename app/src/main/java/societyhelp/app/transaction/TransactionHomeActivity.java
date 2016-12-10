@@ -17,6 +17,7 @@ import societyhelp.app.DashBoardActivity;
 import societyhelp.app.DetailTransactionViewActivity;
 import societyhelp.app.HomeTransactionActivity;
 import societyhelp.app.R;
+import societyhelp.app.SplitTransactionsFlatWiseActivity;
 import societyhelp.app.VerifiedCashPaymentActivity;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.FileChooser;
@@ -111,12 +112,6 @@ public class TransactionHomeActivity extends DashBoardActivity {
     }
 
     public void autoSplitAndVerified(View v) {
-        try {
-
-        }catch (Exception e)
-        {
-
-        }
 
         progress = ProgressDialog.show(TransactionHomeActivity.this, null, "Auto mapping and saving to verified Table of database ...", true, false);
         progress.setCancelable(true);
@@ -129,9 +124,12 @@ public class TransactionHomeActivity extends DashBoardActivity {
                     verifiedBankStat.allTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllDetailsTransactions();
                     List<SocietyHelpTransaction> verifiedTransactions = SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedTransactions(verifiedBankStat);
 
-                    Intent nextIntent = new Intent(getApplicationContext(), DetailTransactionViewActivity.class);
-                    nextIntent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, CustomSerializer.serializeObject(verifiedTransactions));
-                    startActivityForResult(nextIntent, 0);
+                    List<UserPaid> splipttedUserPaid = SocietyHelpDatabaseFactory.getDBInstance().generateSplittedTransactionsFlatWise();
+                    // Insert to new balance sheet table
+                    Intent innerIntent = new Intent(getApplicationContext(), SplitTransactionsFlatWiseActivity.class);
+                    byte[] sObj = CustomSerializer.serializeObject(splipttedUserPaid);
+                    innerIntent.putExtra(CONST_SPLITTED_TRANSACTION, sObj);
+                    startActivity(innerIntent);
 
                 } catch (Exception e) {
                     e.printStackTrace();

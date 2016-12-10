@@ -34,8 +34,7 @@ public class SplitTransactionsFlatWiseActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_split_transactions_flat_wise);
-        setHeader("", true, false);
-        //setCustomToolBarBack();
+        setHeader(getString(R.string.title_activity_verify_splitted_transaction), false, true);
 
         List<UserPaid> userPaids = null;
         try {
@@ -153,7 +152,9 @@ public class SplitTransactionsFlatWiseActivity extends DashBoardActivity {
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
+
                                     SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedCashPayment(getLoginId(), getStrPaymentIds());
+
                                     List<UserPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
                                     Intent intentInner = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(payments);

@@ -1068,12 +1068,25 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 		try
 		{
 			con = getDBInstance();
-			stat = con.createStatement();
+            con.setAutoCommit(false); //transaction block start
+            //TODO add here code for
+            // Insert into Transactions_BalanceSheet table and get the Balance_Sheet_Transaction_ID id
+            // Update User_paid verified state
+            // Flat_Wise_Payable_Paid_Mapping map payable to paid
+
+            stat = con.createStatement();
 			String sqlQuery = "update User_Paid set Verified=1, Verified_by='"
 					+userId+"' where Payment_Id in ("+paymentIds+")";
 			stat.executeUpdate(sqlQuery);
 
-		} catch(Exception e){
+            stat = con.createStatement();
+            sqlQuery = "update User_Paid set Verified=1, Verified_by='"
+                    +userId+"' where Payment_Id in ("+paymentIds+")";
+            stat.executeUpdate(sqlQuery);
+
+            con.commit(); //transaction block end
+
+        } catch(Exception e){
 			throw e;
 		} finally {
 			close(con,stat,res);

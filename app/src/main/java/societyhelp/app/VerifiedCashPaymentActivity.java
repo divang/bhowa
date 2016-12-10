@@ -31,7 +31,7 @@ public class VerifiedCashPaymentActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verified_cash_payment);
-        setHeader(getString(R.string.title_activity_verify_user_cash_deposit), true, false);
+        setHeader(getString(R.string.title_activity_verify_user_cash_deposit), false, true);
 
 
         List<UserPaid> userPaids = null;
