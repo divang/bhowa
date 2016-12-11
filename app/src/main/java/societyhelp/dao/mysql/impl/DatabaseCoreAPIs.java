@@ -1098,14 +1098,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
 		//Validate one user per flat
         List<UserPaid> splittedPaidAmountFlatWise = new ArrayList<>();
 		try {
-            List<SocietyHelpTransaction> unSolittedTransactions = getUnSplittedTransactions();
+            List<SocietyHelpTransaction> unSplitedTransactions = getUnSplittedTransactions();
             List<FlatWisePayable> unPaidAmountFlatWise = getUnPaidAmountFlatWise();
-			List<UserPaid> paidAmountFlatnExpenseTypeWise = getPaidFlatnExpenseTypeWisePayment();
 
             List<FlatWisePayable> alreadyProcessed = new ArrayList<>();
 
             float remainAmount;
-            for (SocietyHelpTransaction transaction : unSolittedTransactions) {
+            for (SocietyHelpTransaction transaction : unSplitedTransactions) {
                 remainAmount = transaction.amount;
                 for (FlatWisePayable fwp : getTransactionWiseFlatPayables(transaction, unPaidAmountFlatWise)) {
                     if (remainAmount <= 0) break;
@@ -1201,27 +1200,29 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant{
         try{
 
             connection = getDBInstance();
-            pStat = connection.prepareStatement(unPaidFlatWiseAmountQuery);
-            result = pStat.executeQuery();
+            //pStat = connection.prepareStatement(unPaidFlatWiseAmountQuery);
+			pStat = connection.prepareStatement(payableAndPaidFlatWiseAmountQuery);
+			result = pStat.executeQuery();
             while(result.next())
             {
                 /*
-                Payable_Id,Flat_Id,Status,Month," +
-                        "Year,Amount,et.Expense_Type_Id,Comments," +
-                        "Payment_IDs,Payment_Status_ID,et.Payable_Priority
+                         fwp.Flat_Wise_Payable_ID, fwp.Amount Payable, sum(tbs.Amount) Paid, " +
+						"et.Type, et.Expense_Type_Id, et.Payable_Priority, " +
+						"fwp.Flat_Id, fwp.Status, " +
+						"fwp.Month, fwp.Year, " +
+						"fwp.Comments, fwp.Payment_Status_ID "
                  */
                 FlatWisePayable t = new FlatWisePayable();
                 t.paymentId = result.getInt(1);
-                t.flatId  = result.getString(2);
-                t.status = result.getBoolean(3);
-                t.month = result.getInt(4);
-                t.year = result.getInt(5);
-                t.amount = result.getFloat(6);
-                t.expenseType  = ExpenseType.ExpenseTypeConst.values()[result.getInt(7)];
-                t.comments = result.getString(8);
-                t.paymentIds = result.getString(9);
-                t.paymentStatus = ExpenseType.PaymentStatusConst.values()[result.getInt(10)];
-                t.payablePriority = result.getInt(11);
+				t.amount = result.getFloat(2) - result.getFloat(3);
+				t.expenseType  = ExpenseType.ExpenseTypeConst.values()[result.getInt(5)];
+				t.payablePriority = result.getInt(6);
+				t.flatId = result.getString(7);
+				t.status = result.getBoolean(8);
+				t.month = result.getInt(9);
+				t.year = result.getInt(10);
+                t.comments = result.getString(11);
+                t.paymentStatus = ExpenseType.PaymentStatusConst.values()[result.getInt(12)];
                 list.add(t);
             }
 

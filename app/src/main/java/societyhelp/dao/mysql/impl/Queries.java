@@ -128,7 +128,7 @@ public class Queries {
 					"?, ?, ? , ?)";
 
     public static final String myTransactionsQuery =
-                    "SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +
+                    "SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
                             "Transaction_Mode,Transaction_Reference, ud.Flat_Id,Verified_By,Splitted " +
                             "FROM Transactions_Verified tv inner " +
                             "join User_Details ud " +
@@ -207,7 +207,7 @@ public class Queries {
 
 	public static final String unVerifiedCashPaymentByUserQuery =
 					"select " +
-                    " Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,u.Expense_Type_Id,User_Comment,Admin_Comment " +
+                    " User_Cash_Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,u.Expense_Type_Id,User_Comment,Admin_Comment " +
                     " from User_Paid u " +
                     " left join Expense_Type e " +
                     " on u.Expense_Type_Id = e.Expense_Type_Id " +
@@ -215,7 +215,7 @@ public class Queries {
 
     public static final String saveVerifiedCashPaymentQuery =
                     "update User_Paid set Verified=1, Verified_by=? " +
-                            "where Payment_Id in (?)";
+                            "where User_Cash_Payment_ID in (?)";
 
 	/*
 	"Payment_Status_Id";"Status_Type"
@@ -224,7 +224,7 @@ public class Queries {
 	"3";"Partial Paid"
    */
 	public static final String unPaidFlatWiseAmountQuery =
-				"SELECT Payable_Id,Flat_Id,Status,Month," +
+				"SELECT Flat_Wise_Payable_ID,Flat_Id,Status,Month," +
                         "Year,Amount,et.Expense_Type_Id,Comments," +
                         "Payment_IDs,Payment_Status_ID,et.Payable_Priority " +
                         "FROM Flat_Wise_Payable fwp " +
@@ -233,18 +233,33 @@ public class Queries {
                         "on et.Expense_Type_Id = fwp.Expense_Type_Id " +
                         "where Payment_Status_ID in (1,3)";
 
+	public static final String payableAndPaidFlatWiseAmountQuery =
+				"select fwp.Flat_Wise_Payable_ID, fwp.Amount Payable, sum(tbs.Amount) Paid, " +
+						"et.Type, et.Expense_Type_Id, et.Payable_Priority, " +
+						"fwp.Flat_Id, fwp.Status, " +
+						"fwp.Month, fwp.Year,  " +
+						"fwp.Comments, fwp.Payment_Status_ID " +
+						"from Flat_Wise_Payable as fwp " +
+						"left join  " +
+						"Flat_Wise_Payable_Paid_Mapping as fwppm " +
+						"on fwp.Flat_Wise_Payable_ID = fwppm.Flat_Wise_Payable_ID " +
+						"left join Transactions_BalanceSheet as tbs " +
+						"on fwppm.Balance_Sheet_Transaction_ID = tbs.Balance_Sheet_Transaction_ID " +
+						"left join Expense_Type et on et.Expense_Type_Id = fwp.Expense_Type_Id " +
+						"where Payment_Status_ID in (1,3) " +
+						"group by fwp.Flat_Wise_Payable_ID";
 	/*
 	splitted=0 current transaction is not copied to User_Paid table.
 	 */
 	public static final String unSplittedTransactionsQuery =
-				"SELECT Transaction_ID,Amount,Transaction_Date,Transaction_Flow," +
+				"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
 						"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
 						"Verified_By,Splitted " +
 						"FROM Transactions_Verified " +
 						"where splitted=0";
 
 	public static final String paidFlatnExpenseTypeWiseAmountQuery =
-				"select  Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +
+				"select  User_Cash_Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +
 						"Paid_Date,Type,User_Comment,Admin_Comment " +
 						"from User_Paid u " +
 						"left join " +
@@ -254,7 +269,7 @@ public class Queries {
 						"group by u.Flat_ID, u.Expense_Type_Id";
 
 	public static final String allFlatWiseAmountQuery =
-				"SELECT Payable_Id,Flat_Id,Status,Month, " +
+				"SELECT Flat_Wise_Payable_ID,Flat_Id,Status,Month, " +
 						"Year,Amount,Type,Comments, " +
 						"Payment_IDs,Status_Type " +
 						"FROM Flat_Wise_Payable fwp " +
