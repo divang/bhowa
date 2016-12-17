@@ -45,7 +45,7 @@ public class ManageFlatWisePayableActivity extends DashBoardActivity implements 
                 List<String> expTypes = new ArrayList<>();
                 expTypes.add("Select the Expense Type");
                 for(ExpenseType.ExpenseTypeConst eType : ExpenseType.ExpenseTypeConst.values()) {
-                    if(eType.compareTo(ExpenseType.ExpenseTypeConst.Unknown)!= 0) expTypes.add(eType.name());
+                    if(eType.compareTo(ExpenseType.ExpenseTypeConst.Advance_Payment)!= 0) expTypes.add(eType.name());
                 }
                 expenseTypeSpinner.setAdapter(new ListViewAdaptor(getApplicationContext(), expTypes));
 

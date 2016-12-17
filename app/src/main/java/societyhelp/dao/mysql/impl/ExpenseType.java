@@ -19,7 +19,7 @@ public class ExpenseType {
     }
 
     public enum ExpenseTypeConst {
-        Unknown
+        Advance_Payment
         ,Monthly_Maintenance
         ,Initial_Payable
         ,Khata_Payable
@@ -51,6 +51,7 @@ public class ExpenseType {
         ,Generator_AMC
         ,Flat_Old_Dues
         ,Waste_Disposal
+
     }
 
     public enum PaymentStatusConst {

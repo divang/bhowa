@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         String dbUrl = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_URL, getApplicationContext());
         String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
         String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
+        Log.d("----------  Database", "dbUrl-"+ dbUrl + " dbUser-" + dbUser + " dbPass-" + dbPass);
         SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
         SocietyHelpDatabaseFactory.initMasterDB(dbUrl, dbUser, dbPass);
     }

@@ -213,6 +213,15 @@ public class Queries {
                     " on u.Expense_Type_Id = e.Expense_Type_Id " +
                     " where Verified = 0";
 
+
+	public static final String unSplittedCashPaymentByUserQuery =
+			"select " +
+					" User_Cash_Payment_ID,User_ID,Flat_ID,Amount,Paid_Date,u.Expense_Type_Id,User_Comment,Admin_Comment " +
+					" from User_Paid u " +
+					" left join Expense_Type e " +
+					" on u.Expense_Type_Id = e.Expense_Type_Id " +
+					" where Splitted = 0 ";
+
     public static final String saveVerifiedCashPaymentQuery =
                     "update User_Paid set Verified=1, Verified_by=? " +
                             "where User_Cash_Payment_ID in (?)";
@@ -248,15 +257,19 @@ public class Queries {
 						"left join Expense_Type et on et.Expense_Type_Id = fwp.Expense_Type_Id " +
 						"where Payment_Status_ID in (1,3) " +
 						"group by fwp.Flat_Wise_Payable_ID";
-	/*
-	splitted=0 current transaction is not copied to User_Paid table.
-	 */
+
 	public static final String unSplittedTransactionsQuery =
 				"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
 						"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
 						"Verified_By,Splitted " +
 						"FROM Transactions_Verified " +
 						"where splitted=0";
+
+	public static final String advanceTransactionsQuery =
+     			"SELECT Balance_Sheet_Transaction_ID,Amount,Verified_By_Admin," +
+						"Verified_By_User,Expense_Type_Id,Transaction_From_Bank_Statement_ID," +
+						"User_Cash_Payment_ID,Transaction_Expense_Id " +
+						"FROM Transactions_BalanceSheet WHERE Expense_Type_Id=0";
 
 	public static final String paidFlatnExpenseTypeWiseAmountQuery =
 				"select  User_Cash_Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +
