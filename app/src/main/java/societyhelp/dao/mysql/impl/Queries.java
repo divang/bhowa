@@ -292,5 +292,42 @@ public class Queries {
 						"on ups.Payment_Status_Id =fwp.Payment_Status_ID";
 
 	public static final String allAuthorizationsQuery =
-				"SELECT Auth_Id,Type FROM Authorizations";
+					"SELECT Auth_Id,Type FROM Authorizations";
+
+	public static final String insertToBalanceQuery =
+					"INSERT INTO transactions_balancesheet (" +
+					"Amount,Verified_By_Admin,Verified_By_User,Expense_Type_Id," +
+					"Transaction_From_Bank_Statement_ID,User_Cash_Payment_ID,Transaction_Expense_Id,Transaction_Flow)" +
+					"VALUES (?, ?, ?, ?," +
+							" ?, ?, ?, ?)";
+
+	public static final String updateBalanceSheet_Transaction =
+			"UPDATE transactions_balancesheet SET Expense_Type_Id=? ,Amount=?," +
+				"User_Transaction_Expense_Id=?, User_Cash_Payment_ID=?," +
+				"Transaction_From_Bank_Statement_ID=?  WHERE Balance_Sheet_Transaction_Id=?";
+
+	public static final String updateBalanceSheet_ExpenseType =
+			"UPDATE transactions_balancesheet SET Expense_Type_Id=? WHERE Balance_Sheet_Transaction_Id=?";
+
+	public static final String updateBalanceSheet_Amount =
+			"UPDATE transactions_balancesheet SET Amount=? WHERE Balance_Sheet_Transaction_Id=?";
+
+	public static final String updateBalanceSheet_Transaction_From_Bank_Statement_ID =
+			"UPDATE transactions_balancesheet SET Transaction_From_Bank_Statement_ID=? WHERE Balance_Sheet_Transaction_Id=?";
+
+	public static final String updateBalanceSheet_User_Cash_Payment_ID =
+			"UPDATE transactions_balancesheet SET User_Cash_Payment_ID=? WHERE Balance_Sheet_Transaction_Id=?";
+
+	public static final String updateBalanceSheet_User_Transaction_Expense_Id =
+			"UPDATE transactions_balancesheet SET User_Transaction_Expense_Id=? WHERE Balance_Sheet_Transaction_Id=?";
+
+	public static final String updateUserCashSpitted =
+			"UPDATE user_paid SET Splitted=? WHERE User_Cash_Payment_ID=?";
+
+	public static final String updateBankTransactionSpillted =
+			"UPDATE transactions_verified SET Splitted=? WHERE Transaction_From_Bank_Statement_ID=?";
+
+	public static final String insertFlatWisePayableToPaidMapping =
+			"INSERT INTO flat_wise_payable_paid_mapping (Flat_Wise_Payable_ID, Balance_Sheet_Transaction_ID) VALUES (?, ?)";
+
 }

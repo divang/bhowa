@@ -1117,18 +1117,136 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 if(!payableTotlyPaid) payableTotlyPaid = totalPayableFoundInUserCashPaid(payable, unSplitedUserCashPayment, readyToAddInBalanceSheet);
 
                 if(payableTotlyPaid) continue;
-                //If this poistion reach, it means there is no payment left for that flat, so break this loop
+                //If this position reach, it means there is no payment left for that flat, so break this loop
                 break;
             }
+            addToBalanceSheet(readyToAddInBalanceSheet, unSplitedUserCashPayment, unSplitedTransactions);
 
-            //Insert in transactions_balancesheet (all splitted transaction)
-            //Insert in flat_wise_payable_paid_mapping table
 
         } catch (Exception e) {
             Log.e("error", "Error while generating splitted transactions.", e);
             throw e;
         }
         return splittedPaidAmountFlatWise;
+    }
+
+    public boolean addToBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet,
+                                     List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions)
+    {
+        // All this should happen in a only SQL transaction.
+        // Insert in transactions_balance sheet (all splitted transaction)
+        // Insert in flat_wise_payable_paid_mapping table
+        // Update transactions_verified transaction splitted
+        // Update user_paid transaction splitted
+        List<TransactionOnBalanceSheet> insertTransactions = tobeInsertedTransactionInBalanceSheet(readyToAddInBalanceSheet);
+        List<TransactionOnBalanceSheet> updateTransaction = tobeUpdatedTransactionInBalanceSheet(readyToAddInBalanceSheet);
+        //do not make entry of advance update transaction
+        List<TransactionOnBalanceSheet>  advancePayment = toBeInsertAsAdvancePayment(unSplitedUserCashPayment, unSplitedTransactions);
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            con.setAutoCommit(false); //transaction block start
+
+            insertToPreparedStatementInBatch(con, pStat, insertTransactions);
+            updateToPreparedStatementInBatch(con, pStat, updateTransaction);
+            insertToPreparedStatementInBatch(con, pStat, advancePayment);
+            //updateUserCashSpitted
+            //
+            con.commit(); //transaction block end
+        } catch (Exception e) {
+            //throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+        return false;
+    }
+
+    public void insertToPreparedStatementInBatch(Connection con, PreparedStatement pStat, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    {
+        pStat = con.prepareStatement(insertToBalanceQuery);
+        for (TransactionOnBalanceSheet t : insertTransactions) {
+            pStat.setFloat(1, t.amount);
+            pStat.setBoolean(2, t.isVerifiedByAdmin);
+            pStat.setBoolean(3, t.isVerifiedByUser);
+            pStat.setInt(4, t.expenseType.ordinal());
+            pStat.setInt(5, t.transactionFromBankStatementID);
+            pStat.setInt(6, t.userCashPaymentID);
+            pStat.setInt(7, t.transactionExpenseId);
+            pStat.setString(8, t.transactionFlow);
+            pStat.addBatch();
+            pStat.clearParameters();
+        }
+        pStat.executeBatch();
+    }
+
+    public void updateToPreparedStatementInBatch(Connection con, PreparedStatement pStat, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    {
+        pStat = con.prepareStatement(updateBalanceSheet_Transaction);
+        for (TransactionOnBalanceSheet t : insertTransactions) {
+            pStat.setInt(1, t.expenseType.ordinal());
+            pStat.setFloat(2, t.amount);
+            pStat.setInt(3, t.transactionExpenseId);
+            pStat.setInt(4, t.userCashPaymentID);
+            pStat.setInt(5, t.transactionFromBankStatementID);
+            pStat.setInt(6, t.balanceSheetTransactionID);
+            pStat.addBatch();
+            pStat.clearParameters();
+        }
+        pStat.executeBatch();
+    }
+
+    public List<TransactionOnBalanceSheet> toBeInsertAsAdvancePayment(List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions)
+    {
+        List<TransactionOnBalanceSheet> advancePayment = new ArrayList<>();
+        for(UserPaid t : unSplitedUserCashPayment)
+        {
+            TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
+            balanceSheetTranction.amount = t.amount;
+            balanceSheetTranction.expenseType = ExpenseType.ExpenseTypeConst.Advance_Payment;
+            balanceSheetTranction.transactionFromBankStatementID = t.transactionId;
+            balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
+            balanceSheetTranction.action = TransactionOnBalanceSheet.DBAction.INSERT;
+            balanceSheetTranction.isVerifiedByAdmin = true;
+            advancePayment.add(balanceSheetTranction);
+        }
+
+        for(SocietyHelpTransaction t : unSplitedTransactions)
+        {
+            TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
+            balanceSheetTranction.amount = t.amount;
+            balanceSheetTranction.expenseType = ExpenseType.ExpenseTypeConst.Advance_Payment;
+            balanceSheetTranction.transactionFromBankStatementID = t.transactionId;
+            balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
+            balanceSheetTranction.action = TransactionOnBalanceSheet.DBAction.INSERT;
+            balanceSheetTranction.isVerifiedByAdmin = true;
+            advancePayment.add(balanceSheetTranction);
+        }
+
+        return advancePayment;
+    }
+
+    public List<TransactionOnBalanceSheet> tobeUpdatedTransactionInBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet)
+    {
+        List<TransactionOnBalanceSheet> updateTransaction = new ArrayList<>();
+        for(TransactionOnBalanceSheet transaction : readyToAddInBalanceSheet)
+        {
+            if(transaction.action.equals(TransactionOnBalanceSheet.DBAction.UPDATE)) updateTransaction.add(transaction);
+        }
+        return updateTransaction;
+    }
+
+    public List<TransactionOnBalanceSheet> tobeInsertedTransactionInBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet)
+    {
+        List<TransactionOnBalanceSheet> insertTransaction = new ArrayList<>();
+        for(TransactionOnBalanceSheet transaction : readyToAddInBalanceSheet)
+        {
+            if(transaction.action.equals(TransactionOnBalanceSheet.DBAction.INSERT)) insertTransaction.add(transaction);
+        }
+        return insertTransaction;
     }
 
     //Bank Monthly Statement Transaction Payment split to payables
