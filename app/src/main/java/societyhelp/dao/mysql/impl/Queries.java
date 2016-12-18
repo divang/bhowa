@@ -322,7 +322,7 @@ public class Queries {
 			"UPDATE transactions_balancesheet SET User_Transaction_Expense_Id=? WHERE Balance_Sheet_Transaction_Id=?";
 
 	public static final String updateUserCashSpitted =
-			"UPDATE user_paid SET Splitted=? WHERE User_Cash_Payment_ID=?";
+			"UPDATE user_paid SET Splitted=1 WHERE User_Cash_Payment_ID=?";
 
 	public static final String updateBankTransactionSpillted =
 			"UPDATE transactions_verified SET Splitted=? WHERE Transaction_From_Bank_Statement_ID=?";

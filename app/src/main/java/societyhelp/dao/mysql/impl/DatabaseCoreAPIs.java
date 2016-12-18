@@ -1151,11 +1151,14 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             con = getDBInstance();
             con.setAutoCommit(false); //transaction block start
 
-            insertToPreparedStatementInBatch(con, pStat, insertTransactions);
-            updateToPreparedStatementInBatch(con, pStat, updateTransaction);
-            insertToPreparedStatementInBatch(con, pStat, advancePayment);
-            //updateUserCashSpitted
-            //
+            insertToPreparedStatementInBatch(con, insertTransactions);
+            updateToPreparedStatementInBatch(con, updateTransaction);
+            insertToPreparedStatementInBatch(con, advancePayment);
+            insertToPreparedStatementInBatch(con, insertTransactions);
+            updateSplittedUserCash(con, insertTransactions);
+            updateSplittedBankStatement(con, insertTransactions);
+            insertToPaymentToPaidFlatwise(con, insertTransactions);
+
             con.commit(); //transaction block end
         } catch (Exception e) {
             //throw e;
@@ -1165,9 +1168,51 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return false;
     }
 
-    public void insertToPreparedStatementInBatch(Connection con, PreparedStatement pStat, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    public void insertToPaymentToPaidFlatwise(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
     {
-        pStat = con.prepareStatement(insertToBalanceQuery);
+        PreparedStatement pStat = con.prepareStatement(insertFlatWisePayableToPaidMapping);
+        for (TransactionOnBalanceSheet t : insertTransactions) {
+            pStat.setInt(1, t.flatWisePayableID);
+            pStat.setInt(2, t.balanceSheetTransactionID);
+            pStat.addBatch();
+            pStat.clearParameters();
+        }
+        pStat.executeBatch();
+    }
+
+    public void updateSplittedBankStatement(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    {
+        PreparedStatement pStat = con.prepareStatement(updateUserCashSpitted);
+        for (TransactionOnBalanceSheet t : insertTransactions) {
+
+            if(t.transactionFromBankStatementID >0)
+            {
+                pStat.setInt(1, t.transactionFromBankStatementID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+        }
+        pStat.executeBatch();
+    }
+
+    public void updateSplittedUserCash(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    {
+        PreparedStatement pStat = con.prepareStatement(updateUserCashSpitted);
+        for (TransactionOnBalanceSheet t : insertTransactions) {
+
+            if(t.userCashPaymentID >0)
+            {
+                pStat.setInt(1, t.userCashPaymentID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+        }
+        pStat.executeBatch();
+    }
+
+    public void insertToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    {
+        PreparedStatement pStat = con.prepareStatement(insertToBalanceQuery);
         for (TransactionOnBalanceSheet t : insertTransactions) {
             pStat.setFloat(1, t.amount);
             pStat.setBoolean(2, t.isVerifiedByAdmin);
@@ -1183,9 +1228,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public void updateToPreparedStatementInBatch(Connection con, PreparedStatement pStat, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
+    public void updateToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
     {
-        pStat = con.prepareStatement(updateBalanceSheet_Transaction);
+        PreparedStatement pStat = con.prepareStatement(updateBalanceSheet_Transaction);
         for (TransactionOnBalanceSheet t : insertTransactions) {
             pStat.setInt(1, t.expenseType.ordinal());
             pStat.setFloat(2, t.amount);
