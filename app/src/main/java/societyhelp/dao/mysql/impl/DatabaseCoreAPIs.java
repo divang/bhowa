@@ -1138,6 +1138,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         // Insert in flat_wise_payable_paid_mapping table
         // Update transactions_verified transaction splitted
         // Update user_paid transaction splitted
+
         List<TransactionOnBalanceSheet> insertTransactions = tobeInsertedTransactionInBalanceSheet(readyToAddInBalanceSheet);
         List<TransactionOnBalanceSheet> updateTransaction = tobeUpdatedTransactionInBalanceSheet(readyToAddInBalanceSheet);
         //do not make entry of advance update transaction
@@ -1161,6 +1162,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             con.commit(); //transaction block end
         } catch (Exception e) {
+            Log.e("Error", "Message - " + e.getMessage());
             //throw e;
         } finally {
             close(con, pStat, res);
@@ -1325,14 +1327,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             if(payable.amount == 0) break;
         }
 
-        if(payable.amount == 0)
+        for(UserPaid consumedTransaction : consumedPayment)
         {
-            for(UserPaid consumedTransaction : consumedPayment)
-            {
-                unSplitedUserCashPayment.remove(consumedTransaction);
-            }
-            return true; //payable amount is totally paid.
+            unSplitedUserCashPayment.remove(consumedTransaction);
         }
+        if(payable.amount == 0)    return true; //payable amount is totally paid.
+
         return false; //payable amount is not totally paid.
     }
 
@@ -1344,7 +1344,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             //Payable is greater then Paid
-            if(payable.amount > bankTransaction.amount)
+            if(payable.amount >= bankTransaction.amount)
             {
                 payable.amount = payable.amount -  bankTransaction.amount;
                 consumedPayment.add(bankTransaction); //it is totally consume, added in consume, so it will be removed from advancePayment list;
@@ -1367,14 +1367,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             if(payable.amount == 0) break;
         }
 
-        if(payable.amount == 0)
+        for(SocietyHelpTransaction consumedTransaction : consumedPayment)
         {
-            for(SocietyHelpTransaction consumedTransaction : consumedPayment)
-            {
-                unSplitedTransactions.remove(consumedTransaction);
-            }
-            return true; //payable amount is totally paid.
+            unSplitedTransactions.remove(consumedTransaction);
         }
+        if(payable.amount == 0)    return true; //payable amount is totally paid.
+
         return false; //payable amount is not totally paid.
     }
 
@@ -1384,7 +1382,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         List<TransactionOnBalanceSheet> consumedPayment = new ArrayList<>();
         for (TransactionOnBalanceSheet advanceAmountInBalSheet : advancePayment) {
             //Payable is greater then Paid
-            if(payable.amount > advanceAmountInBalSheet.amount)
+            if(payable.amount >= advanceAmountInBalSheet.amount)
             {
                 advanceAmountInBalSheet.action = TransactionOnBalanceSheet.DBAction.UPDATE;
                 advanceAmountInBalSheet.expenseType = payable.expenseType;
@@ -1410,14 +1408,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             }
         }
 
-        if(payable.amount == 0)
+        for(TransactionOnBalanceSheet consumedTransaction : consumedPayment)
         {
-            for(TransactionOnBalanceSheet consumedTransaction : consumedPayment)
-            {
-                advancePayment.remove(consumedTransaction);
-            }
-            return true; //payable amount is totally paid.
+            advancePayment.remove(consumedTransaction);
         }
+
+        if(payable.amount == 0)    return true; //payable amount is totally paid.
+
         return false; //payable amount is not totally paid.
     }
 
