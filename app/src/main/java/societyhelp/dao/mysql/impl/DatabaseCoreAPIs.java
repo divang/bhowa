@@ -1465,6 +1465,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             else if(payable.amount < advanceAmountInBalSheet.amount)
             {
                 advanceAmountInBalSheet.amount = advanceAmountInBalSheet.amount - payable.amount;
+                advanceAmountInBalSheet.action = TransactionOnBalanceSheet.DBAction.UPDATE;
+                advanceAmountInBalSheet.amountInitial = advanceAmountInBalSheet.amount;
+                readyToAddInBalanceSheet.add(advanceAmountInBalSheet);
 
                 TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
                 balanceSheetTranction.amount = payable.amount;
