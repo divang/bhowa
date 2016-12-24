@@ -6,15 +6,16 @@ import java.util.Date;
 public class SocietyHelpTransaction implements Serializable {
 
 	public int transactionId;
+	public String userId;
+	public String flatId;
 	public int srNo;
 	public String name;
 	public String reference;
 	public String type;
 	public float amount;
+	public float amountInitial;
 	public java.sql.Date transactionDate;
 	public String transactionFlow;
-	public String userId;
-	public String flatId;
 	public String verifiedBy;
 	public boolean splitted;
 
@@ -22,10 +23,13 @@ public class SocietyHelpTransaction implements Serializable {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append("srNo=").append(srNo);
+		str.append(" userId=").append(userId);
+		str.append(" flatId=").append(flatId);
 		str.append(" name=").append(name);
 		str.append(" reference=").append(reference);
 		str.append(" type=").append(type);
 		str.append(" amount=").append(amount);
+		str.append(" amountInitial=").append(amountInitial);
 		str.append(" transactionDate=").append(transactionDate);
 		str.append(" transactionFlow=").append(transactionFlow);
 		return str.toString();

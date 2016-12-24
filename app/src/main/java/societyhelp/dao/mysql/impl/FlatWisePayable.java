@@ -14,6 +14,7 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
     public int month;
     public int year;
     public float amount;
+    public float amountInitial;
     public String comments;
     public int expenseTypeId;
     public int payablePriority;
@@ -29,6 +30,7 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
         str.append(" month=").append(month);
         str.append(" year=").append(year);
         str.append(" amount=").append(amount);
+        str.append(", amountInitial=").append(amountInitial);
         str.append(" comments=").append(comments);
         str.append(" expenseType=").append(expenseType);
         str.append(" expenseTypeId=").append(expenseTypeId);
@@ -40,7 +42,7 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
     @Override
     public int compareTo(FlatWisePayable another) {
 
-        if(this.payablePriority < another.payablePriority)
+        if(this.payablePriority > another.payablePriority)
         {
             return 1;
         }

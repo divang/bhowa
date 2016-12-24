@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -1035,6 +1037,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 paid.userId = result.getString(2);
                 paid.flatId = result.getString(3);
                 paid.amount = result.getFloat(4);
+                paid.amountInitial = paid.amount;
                 paid.expendDate = result.getDate(5);
                 paid.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(6)];
                 paid.userComment = result.getString(7);
@@ -1120,7 +1123,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 //If this position reach, it means there is no payment left for that flat, so break this loop
                 break;
             }
-            addToBalanceSheet(readyToAddInBalanceSheet, unSplitedUserCashPayment, unSplitedTransactions);
+            addToBalanceSheet(readyToAddInBalanceSheet, unSplitedUserCashPayment, unSplitedTransactions, unPaidAmountFlatWise);
 
 
         } catch (Exception e) {
@@ -1131,7 +1134,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     }
 
     public boolean addToBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet,
-                                     List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions)
+                                     List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions,
+                                     List<FlatWisePayable> unPaidAmountFlatWise)
     {
         // All this should happen in a only SQL transaction.
         // Insert in transactions_balance sheet (all splitted transaction)
@@ -1155,10 +1159,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             insertToPreparedStatementInBatch(con, insertTransactions);
             updateToPreparedStatementInBatch(con, updateTransaction);
             insertToPreparedStatementInBatch(con, advancePayment);
-            insertToPreparedStatementInBatch(con, insertTransactions);
+
             updateSplittedUserCash(con, insertTransactions);
             updateSplittedBankStatement(con, insertTransactions);
-            insertToPaymentToPaidFlatwise(con, insertTransactions);
+            updateFlatWisePayableStatus(con, unPaidAmountFlatWise);
+            updateAdvanceBankStatement(con, advancePayment);
+            //insertToPaymentToPaidFlatwise(con, insertTransactions);
 
             con.commit(); //transaction block end
         } catch (Exception e) {
@@ -1184,17 +1190,39 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
     public void updateSplittedBankStatement(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
     {
-        PreparedStatement pStat = con.prepareStatement(updateUserCashSpitted);
+        PreparedStatement pStat = con.prepareStatement(updateBankTransactionSpillted);
         for (TransactionOnBalanceSheet t : insertTransactions) {
-
-            if(t.transactionFromBankStatementID >0)
-            {
+            if(t.transactionFromBankStatementID >0) {
                 pStat.setInt(1, t.transactionFromBankStatementID);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
         }
         pStat.executeBatch();
+    }
+
+
+    public void updateAdvanceBankStatement(Connection con, List<TransactionOnBalanceSheet> advanceTransactions) throws Exception
+    {
+        PreparedStatement pStat = con.prepareStatement(updateBankTransactionSpillted);
+        for (TransactionOnBalanceSheet t : advanceTransactions) {
+                if(t.transactionFromBankStatementID >0) {
+                    pStat.setInt(1, t.transactionFromBankStatementID);
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                }
+        }
+        pStat.executeBatch();
+
+        PreparedStatement pStatCash = con.prepareStatement(updateUserCashSpitted);
+        for (TransactionOnBalanceSheet t : advanceTransactions) {
+            if(t.userCashPaymentID >0) {
+                pStatCash.setInt(1, t.userCashPaymentID);
+                pStatCash.addBatch();
+                pStatCash.clearParameters();
+            }
+        }
+        pStatCash.executeBatch();
     }
 
     public void updateSplittedUserCash(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
@@ -1205,6 +1233,30 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             if(t.userCashPaymentID >0)
             {
                 pStat.setInt(1, t.userCashPaymentID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+        }
+        pStat.executeBatch();
+    }
+
+    public void updateFlatWisePayableStatus(Connection con, List<FlatWisePayable> flatWisePayables) throws Exception
+    {
+        PreparedStatement pStat = con.prepareStatement(updateFlatWisePayableStatus);
+        for (FlatWisePayable t : flatWisePayables) {
+
+            if(java.lang.Float.compare(t.amount, 0) == 0)
+            {
+                pStat.setInt(1, 2); //means Full_Paid check table User_Payment_Status
+                pStat.setInt(2, t.paymentId);
+                pStat.addBatch();
+                pStat.clearParameters();
+
+            }
+            else if(java.lang.Float.compare(t.amountInitial, t.amount) > 0)
+            {
+                pStat.setInt(1, 3); //means Partial_Paid check table User_Payment_Status
+                pStat.setInt(2, t.paymentId);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
@@ -1224,6 +1276,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.setInt(6, t.userCashPaymentID);
             pStat.setInt(7, t.transactionExpenseId);
             pStat.setString(8, t.transactionFlow);
+            pStat.setInt(9, t.flatWisePayableID);
             pStat.addBatch();
             pStat.clearParameters();
         }
@@ -1233,12 +1286,17 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public void updateToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
     {
         PreparedStatement pStat = con.prepareStatement(updateBalanceSheet_Transaction);
+        /*
+        SET Expense_Type_Id=? ,Amount=?," +
+				"User_Cash_Payment_ID=?, Transaction_From_Bank_Statement_ID=?," +
+				"Flat_Wise_Payable_ID=?  WHERE Balance_Sheet_Transaction_Id=?";
+         */
         for (TransactionOnBalanceSheet t : insertTransactions) {
             pStat.setInt(1, t.expenseType.ordinal());
             pStat.setFloat(2, t.amount);
-            pStat.setInt(3, t.transactionExpenseId);
-            pStat.setInt(4, t.userCashPaymentID);
-            pStat.setInt(5, t.transactionFromBankStatementID);
+            pStat.setInt(3, t.userCashPaymentID);
+            pStat.setInt(4, t.transactionFromBankStatementID);
+            pStat.setInt(5, t.flatWisePayableID);
             pStat.setInt(6, t.balanceSheetTransactionID);
             pStat.addBatch();
             pStat.clearParameters();
@@ -1258,6 +1316,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
             balanceSheetTranction.action = TransactionOnBalanceSheet.DBAction.INSERT;
             balanceSheetTranction.isVerifiedByAdmin = true;
+            balanceSheetTranction.flatId = t.flatId;
+            balanceSheetTranction.userId = t.userId;
+            balanceSheetTranction.userCashPaymentID = t.paymentId;
             advancePayment.add(balanceSheetTranction);
         }
 
@@ -1270,6 +1331,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
             balanceSheetTranction.action = TransactionOnBalanceSheet.DBAction.INSERT;
             balanceSheetTranction.isVerifiedByAdmin = true;
+            balanceSheetTranction.flatId = t.flatId;
+            balanceSheetTranction.userId = t.userId;
+            balanceSheetTranction.transactionFromBankStatementID = t.transactionId;
             advancePayment.add(balanceSheetTranction);
         }
 
@@ -1301,10 +1365,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         List<UserPaid> consumedPayment = new ArrayList<>();
         for (UserPaid cashTransaction : unSplitedUserCashPayment) {
-
+            if(cashTransaction.flatId == null || !cashTransaction.flatId.equals(payable.flatId)) continue;
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
+            balanceSheetTranction.amountInitial = payable.amount;
+            balanceSheetTranction.flatId = payable.flatId;
             //Payable is greater then Paid
-            if(payable.amount > cashTransaction.amount)
+            if(payable.amount >= cashTransaction.amount)
             {
                 payable.amount = payable.amount -  cashTransaction.amount;
                 consumedPayment.add(cashTransaction); //it is totally consume, added in consume, so it will be removed from advancePayment list;
@@ -1319,7 +1385,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             }
 
             balanceSheetTranction.expenseType = payable.expenseType;
-            balanceSheetTranction.transactionFromBankStatementID = cashTransaction.transactionId; //Monthly statement transaction id mapping only. [transactions_verified table]
+            balanceSheetTranction.userCashPaymentID = cashTransaction.paymentId; //Monthly statement transaction id mapping only. [transactions_verified table]
             balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
             balanceSheetTranction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
             readyToAddInBalanceSheet.add(balanceSheetTranction);
@@ -1341,8 +1407,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         List<SocietyHelpTransaction> consumedPayment = new ArrayList<>();
         for (SocietyHelpTransaction bankTransaction : unSplitedTransactions) {
-
+            if(bankTransaction.flatId == null || !bankTransaction.flatId.equals(payable.flatId)) continue;
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
+            balanceSheetTranction.amountInitial = payable.amount;
+            balanceSheetTranction.flatId = payable.flatId;
             //Payable is greater then Paid
             if(payable.amount >= bankTransaction.amount)
             {
@@ -1381,11 +1449,14 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         List<TransactionOnBalanceSheet> consumedPayment = new ArrayList<>();
         for (TransactionOnBalanceSheet advanceAmountInBalSheet : advancePayment) {
+            if(advanceAmountInBalSheet.flatId == null || !advanceAmountInBalSheet.flatId.equals(payable.flatId)) continue;
             //Payable is greater then Paid
             if(payable.amount >= advanceAmountInBalSheet.amount)
             {
                 advanceAmountInBalSheet.action = TransactionOnBalanceSheet.DBAction.UPDATE;
                 advanceAmountInBalSheet.expenseType = payable.expenseType;
+                advanceAmountInBalSheet.amountInitial = payable.amount;
+                advanceAmountInBalSheet.flatWisePayableID = payable.paymentId;
                 payable.amount = payable.amount -  advanceAmountInBalSheet.amount;
                 readyToAddInBalanceSheet.add(advanceAmountInBalSheet);
                 consumedPayment.add(advanceAmountInBalSheet); //it is totally consume, added in consume, so it will be removed from advancePayment list;
@@ -1394,16 +1465,18 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             else if(payable.amount < advanceAmountInBalSheet.amount)
             {
                 advanceAmountInBalSheet.amount = advanceAmountInBalSheet.amount - payable.amount;
-                payable.amount = 0;
 
                 TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
                 balanceSheetTranction.amount = payable.amount;
+                balanceSheetTranction.amountInitial = payable.amount;
+                balanceSheetTranction.flatId = payable.flatId;
                 balanceSheetTranction.expenseType = payable.expenseType;
                 balanceSheetTranction.transactionFromBankStatementID = advanceAmountInBalSheet.transactionFromBankStatementID; //Monthly statement transaction id mapping only. [transactions_verified table]
                 balanceSheetTranction.userCashPaymentID = advanceAmountInBalSheet.userCashPaymentID; //Mapping of user cash id to this transaction
                 balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
                 balanceSheetTranction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
                 readyToAddInBalanceSheet.add(balanceSheetTranction);
+                payable.amount = 0;
                 break;
             }
         }
@@ -1422,6 +1495,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public boolean isExactMatchFoundInUserCashPaid(FlatWisePayable payable, List<UserPaid> unSplitedUserCashPayment, List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
         UserPaid foundTransaction = null;
         for (UserPaid curTransaction : unSplitedUserCashPayment) {
+            if(curTransaction.flatId == null || !curTransaction.flatId.equals(payable.flatId)) continue;
             if (curTransaction.amount == payable.amount) {
                 foundTransaction = curTransaction;
                 break;
@@ -1431,11 +1505,14 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             unSplitedUserCashPayment.remove(foundTransaction);
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amount = payable.amount;
+            balanceSheetTranction.amountInitial = payable.amount;
             balanceSheetTranction.expenseType = payable.expenseType;
-            balanceSheetTranction.userCashPaymentID = foundTransaction.transactionId; //User cash payment transaction id mapping only. [user_paid table]
+            balanceSheetTranction.flatId = payable.flatId;
+            balanceSheetTranction.userCashPaymentID = foundTransaction.paymentId; //User cash payment transaction id mapping only. [user_paid table]
             balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
             balanceSheetTranction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
             readyToAddInBalanceSheet.add(balanceSheetTranction);
+            payable.amount = 0;
             return true;
         }
         return false;
@@ -1445,6 +1522,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public boolean isExactMatchFoundInBankTransactionPayment(FlatWisePayable payable, List<SocietyHelpTransaction> unSplitedTransactions, List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
         SocietyHelpTransaction foundTransaction = null;
         for (SocietyHelpTransaction curTransaction : unSplitedTransactions) {
+            if(curTransaction.flatId == null || !curTransaction.flatId.equals(payable.flatId)) continue;
             if (curTransaction.amount == payable.amount) {
                 foundTransaction = curTransaction;
                 break;
@@ -1454,11 +1532,14 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             unSplitedTransactions.remove(foundTransaction);
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amount = payable.amount;
+            balanceSheetTranction.amountInitial = payable.amount;
+            balanceSheetTranction.flatId = payable.flatId;
             balanceSheetTranction.expenseType = payable.expenseType;
             balanceSheetTranction.transactionFromBankStatementID = foundTransaction.transactionId; //Monthly statement transaction id mapping only. [transactions_verified table]
             balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
             balanceSheetTranction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
             readyToAddInBalanceSheet.add(balanceSheetTranction);
+            payable.amount = 0;
             return true;
         }
         return false;
@@ -1466,8 +1547,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
     //Search for exact search in Advance payment
     public boolean isExactMatchFoundInAdvancePayment(FlatWisePayable payable, List<TransactionOnBalanceSheet> advancePayment, List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
+
+
         TransactionOnBalanceSheet foundTransaction = null;
         for (TransactionOnBalanceSheet advanceAmountInBalSheet : advancePayment) {
+            if(advanceAmountInBalSheet.flatId == null || !advanceAmountInBalSheet.flatId.equals(payable.flatId)) continue;
             if (advanceAmountInBalSheet.amount == payable.amount) {
                 foundTransaction = advanceAmountInBalSheet;
                 break;
@@ -1479,6 +1563,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             foundTransaction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
             foundTransaction.action = TransactionOnBalanceSheet.DBAction.UPDATE;
             readyToAddInBalanceSheet.add(foundTransaction);
+            payable.amount = 0;
             return true;
         }
         return false;
@@ -1516,6 +1601,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 SocietyHelpTransaction t = new SocietyHelpTransaction();
                 t.transactionId = result.getInt(1);
                 t.amount = result.getFloat(2);
+                t.amountInitial = t.amount;
                 t.transactionDate = result.getDate(3);
                 t.transactionFlow = result.getString(4);
                 t.type = result.getString(5);
@@ -1547,20 +1633,39 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             result = pStat.executeQuery();
             while (result.next()) {
                 /*
-                Balance_Sheet_Transaction_ID,Amount,
-                Verified_By_Admin," "Verified_By_User,Expense_Type_Id,
-				Transaction_From_Bank_Statement_ID," +
-				"User_Cash_Payment_ID,Transaction_Expense_Id " +
-                 */
+                tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin,
+                tbs.Verified_By_User,tbs.Expense_Type_Id,tbs.Transaction_From_Bank_Statement_ID,
+                tbs.User_Cash_Payment_ID, tbs.Transaction_Expense_Id,
+
+                tv.User_Id User_Id_tv, tv.Flat_Id User_Id_tv,"+
+				ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud,
+				ae.Expend_By_UserId User_Id_ae
+
+               */
                 TransactionOnBalanceSheet t = new TransactionOnBalanceSheet();
                 t.balanceSheetTransactionID = result.getInt(1);
                 t.amount = result.getFloat(2);
+                t.amountInitial = t.amount;
                 t.isVerifiedByAdmin = result.getBoolean(3);
                 t.isVerifiedByUser = result.getBoolean(4);
                 t.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(5)];
                 t.transactionFromBankStatementID = result.getInt(6);
                 t.userCashPaymentID = result.getInt(7);
                 t.transactionExpenseId = result.getInt(8);
+
+                if(t.transactionFromBankStatementID > 0)
+                {
+                    t.userId = result.getString(9);
+                    t.flatId = result.getString(10);
+                }else if(t.userCashPaymentID > 0)
+                {
+                    t.userId = result.getString(11);
+                    t.flatId = result.getString(12);
+                }else if(t.transactionExpenseId > 0 )
+                {
+                    t.userId = result.getString(13);
+                    t.flatId = "";
+                }
 
                 list.add(t);
             }
@@ -1595,6 +1700,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 FlatWisePayable t = new FlatWisePayable();
                 t.paymentId = result.getInt(1);
                 t.amount = result.getFloat(2) - result.getFloat(3);
+                t.amountInitial = t.amount;
                 t.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(5)];
                 t.payablePriority = result.getInt(6);
                 t.flatId = result.getString(7);
@@ -1611,6 +1717,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         } finally {
             close(connection, pStat, result);
         }
+        Collections.sort(list);
         return list;
     }
 

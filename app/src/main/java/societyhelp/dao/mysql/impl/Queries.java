@@ -249,11 +249,11 @@ public class Queries {
 						"fwp.Month, fwp.Year,  " +
 						"fwp.Comments, fwp.Payment_Status_ID " +
 						"from Flat_Wise_Payable as fwp " +
-						"left join  " +
-						"Flat_Wise_Payable_Paid_Mapping as fwppm " +
-						"on fwp.Flat_Wise_Payable_ID = fwppm.Flat_Wise_Payable_ID " +
+						//"left join  " +
+						//"Flat_Wise_Payable_Paid_Mapping as fwppm " +
+						//"on fwp.Flat_Wise_Payable_ID = fwppm.Flat_Wise_Payable_ID " +
 						"left join Transactions_BalanceSheet as tbs " +
-						"on fwppm.Balance_Sheet_Transaction_ID = tbs.Balance_Sheet_Transaction_ID " +
+						"on fwp.Flat_Wise_Payable_ID = tbs.Flat_Wise_Payable_ID " +
 						"left join Expense_Type et on et.Expense_Type_Id = fwp.Expense_Type_Id " +
 						"where Payment_Status_ID in (1,3) " +
 						"group by fwp.Flat_Wise_Payable_ID";
@@ -266,10 +266,14 @@ public class Queries {
 						"where splitted=0";
 
 	public static final String advanceTransactionsQuery =
-     			"SELECT Balance_Sheet_Transaction_ID,Amount,Verified_By_Admin," +
-						"Verified_By_User,Expense_Type_Id,Transaction_From_Bank_Statement_ID," +
-						"User_Cash_Payment_ID,Transaction_Expense_Id " +
-						"FROM Transactions_BalanceSheet WHERE Expense_Type_Id=0";
+			    "SELECT tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin, tbs.Verified_By_User,tbs.Expense_Type_Id,"+
+					"tbs.Transaction_From_Bank_Statement_ID, tbs.User_Cash_Payment_ID, tbs.Transaction_Expense_Id, tv.User_Id User_Id_tv, tv.Flat_Id User_Id_tv,"+
+					"ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud, ae.Expend_By_UserId User_Id_ae "+
+					"FROM Transactions_BalanceSheet tbs "+
+					"left join Transactions_Verified tv on tbs.Transaction_From_Bank_Statement_ID = tv.Transaction_From_Bank_Statement_ID "+
+					"left join User_Paid ud on tbs.User_Cash_Payment_ID = ud.User_Cash_Payment_ID   "+
+					"left join Apartment_Expense ae on tbs.Transaction_Expense_Id = ae.Apartment_Cash_Expense_ID  "+
+					"WHERE tbs.Expense_Type_Id=0";
 
 	public static final String paidFlatnExpenseTypeWiseAmountQuery =
 				"select  User_Cash_Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +
@@ -297,14 +301,14 @@ public class Queries {
 	public static final String insertToBalanceQuery =
 					"INSERT INTO Transactions_BalanceSheet (" +
 					"Amount,Verified_By_Admin,Verified_By_User,Expense_Type_Id," +
-					"Transaction_From_Bank_Statement_ID,User_Cash_Payment_ID,Transaction_Expense_Id,Transaction_Flow)" +
+					"Transaction_From_Bank_Statement_ID,User_Cash_Payment_ID,Transaction_Expense_Id,Transaction_Flow,Flat_Wise_Payable_ID)" +
 					"VALUES (?, ?, ?, ?," +
-							" ?, ?, ?, ?)";
+							" ?, ?, ?, ?, ?)";
 
 	public static final String updateBalanceSheet_Transaction =
 			"UPDATE Transactions_BalanceSheet SET Expense_Type_Id=? ,Amount=?," +
-				"User_Cash_Payment_ID=?, User_Cash_Payment_ID=?," +
-				"Transaction_From_Bank_Statement_ID=?  WHERE Balance_Sheet_Transaction_Id=?";
+				"User_Cash_Payment_ID=?, Transaction_From_Bank_Statement_ID=?," +
+				"Flat_Wise_Payable_ID=?  WHERE Balance_Sheet_Transaction_Id=?";
 
 	public static final String updateBalanceSheet_ExpenseType =
 			"UPDATE Transactions_BalanceSheet SET Expense_Type_Id=? WHERE Balance_Sheet_Transaction_Id=?";
@@ -325,9 +329,11 @@ public class Queries {
 			"UPDATE User_Paid SET Splitted=1 WHERE User_Cash_Payment_ID=?";
 
 	public static final String updateBankTransactionSpillted =
-			"UPDATE transactions_verified SET Splitted=? WHERE Transaction_From_Bank_Statement_ID=?";
+			"UPDATE Transactions_Verified SET Splitted=1 WHERE Transaction_From_Bank_Statement_ID=?";
 
 	public static final String insertFlatWisePayableToPaidMapping =
 			"INSERT INTO Flat_Wise_Payable_Paid_Mapping (Flat_Wise_Payable_ID, Balance_Sheet_Transaction_ID) VALUES (?, ?)";
 
+	public static final String updateFlatWisePayableStatus =
+			"UPDATE Flat_Wise_Payable SET Payment_Status_ID=? WHERE Flat_Wise_Payable_ID=?";
 }

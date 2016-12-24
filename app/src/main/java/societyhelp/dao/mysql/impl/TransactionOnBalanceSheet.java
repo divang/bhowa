@@ -8,7 +8,10 @@ import java.io.Serializable;
 public class TransactionOnBalanceSheet implements Serializable
 {
     public int balanceSheetTransactionID;
+    public String userId;
+    public String flatId;
     public float amount;
+    public float amountInitial;
     public boolean isVerifiedByAdmin;
     public boolean isVerifiedByUser;
     public ExpenseType.ExpenseTypeConst expenseType;
@@ -30,6 +33,7 @@ public class TransactionOnBalanceSheet implements Serializable
         StringBuilder str = new StringBuilder();
         str.append("balanceSheetTransactionID=").append(balanceSheetTransactionID);
         str.append(", amount=").append(amount);
+        str.append(", amountInitial=").append(amountInitial);
         str.append(", isVerifiedByAdmin=").append(isVerifiedByAdmin);
         str.append(", isVerifiedByUser=").append(isVerifiedByUser);
         str.append(", expenseType=").append(expenseType);
