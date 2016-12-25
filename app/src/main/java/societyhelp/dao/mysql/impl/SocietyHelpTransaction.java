@@ -18,6 +18,7 @@ public class SocietyHelpTransaction implements Serializable {
 	public String transactionFlow;
 	public String verifiedBy;
 	public boolean splitted;
+	public ExpenseType.ExpenseTypeConst expenseType;
 
 	@Override
 	public String toString() {
@@ -32,6 +33,10 @@ public class SocietyHelpTransaction implements Serializable {
 		str.append(" amountInitial=").append(amountInitial);
 		str.append(" transactionDate=").append(transactionDate);
 		str.append(" transactionFlow=").append(transactionFlow);
+		str.append(" verifiedBy=").append(verifiedBy);
+		str.append(" splitted=").append(splitted);
+		str.append(" expenseType=").append(expenseType);
+
 		return str.toString();
 	}
 	

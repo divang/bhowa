@@ -50,7 +50,8 @@ public class ExpenseType {
         ,Pest_Control
         ,Generator_AMC
         ,Flat_Old_Dues
-        ,Waste_Disposal
+        ,Waste_Disposal,
+        Gym
 
     }
 

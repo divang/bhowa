@@ -258,12 +258,21 @@ public class Queries {
 						"where Payment_Status_ID in (1,3) " +
 						"group by fwp.Flat_Wise_Payable_ID";
 
-	public static final String unSplittedTransactionsQuery =
+	public static final String unSplittedCreditTransactionsQuery =
 				"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
 						"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
 						"Verified_By,Splitted " +
 						"FROM Transactions_Verified " +
 						"where splitted=0 and Transaction_Flow = 'Credit'";
+
+	public static final String unSplittedDebitTransactionsQuery =
+			"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
+					"Transaction_Mode,Transaction_Reference,tv.User_Id,ud.Service_Type_Id," +
+					"Verified_By,Splitted " +
+					"FROM Transactions_Verified tv " +
+					"left join " +
+					"User_Details ud on ud.User_Id = tv.User_Id " +
+					"where splitted=0 and Transaction_Flow = 'Debit'";
 
 	public static final String advanceTransactionsQuery =
 			    "SELECT tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin, tbs.Verified_By_User,tbs.Expense_Type_Id,"+

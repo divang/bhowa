@@ -1091,7 +1091,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         List<UserPaid> splittedPaidAmountFlatWise = new ArrayList<>();
         try {
             // pick all flat wise payables
-            List<SocietyHelpTransaction> unSplitedTransactions = getUnSplittedTransactions();
+            List<SocietyHelpTransaction> unSplitedTransactions = getUnSplittedCreditTransactions();
             // pick user un splitted cash payment
             List<UserPaid> unSplitedUserCashPayment = getUnSplittedUserCashPayment();
             // pick all flat wise advance payment
@@ -1579,7 +1579,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     }
 
 
-    public List<SocietyHelpTransaction> getUnSplittedTransactions() throws Exception {
+    public List<SocietyHelpTransaction> getUnSplittedCreditTransactions() throws Exception {
         List<SocietyHelpTransaction> list = new ArrayList<>();
         Connection connection = null;
         PreparedStatement pStat = null;
@@ -1587,7 +1587,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         try {
 
             connection = getDBInstance();
-            pStat = connection.prepareStatement(unSplittedTransactionsQuery);
+            pStat = connection.prepareStatement(unSplittedCreditTransactionsQuery);
             result = pStat.executeQuery();
             while (result.next()) {
                 /*
@@ -1607,6 +1607,45 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 t.reference = result.getString(6);
                 t.userId = result.getString(7);
                 t.flatId = result.getString(8);
+                t.verifiedBy = result.getString(9);
+                t.splitted = result.getBoolean(10);
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
+    public List<SocietyHelpTransaction> getUnSplittedDebitTransactions() throws Exception {
+        List<SocietyHelpTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(unSplittedDebitTransactionsQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                /*
+                Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
+					"Transaction_Mode,Transaction_Reference,tv.User_Id,ud.Service_Type_Id," +
+					"Verified_By,Splitted " +
+                 */
+                SocietyHelpTransaction t = new SocietyHelpTransaction();
+                t.transactionId = result.getInt(1);
+                t.amount = result.getFloat(2);
+                t.amountInitial = t.amount;
+                t.transactionDate = result.getDate(3);
+                t.transactionFlow = result.getString(4);
+                t.type = result.getString(5);
+                t.reference = result.getString(6);
+                t.userId = result.getString(7);
+                t.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(8)];
                 t.verifiedBy = result.getString(9);
                 t.splitted = result.getBoolean(10);
                 list.add(t);
