@@ -263,7 +263,7 @@ public class Queries {
 						"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
 						"Verified_By,Splitted " +
 						"FROM Transactions_Verified " +
-						"where splitted=0";
+						"where splitted=0 and Transaction_Flow = 'Credit'";
 
 	public static final String advanceTransactionsQuery =
 			    "SELECT tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin, tbs.Verified_By_User,tbs.Expense_Type_Id,"+

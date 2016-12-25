@@ -1118,10 +1118,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 payableTotlyPaid = totalPayableFoundInAdvancePayment(payable, advancePayment, readyToAddInBalanceSheet);
                 if(!payableTotlyPaid) payableTotlyPaid = totalPayableFoundInBankTransactionPayment(payable, unSplitedTransactions, readyToAddInBalanceSheet);
                 if(!payableTotlyPaid) payableTotlyPaid = totalPayableFoundInUserCashPaid(payable, unSplitedUserCashPayment, readyToAddInBalanceSheet);
-
-                if(payableTotlyPaid) continue;
-                //If this position reach, it means there is no payment left for that flat, so break this loop
-                break;
             }
             addToBalanceSheet(readyToAddInBalanceSheet, unSplitedUserCashPayment, unSplitedTransactions, unPaidAmountFlatWise);
 
