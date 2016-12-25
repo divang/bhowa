@@ -19,7 +19,6 @@ public class UserPaid implements Serializable {
     public String adminComment;
     public boolean isVerified;
     public String verifiedBy;
-    public int transactionId;
     public boolean isUserVerified;
 
 
@@ -37,7 +36,6 @@ public class UserPaid implements Serializable {
         str.append(" flatId=").append(flatId);
         str.append(" isVerified=").append(isVerified);
         str.append(" verifiedBy=").append(verifiedBy);
-        str.append(" transactionId=").append(transactionId);
         str.append(" isUserVerified=").append(isUserVerified);
         return str.toString();
     }

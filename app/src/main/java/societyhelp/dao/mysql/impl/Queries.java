@@ -222,6 +222,13 @@ public class Queries {
 					" on u.Expense_Type_Id = e.Expense_Type_Id " +
 					" where Splitted = 0 ";
 
+	public static final String unSplittedApartmentExpensePaymentQuery =
+			"select Apartment_Cash_Expense_ID,Expense_Type_Id,Amount " +
+					" ,Expend_Date,Expend_By_UserId,Verified " +
+					" ,Verified_By,Expendy_Comment,Admin_Comment,Splitted " +
+					" from Apartment_Expense " +
+					" where Splitted = 0 ";
+
     public static final String saveVerifiedCashPaymentQuery =
                     "update User_Paid set Verified=1, Verified_by=? " +
                             "where User_Cash_Payment_ID in (?)";
@@ -345,4 +352,8 @@ public class Queries {
 
 	public static final String updateFlatWisePayableStatus =
 			"UPDATE Flat_Wise_Payable SET Payment_Status_ID=? WHERE Flat_Wise_Payable_ID=?";
+
+	public static final String updateApartmentCashSpitted =
+			"UPDATE Apartment_Expense SET Splitted=1 WHERE Apartment_Cash_Expense_ID=?";
+
 }

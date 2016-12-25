@@ -1053,6 +1053,40 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return payments;
     }
 
+    public List<ApartmentExpense> getUnSplittedApartmentCashExpense() throws Exception {
+        List<ApartmentExpense> payments = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(unSplittedApartmentExpensePaymentQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                ApartmentExpense paid = new ApartmentExpense();
+                paid.apartmentCashExpenseId = result.getInt(1);
+                paid.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(2)];
+                paid.amount = result.getFloat(3);
+                paid.amountInitial = paid.amount;
+                paid.expendDate = result.getDate(4);
+                paid.expendByUserId = result.getString(5);
+                paid.isVerified = result.getBoolean(6);
+                paid.verifiedBy = result.getString(7);
+                paid.expendyComment = result.getString(8);
+                paid.adminComment = result.getString(9);
+                paid.splitted = result.getBoolean(10);
+                payments.add(paid);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return payments;
+    }
+
     public void saveVerifiedCashPayment(String userId, String paymentIds) throws Exception {
         Connection con = null;
         Statement stat = null;
@@ -1149,18 +1183,26 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         ResultSet res = null;
 
         try {
+            List<SocietyHelpTransaction> debitTransactions = getUnSplittedDebitTransactions();
+            List<TransactionOnBalanceSheet> tobeInsertedDebitTransactions = convertDebitedTransactionToBalanceSheetTransaction(debitTransactions);
+            List<ApartmentExpense> apartmentCashExpense = getUnSplittedApartmentCashExpense();
+            List<TransactionOnBalanceSheet> tobeInsertedApartmentCashExpense = convertCashExpenseToBalanceSheetTransaction(apartmentCashExpense);
+
             con = getDBInstance();
             con.setAutoCommit(false); //transaction block start
 
             insertToPreparedStatementInBatch(con, insertTransactions);
             updateToPreparedStatementInBatch(con, updateTransaction);
             insertToPreparedStatementInBatch(con, advancePayment);
+            insertToPreparedStatementInBatch(con, tobeInsertedDebitTransactions); //insert debit transactions - expense
+            insertToPreparedStatementInBatch(con, tobeInsertedApartmentCashExpense); //insert cash expense transactions
 
             updateSplittedUserCash(con, insertTransactions);
             updateSplittedBankStatement(con, insertTransactions);
+            updateSplittedBankStatement(con, tobeInsertedDebitTransactions); //update debit transactions
             updateFlatWisePayableStatus(con, unPaidAmountFlatWise);
             updateAdvanceBankStatement(con, advancePayment);
-            //insertToPaymentToPaidFlatwise(con, insertTransactions);
+            updateSplittedApartementCashExpense(con,apartmentCashExpense); //update Apartment expense table
 
             con.commit(); //transaction block end
         } catch (Exception e) {
@@ -1232,6 +1274,17 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 pStat.addBatch();
                 pStat.clearParameters();
             }
+        }
+        pStat.executeBatch();
+    }
+
+    public void updateSplittedApartementCashExpense(Connection con, List<ApartmentExpense> cashExpense) throws Exception
+    {
+        PreparedStatement pStat = con.prepareStatement(updateApartmentCashSpitted);
+        for (ApartmentExpense t : cashExpense) {
+                pStat.setInt(1, t.apartmentCashExpenseId);
+                pStat.addBatch();
+                pStat.clearParameters();
         }
         pStat.executeBatch();
     }
@@ -1308,7 +1361,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amount = t.amount;
             balanceSheetTranction.expenseType = ExpenseType.ExpenseTypeConst.Advance_Payment;
-            balanceSheetTranction.transactionFromBankStatementID = t.transactionId;
             balanceSheetTranction.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
             balanceSheetTranction.action = TransactionOnBalanceSheet.DBAction.INSERT;
             balanceSheetTranction.isVerifiedByAdmin = true;
@@ -1618,6 +1670,40 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             close(connection, pStat, result);
         }
         return list;
+    }
+
+    public List<TransactionOnBalanceSheet> convertDebitedTransactionToBalanceSheetTransaction(List<SocietyHelpTransaction> tobeInsertedDebitTransactions)
+    {
+        List<TransactionOnBalanceSheet> readyToBalanceSheetTransactions = new ArrayList<>();
+        for(SocietyHelpTransaction t : tobeInsertedDebitTransactions)
+        {
+            TransactionOnBalanceSheet paid = new TransactionOnBalanceSheet();
+            paid.transactionFromBankStatementID = t.transactionId;
+            paid.amount = t.amount;
+            paid.amountInitial = t.amount;
+            paid.action = TransactionOnBalanceSheet.DBAction.INSERT;
+            paid.expenseType = t.expenseType;
+            paid.transactionFlow = CONST_DEBIT_TRANSACTION_FLOW;
+            readyToBalanceSheetTransactions.add(paid);
+        }
+        return readyToBalanceSheetTransactions;
+    }
+
+    public List<TransactionOnBalanceSheet> convertCashExpenseToBalanceSheetTransaction(List<ApartmentExpense> apartmentCashExpense)
+    {
+        List<TransactionOnBalanceSheet> readyToBalanceSheetTransactions = new ArrayList<>();
+        for(ApartmentExpense t : apartmentCashExpense)
+        {
+            TransactionOnBalanceSheet paid = new TransactionOnBalanceSheet();
+            paid.transactionExpenseId = t.apartmentCashExpenseId; //Cash Expense ID
+            paid.amount = t.amount;
+            paid.amountInitial = t.amount;
+            paid.action = TransactionOnBalanceSheet.DBAction.INSERT;
+            paid.expenseType = t.expenseType;
+            paid.transactionFlow = CONST_DEBIT_TRANSACTION_FLOW;
+            readyToBalanceSheetTransactions.add(paid);
+        }
+        return readyToBalanceSheetTransactions;
     }
 
     public List<SocietyHelpTransaction> getUnSplittedDebitTransactions() throws Exception {
