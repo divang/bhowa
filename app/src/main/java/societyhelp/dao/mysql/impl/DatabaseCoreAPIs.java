@@ -1802,6 +1802,63 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return list;
     }
 
+        public List<TransactionOnBalanceSheet> getBalanceSheetData() throws Exception {
+        List<TransactionOnBalanceSheet> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(balanceSheetQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                /*
+                tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin,
+                tbs.Verified_By_User,tbs.Expense_Type_Id,tbs.Transaction_From_Bank_Statement_ID,
+                tbs.User_Cash_Payment_ID, tbs.Transaction_Expense_Id,
+
+                tv.User_Id User_Id_tv, tv.Flat_Id User_Id_tv,"+
+				ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud,
+				ae.Expend_By_UserId User_Id_ae
+
+               */
+                TransactionOnBalanceSheet t = new TransactionOnBalanceSheet();
+                t.balanceSheetTransactionID = result.getInt(1);
+                t.amount = result.getFloat(2);
+                t.amountInitial = t.amount;
+                t.isVerifiedByAdmin = result.getBoolean(3);
+                t.isVerifiedByUser = result.getBoolean(4);
+                t.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(5)];
+                t.transactionFromBankStatementID = result.getInt(6);
+                t.userCashPaymentID = result.getInt(7);
+                t.transactionExpenseId = result.getInt(8);
+
+                if(t.transactionFromBankStatementID > 0)
+                {
+                    t.userId = result.getString(9);
+                    t.flatId = result.getString(10);
+                }else if(t.userCashPaymentID > 0)
+                {
+                    t.userId = result.getString(11);
+                    t.flatId = result.getString(12);
+                }else if(t.transactionExpenseId > 0 )
+                {
+                    t.userId = result.getString(13);
+                    t.flatId = "";
+                }
+
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
     public List<FlatWisePayable> getUnPaidAmountFlatWise() throws Exception {
         List<FlatWisePayable> list = new ArrayList<>();
         Connection connection = null;

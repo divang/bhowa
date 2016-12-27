@@ -103,6 +103,7 @@
     <orderEntry type="library" exported="" name="support-vector-drawable-23.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="itextpdf-5.1.0" level="project" />
+    <orderEntry type="library" exported="" name="jxl" level="project" />
     <orderEntry type="library" exported="" name="design-23.2.0" level="project" />
   </component>
 </module>

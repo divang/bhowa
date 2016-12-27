@@ -15,12 +15,14 @@ import java.util.List;
 import societyhelp.app.transaction.TransactionHomeActivity;
 import societyhelp.app.util.FileChooser;
 import societyhelp.app.util.CustomSerializer;
+import societyhelp.app.util.Util;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.parser.SocietyHelpParserFactory;
@@ -418,15 +420,14 @@ public class HomeActivity extends DashBoardActivity {
                     }
 
                     break;
-                case  R.id.transaction_report_activity_btn_save_verified_transactions:
-                    progress = ProgressDialog.show(this, null, "Uploading verified transactions to Database ...", true, false);
+                case  R.id.home_activity_btn_save_splitted_transactions:
+                    progress = ProgressDialog.show(this, null, "Balance Sheet transactions from Database and export in XLS ...", true, false);
                     progress.show();
-                    final BankStatement verifiedBankStat = new BankStatement();
-                    verifiedBankStat.allTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllDetailsTransactions();
                     Thread verifiedTransTaskThread = new Thread(new Runnable() {
                         public void run() {
                             try {
-                                SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedTransactions(verifiedBankStat);
+                                List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
+                                Util.generateBalanceSheet(balanceSheetData);
                             }catch (Exception e)
                             {
                                 Log.e("Error","Insert verified data has problem",e);

@@ -8,6 +8,7 @@ import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.StagingTransaction;
+import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 
@@ -223,4 +224,11 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     List<StagingTransaction> getAllStaggingTransaction() throws Exception;
+
+    /**
+     * Returns all balance sheet transactions
+     * @return
+     * @throws Exception
+     */
+    List<TransactionOnBalanceSheet> getBalanceSheetData() throws Exception;
 }

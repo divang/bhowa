@@ -291,6 +291,16 @@ public class Queries {
 					"left join Apartment_Expense ae on tbs.Transaction_Expense_Id = ae.Apartment_Cash_Expense_ID  "+
 					"WHERE tbs.Expense_Type_Id=0";
 
+	public static final String balanceSheetQuery =
+			"SELECT tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin, tbs.Verified_By_User,tbs.Expense_Type_Id,"+
+					"tbs.Transaction_From_Bank_Statement_ID, tbs.User_Cash_Payment_ID, tbs.Transaction_Expense_Id, tv.User_Id User_Id_tv, tv.Flat_Id User_Id_tv,"+
+					"ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud, ae.Expend_By_UserId User_Id_ae "+
+					"FROM Transactions_BalanceSheet tbs "+
+					"left join Transactions_Verified tv on tbs.Transaction_From_Bank_Statement_ID = tv.Transaction_From_Bank_Statement_ID "+
+					"left join User_Paid ud on tbs.User_Cash_Payment_ID = ud.User_Cash_Payment_ID   "+
+					"left join Apartment_Expense ae on tbs.Transaction_Expense_Id = ae.Apartment_Cash_Expense_ID  ";
+
+
 	public static final String paidFlatnExpenseTypeWiseAmountQuery =
 				"select  User_Cash_Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +
 						"Paid_Date,Type,User_Comment,Admin_Comment " +
