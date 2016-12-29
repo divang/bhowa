@@ -74,6 +74,41 @@ public class TransactionHomeActivity extends DashBoardActivity {
         }).showDialog();
     }
 
+    public void loadInitialData(View view)
+    {
+
+        new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
+            @Override
+            public void fileSelected(final File file) {
+                final String path = file.getPath();
+
+                progress = ProgressDialog.show(TransactionHomeActivity.this, null, "Load Apartment Expense from CVS file and uploading to database ...", true, false);
+                progress.setCancelable(true);
+                progress.show();
+                Thread taskThread = new Thread(new Runnable() {
+                    public void run() {
+
+                        try {
+                            BankStatement bankStat = (BankStatement) SocietyHelpParserFactory.getInstance().getAllTransaction(path);
+                            bankStat.uploadedLoginId = getLoginId();
+                            SocietyHelpDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bankStat);
+                            Intent nextIntent = new Intent(getApplicationContext(), CreditTransactionsActivity.class);
+                            nextIntent.putExtra("bankStat", bankStat);
+                            startActivityForResult(nextIntent, 0);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        progress.dismiss();
+                        progress.cancel();
+                    }
+                });
+                taskThread.start();
+
+            }
+        }).showDialog();
+    }
+
     public void goToCreditTransactionActivity(View view)
     {
         Intent nextIntent = new Intent(getApplicationContext(), CreditTransactionsActivity.class);

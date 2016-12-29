@@ -214,6 +214,12 @@ FQA :
 -----	
 Copy file from local to Emulator :
 D:\Android\sdk\platform-tools>adb push D:\workspace_android\Bhowa\Report.pdf /storage/self/primary/Download
+
+adb push  D:\workspace_android\societyhelp\docs\initial_data\Expense.csv  /storage/self/primary/Download
+adb push  D:\workspace_android\societyhelp\docs\initial_data\Paid.csv  /storage/self/primary/Download
+adb push  D:\workspace_android\societyhelp\docs\initial_data\Payable.csv  /storage/self/primary/Download
+adb push  D:\workspace_android\societyhelp\docs\initial_data\Pending.csv  /storage/self/primary/Download
+
 	
 Read only issue :
 $./adb shell
@@ -222,30 +228,9 @@ mount -o rw,remount rootfs /
 chmod 777 /mnt/sdcard
 exit	
 
-
-----------------------------------Delete it ------------------------------
-    /*for (SocietyHelpTransaction transaction : unSplitedTransactions) {
-                remainAmount = transaction.amount;
-                for (FlatWisePayable fwp : getTransactionWiseFlatPayables(transaction, unPaidAmountFlatWise)) {
-                    if (remainAmount <= 0) break;
-                    if (alreadyProcessed.contains(fwp)) continue;
-
-                    UserPaid up = new UserPaid();
-                    up.expendDate = transaction.transactionDate;
-                    up.flatId = transaction.flatId;
-                    up.userId = transaction.userId;
-                    up.expenseType = fwp.expenseType;
-					up.transactionId = transaction.transactionId;
-
-                    if (fwp.amount <= remainAmount) {
-                        up.amount = fwp.amount;
-                        remainAmount -= fwp.amount;
-                    } else {
-                        up.amount = remainAmount;
-                        remainAmount = 0;
-                    }
-
-                    splittedPaidAmountFlatWise.add(up);
-                    alreadyProcessed.add(fwp);
-                }
-            }*/
+Test Auto split :
+---------------
+delete from Transactions_BalanceSheet;
+delete from Transactions_Staging_Data;
+delete from Transactions_Verified;
+delete from Flat_Wise_Payable;
