@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import societyhelp.dao.mysql.impl.ApartmentEarning;
@@ -190,12 +192,67 @@ public class LoadBhowaInitialData {
 
     static public class LoadData
     {
-        public static List<ApartmentExpense> apartmentExpenses = new ArrayList<>();
-        public static List<UserPaid> userPaid = new ArrayList<>();
-        public static List<FlatWisePayable> payables = new ArrayList<>();
-        public static List<FlatWisePayable> pending = new ArrayList<>();
-        public static List<ApartmentEarning> storeRent = new ArrayList<>();
+        public static List<loadApartmentExpense> apartmentExpenses = new ArrayList<>();
+        public static List<loadUserPaid> userPaid = new ArrayList<>();
+        public static List<loadFlatWisePayble> payables = new ArrayList<>();
+        public static List<loadFlatWisePayble> pending = new ArrayList<>();
+        public static List<loadApartmentEarning> storeRent = new ArrayList<>();
 
+    }
+
+    static public class loadApartmentExpense
+    {
+        public ExpenseType.ExpenseTypeConst expenseType;
+        HashMap<Date, Float> dateAmountMapping = new HashMap<>();
+
+        public loadApartmentExpense(String strType)
+        {
+            expenseType = getExpenseType(strType);
+        }
+    }
+
+    static public class loadApartmentEarning
+    {
+        public String earningType;
+        HashMap<Date, Float> dateAmountMapping = new HashMap<>();
+
+        public loadApartmentEarning(String strType)
+        {
+            earningType = strType;
+        }
+    }
+
+    static public class loadUserPaid
+    {
+        String userName;
+        String flatNo;
+        String blockNo;
+        HashMap<Date, Float> dateAmountMapping = new HashMap<>();
+
+        public loadUserPaid(String name, String flat, String block)
+        {
+            userName = name;
+            flatNo = flat;
+            blockNo = block;
+        }
+    }
+
+    static public class loadFlatWisePayble
+    {
+        String userName;
+        String flatNo;
+        String blockNo;
+        int area;
+
+        HashMap<Date, Float> dateAmountMapping = new HashMap<>();
+
+        public loadFlatWisePayble(String name, String flat, String block, int srqFeetArea)
+        {
+            userName = name;
+            flatNo = flat;
+            blockNo = block;
+            area = srqFeetArea;
+        }
     }
 
 }
