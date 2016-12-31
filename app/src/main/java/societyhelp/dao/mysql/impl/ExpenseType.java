@@ -53,7 +53,8 @@ public class ExpenseType {
         ,Waste_Disposal
         ,Gym
         ,MotorRepair
-
+        ,Penalty
+        ,Club_Store_Earning
     }
 
     public enum PaymentStatusConst {
