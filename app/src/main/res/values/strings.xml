@@ -49,6 +49,7 @@
     <string name="credit_manage_home_text">Manage PDF credit</string>
     <string name="debit_manage_home_text">Auto Verify and Split Transaction</string>
     <string name="verify_user_cash_deposit">Verify User Cash Debit</string>
+    <string name="load_initial_data_text">Upload Initial Data</string>
 
     <string name="Balance_Sheet_text">View Balance Sheet</string>
 

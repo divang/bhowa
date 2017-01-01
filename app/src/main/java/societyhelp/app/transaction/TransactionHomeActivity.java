@@ -27,6 +27,7 @@ import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.StagingTransaction;
 import societyhelp.dao.mysql.impl.UserPaid;
+import societyhelp.parser.LoadBhowaInitialData;
 import societyhelp.parser.SocietyHelpParserFactory;
 
 public class TransactionHomeActivity extends DashBoardActivity {
@@ -40,8 +41,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
         setHeader(getString(R.string.title_activity_transaction_home), true, false);
     }
 
-    public void openFileBrowser(View view)
-    {
+    public void openFileBrowser(View view) {
         new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
             @Override
             public void fileSelected(final File file) {
@@ -74,27 +74,24 @@ public class TransactionHomeActivity extends DashBoardActivity {
         }).showDialog();
     }
 
-    public void loadInitialData(View view)
-    {
+    public void loadInitialData(View view) {
 
         new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
             @Override
             public void fileSelected(final File file) {
                 final String path = file.getPath();
 
-                progress = ProgressDialog.show(TransactionHomeActivity.this, null, "Load Apartment Expense from CVS file and uploading to database ...", true, false);
+                progress = ProgressDialog.show(TransactionHomeActivity.this, null, "Load Apartment Expense from CSV file and uploading to database ...", true, false);
                 progress.setCancelable(true);
                 progress.show();
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
 
                         try {
-                            BankStatement bankStat = (BankStatement) SocietyHelpParserFactory.getInstance().getAllTransaction(path);
-                            bankStat.uploadedLoginId = getLoginId();
-                            SocietyHelpDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bankStat);
-                            Intent nextIntent = new Intent(getApplicationContext(), CreditTransactionsActivity.class);
-                            nextIntent.putExtra("bankStat", bankStat);
-                            startActivityForResult(nextIntent, 0);
+                            LoadBhowaInitialData.LoadData initialData =LoadBhowaInitialData.loadInitialData(path);
+                            SocietyHelpDatabaseFactory.getDBInstance().loadInitialData(initialData);
+                            //Call auto split
+                            //Show balance sheet / download
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -109,20 +106,17 @@ public class TransactionHomeActivity extends DashBoardActivity {
         }).showDialog();
     }
 
-    public void goToCreditTransactionActivity(View view)
-    {
+    public void goToCreditTransactionActivity(View view) {
         Intent nextIntent = new Intent(getApplicationContext(), CreditTransactionsActivity.class);
         startActivity(nextIntent);
     }
 
-    public void goToDebitTransactionActivity(View view)
-    {
+    public void goToDebitTransactionActivity(View view) {
         Intent nextIntent = new Intent(getApplicationContext(), DebitTransactionsActivity.class);
         startActivity(nextIntent);
     }
 
-    public void viewPDFStagingTransactions(View v)
-    {
+    public void viewPDFStagingTransactions(View v) {
         progress = ProgressDialog.show(TransactionHomeActivity.this, null, "Getting uploaded PDF transactions from database (not verified) ...", true, false);
         progress.setCancelable(true);
         progress.show();
@@ -191,8 +185,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
                     intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);
 
                     startActivity(intentMyDues);
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     Log.e("Error", "Fetching My dues verified data has problem", e);
                 }
                 progress.dismiss();

@@ -87,6 +87,22 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/upload_initial_data"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_upload_raw_data"
+                    android:onClick="loadInitialData"
+                    android:text="@string/load_initial_data_text"
+                    />
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

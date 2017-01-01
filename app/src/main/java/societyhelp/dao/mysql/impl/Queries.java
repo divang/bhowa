@@ -366,4 +366,14 @@ public class Queries {
 	public static final String updateApartmentCashSpitted =
 			"UPDATE Apartment_Expense SET Splitted=1 WHERE Apartment_Cash_Expense_ID=?";
 
+	public static final String insertApartmentExpenseQuery =
+			"INSERT INTO Apartment_Expense " +
+			"(Expense_Type_Id,Amount,Expend_Date,Expend_By_UserId,Verified,Verified_By,Expendy_Comment,Admin_Comment,Splitted) " +
+			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
+
+	public static final String insertApartmentEarningQuery =
+			"INSERT INTO Apartment_Earning " +
+					"(Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted) " +
+					"VALUES (?, ?, ?, ?, ?, ?, 0)";
+
 }

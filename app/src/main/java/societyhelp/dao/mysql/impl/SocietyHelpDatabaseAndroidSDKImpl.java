@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import android.os.AsyncTask;
 import societyhelp.dao.ISocietyHelpDatabase;
+import societyhelp.parser.LoadBhowaInitialData;
 
 /**
  * Created by divang.sharma on 8/6/2016.
@@ -50,7 +51,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		generateSplittedTransactionsFlatWise,
 		getFlatWisePayables,
 		getAllStagingTransactions,
-		balanceSheetData
+		balanceSheetData,
+		loadInitialData
 	}
 
 	@Override
@@ -194,6 +196,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 				case balanceSheetData:
 					result = dbCore.getBalanceSheetData();
+					break;
+
+				case loadInitialData:
+					dbCore.loadInitialData(params[1]);
 					break;
 			}
 
@@ -532,6 +538,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.balanceSheetData.name());
 		try {
 			return (List<TransactionOnBalanceSheet>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void loadInitialData(LoadBhowaInitialData.LoadData data) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.loadInitialData.name(), data);
+		try {
+			aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

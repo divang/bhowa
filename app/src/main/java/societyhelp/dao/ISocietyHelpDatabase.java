@@ -11,6 +11,7 @@ import societyhelp.dao.mysql.impl.StagingTransaction;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
+import societyhelp.parser.LoadBhowaInitialData;
 
 /**
  * Created by divang.sharma on 8/6/2016.
@@ -231,4 +232,10 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     List<TransactionOnBalanceSheet> getBalanceSheetData() throws Exception;
+
+    /**
+     * It loads the previous society transcations.
+     * @throws Exception
+     */
+    void loadInitialData(LoadBhowaInitialData.LoadData data) throws Exception;
 }

@@ -80,6 +80,9 @@ public class LoadBhowaInitialData {
                     case STORERENT_INITIAL_DATA:
                         addStoreRent(currentHeader, data);
                         break;
+                    case TENANT_INITIAL_DATA:
+                        addFlatTenant(data);
+                        break;
                     case NONE:
                         break;
                 }
@@ -114,7 +117,7 @@ public class LoadBhowaInitialData {
     static String paidHeader = "Paid Initial data-";
     static String storeHeader = "Store Room - Club House Initial data-";
     static String headers[] = {expenseHeader, payableHeader, pendingHeader, paidHeader, storeHeader};
-    static enum DataTye { EXPENSE_INITIAL_DATA, PAYABLE_INITIAL_DATA, PENALTY_INITIAL_DATA, PAID_INITIAL_DATA, STORERENT_INITIAL_DATA, NONE };
+    static enum DataTye { EXPENSE_INITIAL_DATA, PAYABLE_INITIAL_DATA, PENALTY_INITIAL_DATA, PAID_INITIAL_DATA, STORERENT_INITIAL_DATA, TENANT_INITIAL_DATA, NONE };
     static LoadData finalData = new LoadData();
 
     //Expense string in csv
@@ -155,7 +158,7 @@ public class LoadBhowaInitialData {
     static String OC="OC, Children Park and L Box";
     static String SeptickTankCleaning="Septick Tank Cleaning ";
 
-    public static ExpenseType.ExpenseTypeConst getExpenseType(String strExpenseType)
+    protected static ExpenseType.ExpenseTypeConst getExpenseType(String strExpenseType)
     {
         ExpenseType.ExpenseTypeConst type = null;
         if(SecurityGuards.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Security_Guards;
@@ -197,7 +200,19 @@ public class LoadBhowaInitialData {
         return  type;
     }
 
-    public static void addApartmentExpense(String[] dateHeader, String[] amount)
+    protected static void addFlatTenant(String[] data)
+    {
+        try
+        {
+           loadData.tenantUser.add(new LoadTenantUser(data[0], data[1]));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    protected static void addApartmentExpense(String[] dateHeader, String[] amount)
     {
         try
         {
@@ -228,14 +243,17 @@ public class LoadBhowaInitialData {
         }
     }
 
-    public static void addPayable(String[] dateHeader, String[] data)
+    protected static void addPayable(String[] dateHeader, String[] data)
     {
         try
         {
             int flatArea = 0;
+            float maintenanceAmount = 0;
             if(data[4].trim().length() > 0) flatArea = Integer.parseInt(data[4].trim().replace(",", ""));
-            LoadFlatWisePayble parsedData = new LoadFlatWisePayble(data[1], data[2], data[3], flatArea);
-            int cIndex = 8;
+            if(data[5].trim().length() > 0) maintenanceAmount = Float.parseFloat(data[5].trim().replace(",", ""));
+            LoadFlatWisePayble parsedData = new LoadFlatWisePayble(data[1], data[2], data[3], flatArea, maintenanceAmount);
+
+            int cIndex = 9;
             Date cExpenseDate = null;
             Date previousPayableDate = cExpenseDate;
             ExpenseAmountMap currentPayble;
@@ -277,11 +295,11 @@ public class LoadBhowaInitialData {
         }
     }
 
-    public static void addPenalty(String[] dateHeader, String[] data)
+    protected static void addPenalty(String[] dateHeader, String[] data)
     {
         try
         {
-            LoadFlatWisePayble parsedData = new LoadFlatWisePayble(data[1], data[2], data[3], 0);
+            LoadFlatWisePayble parsedData = new LoadFlatWisePayble(data[1], data[2], data[3], 0, 0);
             int cIndex = 4;
             Date cExpenseDate = null;
             ExpenseAmountMap currentPayble;
@@ -325,7 +343,7 @@ public class LoadBhowaInitialData {
         }
     }
 
-    public static void addPaid(String[] dateHeader, String[] data)
+    protected static void addPaid(String[] dateHeader, String[] data)
     {
         try
         {
@@ -373,7 +391,7 @@ public class LoadBhowaInitialData {
 
     }
 
-    public static void addStoreRent(String[] dateHeader, String[] amount)
+    protected static void addStoreRent(String[] dateHeader, String[] amount)
     {
         try
         {
@@ -412,7 +430,7 @@ public class LoadBhowaInitialData {
         public List<LoadFlatWisePayble> payables = new ArrayList<>();
         public List<LoadFlatWisePayble> penalty = new ArrayList<>();
         public List<LoadApartmentEarning> storeRent = new ArrayList<>();
-
+        public List<LoadTenantUser> tenantUser = new ArrayList<>();
     }
 
     static public class LoadApartmentExpense
@@ -463,6 +481,26 @@ public class LoadBhowaInitialData {
         }
     }
 
+    static public class LoadTenantUser
+    {
+        public String userName;
+        public String flatNo;
+
+        public LoadTenantUser(String name, String flat)
+        {
+            userName = name.trim();
+            flatNo = flat;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder str = new StringBuilder();
+            str.append("==>flatNo:").append(flatNo);
+            str.append(" userName:").append(userName);
+            return str.toString();
+        }
+    }
+
     static public class LoadUserPaid
     {
         public String userName;
@@ -472,7 +510,7 @@ public class LoadBhowaInitialData {
 
         public LoadUserPaid(String flat, String block, String name)
         {
-            userName = name;
+            userName = name.trim();
             flatNo = flat;
             blockNo = block;
         }
@@ -499,20 +537,22 @@ public class LoadBhowaInitialData {
         public String flatNo;
         public String blockNo;
         public int area;
+        public float maintenanceAmount;
 
         public SortedMap<Date, ExpenseAmountMap> dateAmountMapping = new TreeMap<>();
 
-        public LoadFlatWisePayble(String flat, String block, String name, int srqFeetArea)
+        public LoadFlatWisePayble(String flat, String block, String name, int srqFeetArea, float amount)
         {
-            userName = name;
+            userName = name.trim();
             flatNo = flat;
-            blockNo = block;
+            blockNo = block.trim();
             area = srqFeetArea;
+            maintenanceAmount = amount;
         }
 
-        public void addData(Date expenseDate, ExpenseAmountMap object)
+        public void addData(Date payableDate, ExpenseAmountMap object)
         {
-            dateAmountMapping.put(expenseDate, object);
+            dateAmountMapping.put(payableDate, object);
         }
 
         @Override
@@ -522,6 +562,7 @@ public class LoadBhowaInitialData {
             str.append(" userName:").append(userName);
             str.append(" blockNo:").append(blockNo);
             str.append(" area:").append(area);
+            str.append(" maintenanceAmount:").append(maintenanceAmount);
             str.append(" dateAmountMapping:").append(dateAmountMapping);
             return str.toString();
         }
