@@ -21,6 +21,7 @@ import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.DatabaseConstant;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
+import societyhelp.parser.LoadBhowaInitialData;
 
 public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, SocietyHelpConstant {
 
@@ -1802,7 +1803,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return list;
     }
 
-        public List<TransactionOnBalanceSheet> getBalanceSheetData() throws Exception {
+    public List<TransactionOnBalanceSheet> getBalanceSheetData() throws Exception {
         List<TransactionOnBalanceSheet> list = new ArrayList<>();
         Connection connection = null;
         PreparedStatement pStat = null;
@@ -1966,6 +1967,151 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             close(connection, pStat, result);
         }
         return list;
+    }
+
+    public void loadInitialData(Object data) throws Exception {
+        if (data instanceof LoadBhowaInitialData.LoadData) {
+
+            LoadBhowaInitialData.LoadData loadData = (LoadBhowaInitialData.LoadData) data;
+            Connection con = null;
+            PreparedStatement pStat = null;
+            ResultSet res = null;
+
+            try {
+                con = getDBInstance();
+                con.setAutoCommit(false);
+                insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
+                insertToApartmentEarning(con, getApartmentEarningFromInitialData(loadData.storeRent));
+
+                con.setAutoCommit(true);
+
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                close(con, pStat, res);
+            }
+        }
+    }
+
+    public List<UserPaid> getUserPaidFromInitialData(List<LoadBhowaInitialData.LoadUserPaid> data)
+    {
+        List<UserPaid> list = new ArrayList<>();
+        for(LoadBhowaInitialData.LoadUserPaid lt : data)
+        {
+            for(Date d : lt.dateAmountMapping.keySet())
+            {
+                UserPaid at = new UserPaid();
+                //at.expenseType = lt.expenseType;
+                //at.userId = lt.;
+                //at.amount = lt.dateAmountMapping.get(d);
+                at.expendDate = d;
+                list.add(at);
+            }
+        }
+        return list;
+    }
+
+    public List<ApartmentExpense> getApartmentExpenseFromInitialData(List<LoadBhowaInitialData.LoadApartmentExpense> data)
+    {
+        List<ApartmentExpense> aExpense = new ArrayList<>();
+        for(LoadBhowaInitialData.LoadApartmentExpense lt : data)
+        {
+            for(Date d : lt.dateAmountMapping.keySet())
+            {
+                ApartmentExpense at = new ApartmentExpense();
+                at.expenseType = lt.expenseType;
+                at.splitted = false;
+                at.amount = lt.dateAmountMapping.get(d);
+                at.expendDate = d;
+                aExpense.add(at);
+            }
+        }
+        return aExpense;
+    }
+
+    public List<ApartmentEarning> getApartmentEarningFromInitialData(List<LoadBhowaInitialData.LoadApartmentEarning> data)
+    {
+        List<ApartmentEarning> aEarning = new ArrayList<>();
+        for(LoadBhowaInitialData.LoadApartmentEarning lt : data)
+        {
+            for(Date d : lt.dateAmountMapping.keySet())
+            {
+                ApartmentEarning at = new ApartmentEarning();
+                at.expenseType = lt.expenseType;
+                at.splitted = false;
+                at.amount = lt.dateAmountMapping.get(d);
+                at.expendDate = d;
+                aEarning.add(at);
+            }
+        }
+        return aEarning;
+    }
+
+    public void insertToApartmentExpense(Connection con, List<ApartmentExpense> aExpense) throws Exception
+    {
+        /*
+        Expense_Type_Id,Amount,Expend_Date,Expend_By_UserId,
+        Verified,Verified_By,Expendy_Comment,
+        Admin_Comment,Splitted) " +
+			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
+         */
+        PreparedStatement pStat = con.prepareStatement(insertApartmentExpenseQuery);
+        for (ApartmentExpense t : aExpense) {
+            pStat.setInt(1, t.expenseType.ordinal());
+            pStat.setFloat(2, t.amount);
+            pStat.setDate(3, t.expendDate);
+            pStat.setString(4, t.expendByUserId);
+            pStat.setBoolean(5, t.isVerified);
+            pStat.setString(6, t.verifiedBy);
+            pStat.setString(7, t.expendyComment);
+            pStat.setString(6, t.adminComment);
+            pStat.setBoolean(5, t.splitted);
+
+            pStat.addBatch();
+            pStat.clearParameters();
+        }
+        pStat.executeBatch();
+
+    }
+
+
+    public void insertToApartmentEarning(Connection con, List<ApartmentEarning> aEarning) throws Exception
+    {
+        /*
+        Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted)
+		VALUES (?, ?, ?, ?, ?, ?, 0)"
+         */
+        PreparedStatement pStat = con.prepareStatement(insertApartmentEarningQuery);
+        for (ApartmentEarning t : aEarning) {
+            pStat.setInt(1, t.expenseType.ordinal());
+            pStat.setFloat(2, t.amount);
+            pStat.setDate(3, t.expendDate);
+            pStat.setBoolean(5, t.isVerified);
+            pStat.setString(6, t.verifiedBy);
+            pStat.setString(6, t.adminComment);
+            pStat.setBoolean(5, t.splitted);
+
+            pStat.addBatch();
+            pStat.clearParameters();
+        }
+        pStat.executeBatch();
+
+    }
+
+    public void addUserCashPaymentDB(Connection con, List<UserPaid> ud) throws Exception {
+
+        PreparedStatement pStat = con.prepareStatement(addUserPaymentQuery);
+        for (UserPaid userPaid : ud) {
+            pStat.setString(1, userPaid.userId);
+            pStat.setString(2, userPaid.flatId);
+            pStat.setFloat(3, userPaid.amount);
+            pStat.setDate(4, userPaid.expendDate);
+            pStat.setString(5, userPaid.userComment);
+            pStat.setInt(6, userPaid.expenseType.ordinal());
+            pStat.addBatch();
+            pStat.clearParameters();
+        }
+        pStat.executeUpdate();
     }
 
 }
