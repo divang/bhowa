@@ -2,6 +2,8 @@ package societyhelp.dao.mysql.impl;
 
 import android.util.Log;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import societyhelp.app.util.RandomString;
 import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.DatabaseConstant;
@@ -1978,6 +1981,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             ResultSet res = null;
 
             try {
+                //Creating login ID
+                generateLoginFlatUser(loadData);
                 con = getDBInstance();
                 con.setAutoCommit(false);
                 insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
@@ -1987,8 +1992,43 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             } catch (Exception e) {
                 throw e;
+
             } finally {
+
                 close(con, pStat, res);
+
+            }
+        }
+    }
+
+    public void generateLoginFlatUser(LoadBhowaInitialData.LoadData loadData)
+    {
+        RandomString rStr = new RandomString(4);
+        String curUserId;
+        int i=0;
+        for(LoadBhowaInitialData.LoadFlatWisePayble payable : loadData.payables)
+        {
+            curUserId = i++ + "";
+            try {
+                if (payable.userName != null) {
+                    payable.userName = payable.userName.trim();
+                    if (payable.userName.length() <= 4) curUserId = payable.userName;
+                    else {
+                        String[] tokens = payable.userName.split(" ");
+                        for(String userId : tokens)
+                        {
+                            if(userId.length() > 2){
+                                if(userId.length() <= 4) curUserId = userId;
+                                else curUserId = userId.substring(0, 4);
+                            }
+                        }
+                    }
+                    createUserLogin(curUserId, rStr.nextString(), "superadmin");
+                    payable.loginId = curUserId;
+                }
+            }catch (Exception e)
+            {
+                e.printStackTrace();
             }
         }
     }

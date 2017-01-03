@@ -534,6 +534,7 @@ public class LoadBhowaInitialData {
     static public class LoadFlatWisePayble
     {
         public String userName;
+        public String loginId;
         public String flatNo;
         public String blockNo;
         public int area;
@@ -560,6 +561,7 @@ public class LoadBhowaInitialData {
             StringBuilder str = new StringBuilder();
             str.append("==>flatNo:").append(flatNo);
             str.append(" userName:").append(userName);
+            str.append(" loginId:").append(loginId);
             str.append(" blockNo:").append(blockNo);
             str.append(" area:").append(area);
             str.append(" maintenanceAmount:").append(maintenanceAmount);
