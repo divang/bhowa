@@ -376,4 +376,13 @@ public class Queries {
 					"(Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted) " +
 					"VALUES (?, ?, ?, ?, ?, ?, 0)";
 
+	public static final String cleanLoginDatabase =
+			"delete from Login where Login_Id != 'superadmin'";
+
+	public static final String cleanFlatDatabase =
+			"delete from Flat";
+
+	public static final String cleanUserDetailsDatabase =
+			"delete from User_Details where Login_Id != 'superadmin'";
+
 }

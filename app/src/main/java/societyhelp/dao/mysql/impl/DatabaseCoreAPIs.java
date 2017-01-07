@@ -112,7 +112,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         ResultSet result = null;
         try {
             /*
-			select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, l.Authorised_Activity from
+            select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, l.Authorised_Activity from
 			Login l
 			inner join
 			Society s
@@ -517,6 +517,30 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
+    public void createUserLogin(List<String> userIds, String adminLoginId) throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+        RandomString rStr = new RandomString(4);
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(createLoginQuery);
+            for (String d : userIds) {
+                pStat.setString(1, d);
+                pStat.setString(2, rStr.nextString());
+                pStat.setString(3, adminLoginId);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+            pStat.executeBatch();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+    }
+
     public void addFlatDetails(Object oflat) throws Exception {
 
         if (oflat instanceof Flat) {
@@ -541,6 +565,32 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             } finally {
                 close(con, pStat, res);
             }
+        }
+    }
+
+    public void addFlatDetails(List<Flat> flatList) throws Exception {
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertFlatDetailsQuery);
+            for (Flat flat : flatList) {
+                pStat.setString(1, flat.flatId);
+                pStat.setString(2, flat.flatNumber);
+                pStat.setInt(3, flat.area);
+                pStat.setFloat(4, flat.maintenanceAmount);
+                pStat.setString(5, flat.block);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+            pStat.executeBatch();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
         }
     }
 
@@ -656,6 +706,55 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 close(con, pStat, res);
             }
         }
+    }
+
+    public void addUserDetails(List<UserDetails> userdetailList) throws Exception {
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertUserDetailsQuery);
+
+            for (UserDetails ud : userdetailList) {
+                pStat.setString(1, ud.userId);
+                pStat.setString(2, ud.userType);
+                pStat.setString(3, ud.flatId);
+
+                pStat.setString(4, ud.userName);
+                pStat.setString(5, ud.nameAlias);
+                pStat.setLong(6, ud.mobileNo);
+
+                pStat.setLong(7, ud.mobileNoAlternative);
+                pStat.setString(8, ud.emailId);
+                pStat.setString(9, ud.address);
+                pStat.setDate(10, ud.flatJoinDate == null ? new Date(System.currentTimeMillis()) : ud.flatJoinDate);
+                pStat.setDate(11, ud.flatLeftDate == null ? new Date(System.currentTimeMillis()) : ud.flatLeftDate);
+                pStat.setString(12, ud.loginId);
+
+                StringBuilder au = new StringBuilder();
+                boolean isFirst = true;
+                for (SocietyAuthorization.Type auT : ud.sAuthorizations) {
+                    if (isFirst) {
+                        au.append(auT.ordinal());
+                        isFirst = false;
+                    } else au.append(",").append(auT.ordinal());
+                }
+                pStat.setString(13, au.toString());
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+
+            pStat.executeBatch();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+
     }
 
     public List<SocietyHelpTransaction> getAllDetailTransaction() throws Exception {
@@ -1154,8 +1253,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
                 //Now split the already paid amount
                 payableTotlyPaid = totalPayableFoundInAdvancePayment(payable, advancePayment, readyToAddInBalanceSheet);
-                if(!payableTotlyPaid) payableTotlyPaid = totalPayableFoundInBankTransactionPayment(payable, unSplitedTransactions, readyToAddInBalanceSheet);
-                if(!payableTotlyPaid) payableTotlyPaid = totalPayableFoundInUserCashPaid(payable, unSplitedUserCashPayment, readyToAddInBalanceSheet);
+                if (!payableTotlyPaid)
+                    payableTotlyPaid = totalPayableFoundInBankTransactionPayment(payable, unSplitedTransactions, readyToAddInBalanceSheet);
+                if (!payableTotlyPaid)
+                    payableTotlyPaid = totalPayableFoundInUserCashPaid(payable, unSplitedUserCashPayment, readyToAddInBalanceSheet);
             }
             addToBalanceSheet(readyToAddInBalanceSheet, unSplitedUserCashPayment, unSplitedTransactions, unPaidAmountFlatWise);
 
@@ -1169,8 +1270,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
     public boolean addToBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet,
                                      List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions,
-                                     List<FlatWisePayable> unPaidAmountFlatWise)
-    {
+                                     List<FlatWisePayable> unPaidAmountFlatWise) {
         // All this should happen in a only SQL transaction.
         // Insert in transactions_balance sheet (all splitted transaction)
         // Insert in flat_wise_payable_paid_mapping table
@@ -1180,7 +1280,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         List<TransactionOnBalanceSheet> insertTransactions = tobeInsertedTransactionInBalanceSheet(readyToAddInBalanceSheet);
         List<TransactionOnBalanceSheet> updateTransaction = tobeUpdatedTransactionInBalanceSheet(readyToAddInBalanceSheet);
         //do not make entry of advance update transaction
-        List<TransactionOnBalanceSheet>  advancePayment = toBeInsertAsAdvancePayment(unSplitedUserCashPayment, unSplitedTransactions);
+        List<TransactionOnBalanceSheet> advancePayment = toBeInsertAsAdvancePayment(unSplitedUserCashPayment, unSplitedTransactions);
 
         Connection con = null;
         PreparedStatement pStat = null;
@@ -1206,7 +1306,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             updateSplittedBankStatement(con, tobeInsertedDebitTransactions); //update debit transactions
             updateFlatWisePayableStatus(con, unPaidAmountFlatWise);
             updateAdvanceBankStatement(con, advancePayment);
-            updateSplittedApartementCashExpense(con,apartmentCashExpense); //update Apartment expense table
+            updateSplittedApartementCashExpense(con, apartmentCashExpense); //update Apartment expense table
 
             con.commit(); //transaction block end
         } catch (Exception e) {
@@ -1218,8 +1318,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return false;
     }
 
-    public void insertToPaymentToPaidFlatwise(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
-    {
+    public void insertToPaymentToPaidFlatwise(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(insertFlatWisePayableToPaidMapping);
         for (TransactionOnBalanceSheet t : insertTransactions) {
             pStat.setInt(1, t.flatWisePayableID);
@@ -1230,11 +1329,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public void updateSplittedBankStatement(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
-    {
+    public void updateSplittedBankStatement(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateBankTransactionSpillted);
         for (TransactionOnBalanceSheet t : insertTransactions) {
-            if(t.transactionFromBankStatementID >0) {
+            if (t.transactionFromBankStatementID > 0) {
                 pStat.setInt(1, t.transactionFromBankStatementID);
                 pStat.addBatch();
                 pStat.clearParameters();
@@ -1244,21 +1342,20 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     }
 
 
-    public void updateAdvanceBankStatement(Connection con, List<TransactionOnBalanceSheet> advanceTransactions) throws Exception
-    {
+    public void updateAdvanceBankStatement(Connection con, List<TransactionOnBalanceSheet> advanceTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateBankTransactionSpillted);
         for (TransactionOnBalanceSheet t : advanceTransactions) {
-                if(t.transactionFromBankStatementID >0) {
-                    pStat.setInt(1, t.transactionFromBankStatementID);
-                    pStat.addBatch();
-                    pStat.clearParameters();
-                }
+            if (t.transactionFromBankStatementID > 0) {
+                pStat.setInt(1, t.transactionFromBankStatementID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
         }
         pStat.executeBatch();
 
         PreparedStatement pStatCash = con.prepareStatement(updateUserCashSpitted);
         for (TransactionOnBalanceSheet t : advanceTransactions) {
-            if(t.userCashPaymentID >0) {
+            if (t.userCashPaymentID > 0) {
                 pStatCash.setInt(1, t.userCashPaymentID);
                 pStatCash.addBatch();
                 pStatCash.clearParameters();
@@ -1267,13 +1364,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStatCash.executeBatch();
     }
 
-    public void updateSplittedUserCash(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
-    {
+    public void updateSplittedUserCash(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateUserCashSpitted);
         for (TransactionOnBalanceSheet t : insertTransactions) {
 
-            if(t.userCashPaymentID >0)
-            {
+            if (t.userCashPaymentID > 0) {
                 pStat.setInt(1, t.userCashPaymentID);
                 pStat.addBatch();
                 pStat.clearParameters();
@@ -1282,32 +1377,27 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public void updateSplittedApartementCashExpense(Connection con, List<ApartmentExpense> cashExpense) throws Exception
-    {
+    public void updateSplittedApartementCashExpense(Connection con, List<ApartmentExpense> cashExpense) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateApartmentCashSpitted);
         for (ApartmentExpense t : cashExpense) {
-                pStat.setInt(1, t.apartmentCashExpenseId);
-                pStat.addBatch();
-                pStat.clearParameters();
+            pStat.setInt(1, t.apartmentCashExpenseId);
+            pStat.addBatch();
+            pStat.clearParameters();
         }
         pStat.executeBatch();
     }
 
-    public void updateFlatWisePayableStatus(Connection con, List<FlatWisePayable> flatWisePayables) throws Exception
-    {
+    public void updateFlatWisePayableStatus(Connection con, List<FlatWisePayable> flatWisePayables) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateFlatWisePayableStatus);
         for (FlatWisePayable t : flatWisePayables) {
 
-            if(java.lang.Float.compare(t.amount, 0) == 0)
-            {
+            if (java.lang.Float.compare(t.amount, 0) == 0) {
                 pStat.setInt(1, 2); //means Full_Paid check table User_Payment_Status
                 pStat.setInt(2, t.paymentId);
                 pStat.addBatch();
                 pStat.clearParameters();
 
-            }
-            else if(java.lang.Float.compare(t.amountInitial, t.amount) > 0)
-            {
+            } else if (java.lang.Float.compare(t.amountInitial, t.amount) > 0) {
                 pStat.setInt(1, 3); //means Partial_Paid check table User_Payment_Status
                 pStat.setInt(2, t.paymentId);
                 pStat.addBatch();
@@ -1317,8 +1407,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public void insertToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
-    {
+    public void insertToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(insertToBalanceQuery);
         for (TransactionOnBalanceSheet t : insertTransactions) {
             pStat.setFloat(1, t.amount);
@@ -1336,8 +1425,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public void updateToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception
-    {
+    public void updateToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateBalanceSheet_Transaction);
         /*
         SET Expense_Type_Id=? ,Amount=?," +
@@ -1357,11 +1445,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public List<TransactionOnBalanceSheet> toBeInsertAsAdvancePayment(List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions)
-    {
+    public List<TransactionOnBalanceSheet> toBeInsertAsAdvancePayment(List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions) {
         List<TransactionOnBalanceSheet> advancePayment = new ArrayList<>();
-        for(UserPaid t : unSplitedUserCashPayment)
-        {
+        for (UserPaid t : unSplitedUserCashPayment) {
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amount = t.amount;
             balanceSheetTranction.expenseType = ExpenseType.ExpenseTypeConst.Advance_Payment;
@@ -1374,8 +1460,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             advancePayment.add(balanceSheetTranction);
         }
 
-        for(SocietyHelpTransaction t : unSplitedTransactions)
-        {
+        for (SocietyHelpTransaction t : unSplitedTransactions) {
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amount = t.amount;
             balanceSheetTranction.expenseType = ExpenseType.ExpenseTypeConst.Advance_Payment;
@@ -1392,22 +1477,20 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return advancePayment;
     }
 
-    public List<TransactionOnBalanceSheet> tobeUpdatedTransactionInBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet)
-    {
+    public List<TransactionOnBalanceSheet> tobeUpdatedTransactionInBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
         List<TransactionOnBalanceSheet> updateTransaction = new ArrayList<>();
-        for(TransactionOnBalanceSheet transaction : readyToAddInBalanceSheet)
-        {
-            if(transaction.action.equals(TransactionOnBalanceSheet.DBAction.UPDATE)) updateTransaction.add(transaction);
+        for (TransactionOnBalanceSheet transaction : readyToAddInBalanceSheet) {
+            if (transaction.action.equals(TransactionOnBalanceSheet.DBAction.UPDATE))
+                updateTransaction.add(transaction);
         }
         return updateTransaction;
     }
 
-    public List<TransactionOnBalanceSheet> tobeInsertedTransactionInBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet)
-    {
+    public List<TransactionOnBalanceSheet> tobeInsertedTransactionInBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
         List<TransactionOnBalanceSheet> insertTransaction = new ArrayList<>();
-        for(TransactionOnBalanceSheet transaction : readyToAddInBalanceSheet)
-        {
-            if(transaction.action.equals(TransactionOnBalanceSheet.DBAction.INSERT)) insertTransaction.add(transaction);
+        for (TransactionOnBalanceSheet transaction : readyToAddInBalanceSheet) {
+            if (transaction.action.equals(TransactionOnBalanceSheet.DBAction.INSERT))
+                insertTransaction.add(transaction);
         }
         return insertTransaction;
     }
@@ -1417,20 +1500,19 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         List<UserPaid> consumedPayment = new ArrayList<>();
         for (UserPaid cashTransaction : unSplitedUserCashPayment) {
-            if(cashTransaction.flatId == null || !cashTransaction.flatId.equals(payable.flatId)) continue;
+            if (cashTransaction.flatId == null || !cashTransaction.flatId.equals(payable.flatId))
+                continue;
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amountInitial = payable.amount;
             balanceSheetTranction.flatId = payable.flatId;
             //Payable is greater then Paid
-            if(payable.amount >= cashTransaction.amount)
-            {
-                payable.amount = payable.amount -  cashTransaction.amount;
+            if (payable.amount >= cashTransaction.amount) {
+                payable.amount = payable.amount - cashTransaction.amount;
                 consumedPayment.add(cashTransaction); //it is totally consume, added in consume, so it will be removed from advancePayment list;
                 balanceSheetTranction.amount = cashTransaction.amount;
             }
             //Payable is less then Paid
-            else if(payable.amount < cashTransaction.amount)
-            {
+            else if (payable.amount < cashTransaction.amount) {
                 cashTransaction.amount = cashTransaction.amount - payable.amount;
                 balanceSheetTranction.amount = payable.amount;
                 payable.amount = 0;
@@ -1442,14 +1524,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             balanceSheetTranction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
             readyToAddInBalanceSheet.add(balanceSheetTranction);
 
-            if(payable.amount == 0) break;
+            if (payable.amount == 0) break;
         }
 
-        for(UserPaid consumedTransaction : consumedPayment)
-        {
+        for (UserPaid consumedTransaction : consumedPayment) {
             unSplitedUserCashPayment.remove(consumedTransaction);
         }
-        if(payable.amount == 0)    return true; //payable amount is totally paid.
+        if (payable.amount == 0) return true; //payable amount is totally paid.
 
         return false; //payable amount is not totally paid.
     }
@@ -1459,20 +1540,19 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         List<SocietyHelpTransaction> consumedPayment = new ArrayList<>();
         for (SocietyHelpTransaction bankTransaction : unSplitedTransactions) {
-            if(bankTransaction.flatId == null || !bankTransaction.flatId.equals(payable.flatId)) continue;
+            if (bankTransaction.flatId == null || !bankTransaction.flatId.equals(payable.flatId))
+                continue;
             TransactionOnBalanceSheet balanceSheetTranction = new TransactionOnBalanceSheet();
             balanceSheetTranction.amountInitial = payable.amount;
             balanceSheetTranction.flatId = payable.flatId;
             //Payable is greater then Paid
-            if(payable.amount >= bankTransaction.amount)
-            {
-                payable.amount = payable.amount -  bankTransaction.amount;
+            if (payable.amount >= bankTransaction.amount) {
+                payable.amount = payable.amount - bankTransaction.amount;
                 consumedPayment.add(bankTransaction); //it is totally consume, added in consume, so it will be removed from advancePayment list;
                 balanceSheetTranction.amount = bankTransaction.amount;
             }
             //Payable is less then Paid
-            else if(payable.amount < bankTransaction.amount)
-            {
+            else if (payable.amount < bankTransaction.amount) {
                 bankTransaction.amount = bankTransaction.amount - payable.amount;
                 balanceSheetTranction.amount = payable.amount;
                 payable.amount = 0;
@@ -1484,14 +1564,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             balanceSheetTranction.flatWisePayableID = payable.paymentId; //Mapping of flat wise payment to balance sheet's transaction id
             readyToAddInBalanceSheet.add(balanceSheetTranction);
 
-            if(payable.amount == 0) break;
+            if (payable.amount == 0) break;
         }
 
-        for(SocietyHelpTransaction consumedTransaction : consumedPayment)
-        {
+        for (SocietyHelpTransaction consumedTransaction : consumedPayment) {
             unSplitedTransactions.remove(consumedTransaction);
         }
-        if(payable.amount == 0)    return true; //payable amount is totally paid.
+        if (payable.amount == 0) return true; //payable amount is totally paid.
 
         return false; //payable amount is not totally paid.
     }
@@ -1501,21 +1580,20 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         List<TransactionOnBalanceSheet> consumedPayment = new ArrayList<>();
         for (TransactionOnBalanceSheet advanceAmountInBalSheet : advancePayment) {
-            if(advanceAmountInBalSheet.flatId == null || !advanceAmountInBalSheet.flatId.equals(payable.flatId)) continue;
+            if (advanceAmountInBalSheet.flatId == null || !advanceAmountInBalSheet.flatId.equals(payable.flatId))
+                continue;
             //Payable is greater then Paid
-            if(payable.amount >= advanceAmountInBalSheet.amount)
-            {
+            if (payable.amount >= advanceAmountInBalSheet.amount) {
                 advanceAmountInBalSheet.action = TransactionOnBalanceSheet.DBAction.UPDATE;
                 advanceAmountInBalSheet.expenseType = payable.expenseType;
                 advanceAmountInBalSheet.amountInitial = payable.amount;
                 advanceAmountInBalSheet.flatWisePayableID = payable.paymentId;
-                payable.amount = payable.amount -  advanceAmountInBalSheet.amount;
+                payable.amount = payable.amount - advanceAmountInBalSheet.amount;
                 readyToAddInBalanceSheet.add(advanceAmountInBalSheet);
                 consumedPayment.add(advanceAmountInBalSheet); //it is totally consume, added in consume, so it will be removed from advancePayment list;
             }
             //Payable is less then Paid
-            else if(payable.amount < advanceAmountInBalSheet.amount)
-            {
+            else if (payable.amount < advanceAmountInBalSheet.amount) {
                 advanceAmountInBalSheet.amount = advanceAmountInBalSheet.amount - payable.amount;
                 advanceAmountInBalSheet.action = TransactionOnBalanceSheet.DBAction.UPDATE;
                 advanceAmountInBalSheet.amountInitial = advanceAmountInBalSheet.amount;
@@ -1536,12 +1614,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             }
         }
 
-        for(TransactionOnBalanceSheet consumedTransaction : consumedPayment)
-        {
+        for (TransactionOnBalanceSheet consumedTransaction : consumedPayment) {
             advancePayment.remove(consumedTransaction);
         }
 
-        if(payable.amount == 0)    return true; //payable amount is totally paid.
+        if (payable.amount == 0) return true; //payable amount is totally paid.
 
         return false; //payable amount is not totally paid.
     }
@@ -1550,7 +1627,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public boolean isExactMatchFoundInUserCashPaid(FlatWisePayable payable, List<UserPaid> unSplitedUserCashPayment, List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
         UserPaid foundTransaction = null;
         for (UserPaid curTransaction : unSplitedUserCashPayment) {
-            if(curTransaction.flatId == null || !curTransaction.flatId.equals(payable.flatId)) continue;
+            if (curTransaction.flatId == null || !curTransaction.flatId.equals(payable.flatId))
+                continue;
             if (curTransaction.amount == payable.amount) {
                 foundTransaction = curTransaction;
                 break;
@@ -1577,7 +1655,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public boolean isExactMatchFoundInBankTransactionPayment(FlatWisePayable payable, List<SocietyHelpTransaction> unSplitedTransactions, List<TransactionOnBalanceSheet> readyToAddInBalanceSheet) {
         SocietyHelpTransaction foundTransaction = null;
         for (SocietyHelpTransaction curTransaction : unSplitedTransactions) {
-            if(curTransaction.flatId == null || !curTransaction.flatId.equals(payable.flatId)) continue;
+            if (curTransaction.flatId == null || !curTransaction.flatId.equals(payable.flatId))
+                continue;
             if (curTransaction.amount == payable.amount) {
                 foundTransaction = curTransaction;
                 break;
@@ -1606,7 +1685,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         TransactionOnBalanceSheet foundTransaction = null;
         for (TransactionOnBalanceSheet advanceAmountInBalSheet : advancePayment) {
-            if(advanceAmountInBalSheet.flatId == null || !advanceAmountInBalSheet.flatId.equals(payable.flatId)) continue;
+            if (advanceAmountInBalSheet.flatId == null || !advanceAmountInBalSheet.flatId.equals(payable.flatId))
+                continue;
             if (advanceAmountInBalSheet.amount == payable.amount) {
                 foundTransaction = advanceAmountInBalSheet;
                 break;
@@ -1676,11 +1756,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return list;
     }
 
-    public List<TransactionOnBalanceSheet> convertDebitedTransactionToBalanceSheetTransaction(List<SocietyHelpTransaction> tobeInsertedDebitTransactions)
-    {
+    public List<TransactionOnBalanceSheet> convertDebitedTransactionToBalanceSheetTransaction(List<SocietyHelpTransaction> tobeInsertedDebitTransactions) {
         List<TransactionOnBalanceSheet> readyToBalanceSheetTransactions = new ArrayList<>();
-        for(SocietyHelpTransaction t : tobeInsertedDebitTransactions)
-        {
+        for (SocietyHelpTransaction t : tobeInsertedDebitTransactions) {
             TransactionOnBalanceSheet paid = new TransactionOnBalanceSheet();
             paid.transactionFromBankStatementID = t.transactionId;
             paid.amount = t.amount;
@@ -1693,11 +1771,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return readyToBalanceSheetTransactions;
     }
 
-    public List<TransactionOnBalanceSheet> convertCashExpenseToBalanceSheetTransaction(List<ApartmentExpense> apartmentCashExpense)
-    {
+    public List<TransactionOnBalanceSheet> convertCashExpenseToBalanceSheetTransaction(List<ApartmentExpense> apartmentCashExpense) {
         List<TransactionOnBalanceSheet> readyToBalanceSheetTransactions = new ArrayList<>();
-        for(ApartmentExpense t : apartmentCashExpense)
-        {
+        for (ApartmentExpense t : apartmentCashExpense) {
             TransactionOnBalanceSheet paid = new TransactionOnBalanceSheet();
             paid.transactionExpenseId = t.apartmentCashExpenseId; //Cash Expense ID
             paid.amount = t.amount;
@@ -1781,16 +1857,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 t.userCashPaymentID = result.getInt(7);
                 t.transactionExpenseId = result.getInt(8);
 
-                if(t.transactionFromBankStatementID > 0)
-                {
+                if (t.transactionFromBankStatementID > 0) {
                     t.userId = result.getString(9);
                     t.flatId = result.getString(10);
-                }else if(t.userCashPaymentID > 0)
-                {
+                } else if (t.userCashPaymentID > 0) {
                     t.userId = result.getString(11);
                     t.flatId = result.getString(12);
-                }else if(t.transactionExpenseId > 0 )
-                {
+                } else if (t.transactionExpenseId > 0) {
                     t.userId = result.getString(13);
                     t.flatId = "";
                 }
@@ -1838,16 +1911,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 t.userCashPaymentID = result.getInt(7);
                 t.transactionExpenseId = result.getInt(8);
 
-                if(t.transactionFromBankStatementID > 0)
-                {
+                if (t.transactionFromBankStatementID > 0) {
                     t.userId = result.getString(9);
                     t.flatId = result.getString(10);
-                }else if(t.userCashPaymentID > 0)
-                {
+                } else if (t.userCashPaymentID > 0) {
                     t.userId = result.getString(11);
                     t.flatId = result.getString(12);
-                }else if(t.transactionExpenseId > 0 )
-                {
+                } else if (t.transactionExpenseId > 0) {
                     t.userId = result.getString(13);
                     t.flatId = "";
                 }
@@ -1982,13 +2052,14 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             try {
                 //Creating login ID
+                cleanDatabase();
                 generateLoginFlatUser(loadData);
-                con = getDBInstance();
-                con.setAutoCommit(false);
-                insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
-                insertToApartmentEarning(con, getApartmentEarningFromInitialData(loadData.storeRent));
+                //   con = getDBInstance();
+                //   con.setAutoCommit(false);
+                //   insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
+                //   insertToApartmentEarning(con, getApartmentEarningFromInitialData(loadData.storeRent));
 
-                con.setAutoCommit(true);
+                //   con.setAutoCommit(true);
 
             } catch (Exception e) {
                 throw e;
@@ -2001,45 +2072,161 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
-    public void generateLoginFlatUser(LoadBhowaInitialData.LoadData loadData)
-    {
+    public void cleanDatabase() throws  Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(cleanLoginDatabase);
+            pStat.executeUpdate();
+
+            pStat = con.prepareStatement(cleanUserDetailsDatabase);
+            pStat.executeUpdate();
+
+            pStat = con.prepareStatement(cleanFlatDatabase);
+            pStat.executeUpdate();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+    }
+
+    public void generateLoginFlatUser(LoadBhowaInitialData.LoadData loadData) throws Exception {
         RandomString rStr = new RandomString(4);
         String curUserId;
-        int i=0;
-        for(LoadBhowaInitialData.LoadFlatWisePayble payable : loadData.payables)
-        {
-            curUserId = i++ + "";
+        List<String> userIds = new ArrayList<>();
+        List<Flat> flatList = new ArrayList<>();
+        List<UserDetails> userDetailList = new ArrayList<>();
+
+        Flat curFlat;
+        UserDetails curUserDetail;
+        String curUserDetailId;
+        boolean userDetailIdFound;
+        int i = 0;
+        for (LoadBhowaInitialData.LoadFlatWisePayble payable : loadData.payables) {
+            curUserId = i + "";
+            userDetailIdFound = false;
             try {
                 if (payable.userName != null) {
                     payable.userName = payable.userName.trim();
                     if (payable.userName.length() <= 4) curUserId = payable.userName;
                     else {
                         String[] tokens = payable.userName.split(" ");
-                        for(String userId : tokens)
-                        {
-                            if(userId.length() > 2){
-                                if(userId.length() <= 4) curUserId = userId;
+                        for (String userId : tokens) {
+                            if (userId.length() > 2) {
+                                if (userId.length() <= 4) curUserId = userId;
                                 else curUserId = userId.substring(0, 4);
+                                break;
                             }
                         }
                     }
-                    createUserLogin(curUserId, rStr.nextString(), "superadmin");
+                    if (userIds.contains(curUserId)) {
+                        curUserId += ++i;
+                        userIds.add(curUserId);
+                    } else {
+                        userIds.add(curUserId);
+                    }
+
+                    curFlat = new Flat();
+                    curFlat.area = payable.area;
+                    curFlat.block = payable.blockNo;
+                    curFlat.flatNumber = payable.flatNo;
+                    curFlat.flatId = "Flat_" + curFlat.flatNumber;
+                    curFlat.maintenanceAmount = payable.maintenanceAmount;
+                    flatList.add(curFlat);
+
                     payable.loginId = curUserId;
+                    payable.flatId = curFlat.flatId;
+
+                    curUserDetailId = payable.userName.replaceAll("[^a-zA-Z0-9]+", "");
+
+                    for(UserDetails addedUser : userDetailList)
+                    {
+                        if(addedUser.userId.equals(curUserDetailId)) userDetailIdFound = true;
+                    }
+                    if(!userDetailIdFound) {
+                        curUserDetail = new UserDetails();
+                        curUserDetail.userId = curUserDetailId;
+                        curUserDetail.flatId = payable.flatId;
+                        curUserDetail.loginId = payable.loginId;
+                        curUserDetail.userName = payable.userName;
+                        curUserDetail.userType = UserDetails.OWNER;
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.FLAT_DETAIL_VIEW);
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.MY_DUES_VIEWS);
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.PDF_TRANSACTION_VIEW);
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.USER_DETAIL_VIEW);
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.TRANSACTIONS_DETAIL_VIEW);
+                        userDetailList.add(curUserDetail);
+                    }
                 }
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        for (LoadBhowaInitialData.LoadTenantUser tenant : loadData.tenantUser) {
+            curUserId = i + "";
+            userDetailIdFound = false;
+            try {
+                if (tenant.userName != null) {
+
+                    tenant.userName = tenant.userName.trim();
+                    if (tenant.userName.length() <= 4) curUserId = tenant.userName;
+                    else {
+                        String[] tokens = tenant.userName.split(" ");
+                        for (String userId : tokens) {
+                            if (userId.length() > 2) {
+                                if (userId.length() <= 4) curUserId = userId;
+                                else curUserId = userId.substring(0, 4);
+                                break;
+                            }
+                        }
+                    }
+                    if (userIds.contains(curUserId)) {
+                        curUserId += ++i;
+                        userIds.add(curUserId);
+                    } else {
+                        userIds.add(curUserId);
+                    }
+
+                    curUserDetailId = tenant.userName.replaceAll("[^a-zA-Z0-9]+", "");
+                    for(UserDetails addedUser : userDetailList)
+                    {
+                        if(addedUser.userId.equals(curUserDetailId)) userDetailIdFound = true;
+                    }
+                    if(!userDetailIdFound) {
+                        curUserDetail = new UserDetails();
+                        curUserDetail.userId = curUserDetailId;
+                        curUserDetail.flatId = "Flat_" +tenant.flatNo;
+                        curUserDetail.loginId = curUserId;
+                        curUserDetail.userName = tenant.userName;
+                        curUserDetail.userType = UserDetails.TENANT;
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.MY_DUES_VIEWS);
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.PDF_TRANSACTION_VIEW);
+                        curUserDetail.sAuthorizations.add(SocietyAuthorization.Type.TRANSACTIONS_DETAIL_VIEW);
+                        userDetailList.add(curUserDetail);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        createUserLogin(userIds, "superadmin");
+        addFlatDetails(flatList);
+        addUserDetails(userDetailList);
+
+        //for(UserDetails u : userDetailList) addUserDetails(u);
     }
 
-    public List<UserPaid> getUserPaidFromInitialData(List<LoadBhowaInitialData.LoadUserPaid> data)
-    {
+    public List<UserPaid> getUserPaidFromInitialData(List<LoadBhowaInitialData.LoadUserPaid> data) {
         List<UserPaid> list = new ArrayList<>();
-        for(LoadBhowaInitialData.LoadUserPaid lt : data)
-        {
-            for(Date d : lt.dateAmountMapping.keySet())
-            {
+        for (LoadBhowaInitialData.LoadUserPaid lt : data) {
+            for (Date d : lt.dateAmountMapping.keySet()) {
                 UserPaid at = new UserPaid();
                 //at.expenseType = lt.expenseType;
                 //at.userId = lt.;
@@ -2051,13 +2238,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return list;
     }
 
-    public List<ApartmentExpense> getApartmentExpenseFromInitialData(List<LoadBhowaInitialData.LoadApartmentExpense> data)
-    {
+    public List<ApartmentExpense> getApartmentExpenseFromInitialData(List<LoadBhowaInitialData.LoadApartmentExpense> data) {
         List<ApartmentExpense> aExpense = new ArrayList<>();
-        for(LoadBhowaInitialData.LoadApartmentExpense lt : data)
-        {
-            for(Date d : lt.dateAmountMapping.keySet())
-            {
+        for (LoadBhowaInitialData.LoadApartmentExpense lt : data) {
+            for (Date d : lt.dateAmountMapping.keySet()) {
                 ApartmentExpense at = new ApartmentExpense();
                 at.expenseType = lt.expenseType;
                 at.splitted = false;
@@ -2069,13 +2253,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return aExpense;
     }
 
-    public List<ApartmentEarning> getApartmentEarningFromInitialData(List<LoadBhowaInitialData.LoadApartmentEarning> data)
-    {
+    public List<ApartmentEarning> getApartmentEarningFromInitialData(List<LoadBhowaInitialData.LoadApartmentEarning> data) {
         List<ApartmentEarning> aEarning = new ArrayList<>();
-        for(LoadBhowaInitialData.LoadApartmentEarning lt : data)
-        {
-            for(Date d : lt.dateAmountMapping.keySet())
-            {
+        for (LoadBhowaInitialData.LoadApartmentEarning lt : data) {
+            for (Date d : lt.dateAmountMapping.keySet()) {
                 ApartmentEarning at = new ApartmentEarning();
                 at.expenseType = lt.expenseType;
                 at.splitted = false;
@@ -2087,8 +2268,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return aEarning;
     }
 
-    public void insertToApartmentExpense(Connection con, List<ApartmentExpense> aExpense) throws Exception
-    {
+    public void insertToApartmentExpense(Connection con, List<ApartmentExpense> aExpense) throws Exception {
         /*
         Expense_Type_Id,Amount,Expend_Date,Expend_By_UserId,
         Verified,Verified_By,Expendy_Comment,
@@ -2115,8 +2295,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     }
 
 
-    public void insertToApartmentEarning(Connection con, List<ApartmentEarning> aEarning) throws Exception
-    {
+    public void insertToApartmentEarning(Connection con, List<ApartmentEarning> aEarning) throws Exception {
         /*
         Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted)
 		VALUES (?, ?, ?, ?, ?, ?, 0)"

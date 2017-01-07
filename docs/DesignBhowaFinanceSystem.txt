@@ -1,30 +1,12 @@
-Transaction design :
-------------------
-Bank monthly PDF statement upload and it save to DB Transactions_Staging_Data.
-Every time when PDF parsed and upload, old data will be flushed out.
-
-Payment_ID->User_Cash_Payment_ID (done)
-Transaction_Expense_Id->Apartment_Cash_Expense_ID (not exist)
-Payable_Id->Flat_Wise_Payable_ID (done)
-Transaction_ID->Transaction_From_Bank_Statement_ID (done)
-
-Auto split queries :
-====================
-select fwp.Amount Payable, sum(tbs.Amount) Paid, et.Type, et.Expense_Type_Id, et.Payable_Priority,  
-fwp.Flat_Wise_Payable_ID, fwp.Flat_Id, fwp.Status, fwp.Month, fwp.Year, fwp.Amount,  fwp.Comments, fwp.Payment_Status_ID
-from Flat_Wise_Payable as fwp
-left join 
-Flat_Wise_Payable_Paid_Mapping as fwppm on fwp.Flat_Wise_Payable_ID = fwppm.Flat_Wise_Payable_ID
-left join Transactions_BalanceSheet as tbs on fwppm.Balance_Sheet_Transaction_ID = tbs.Balance_Sheet_Transaction_ID
-left join Expense_Type et on et.Expense_Type_Id = fwp.Expense_Type_Id
-where Payment_Status_ID in (1,3)
-group by fwp.Flat_Wise_Payable_ID
-
-
-
 Upcoming features :
 =================
-	Amount splitting according to Expense Type priority (Partial)
+	Load existing maintenance and expenses from CSV
+		- Capture Flat details
+		- Capture Owner User details
+		- Map Owner to Flat
+		- Map Tanent to Flat
+	
+	Amount splitting according to Expense Type priority (Done)
 	Splitted amount validate by admin and user 
 	Edit Flat and User details.
 	Views make more relevant. 
@@ -32,7 +14,7 @@ Upcoming features :
 	Expense report
 	Cash payment report
 	Flat user wise dues report
-	Load existing maintenance and expenses from XLS.
+	
 
 Challenging Task :
 ----------------
@@ -219,7 +201,8 @@ adb push  D:\workspace_android\societyhelp\docs\initial_data\Expense.csv  /stora
 adb push  D:\workspace_android\societyhelp\docs\initial_data\Paid.csv  /storage/self/primary/Download
 adb push  D:\workspace_android\societyhelp\docs\initial_data\Payable.csv  /storage/self/primary/Download
 adb push  D:\workspace_android\societyhelp\docs\initial_data\Pending.csv  /storage/self/primary/Download
-
+adb push  D:\workspace_android\societyhelp\docs\initial_data\LoadDataNew.csv  /storage/self/primary/Download
+	
 	
 Read only issue :
 $./adb shell
@@ -234,3 +217,4 @@ delete from Transactions_BalanceSheet;
 delete from Transactions_Staging_Data;
 delete from Transactions_Verified;
 delete from Flat_Wise_Payable;
+

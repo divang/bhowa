@@ -535,6 +535,8 @@ public class LoadBhowaInitialData {
     {
         public String userName;
         public String loginId;
+        public String flatId;
+        public String userId;
         public String flatNo;
         public String blockNo;
         public int area;
