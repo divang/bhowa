@@ -385,4 +385,7 @@ public class Queries {
 	public static final String cleanUserDetailsDatabase =
 			"delete from User_Details where Login_Id != 'superadmin'";
 
+	public static final String cleanFlatPayablesDatabase =
+			"delete from Flat_Wise_Payable";
+
 }

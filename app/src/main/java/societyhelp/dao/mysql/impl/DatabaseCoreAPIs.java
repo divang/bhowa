@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
@@ -1407,6 +1408,28 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
+    public void loadUserPaid(List<LoadBhowaInitialData.LoadUserPaid> paidUser)
+    {
+        List<TransactionOnBalanceSheet> paidTransactions = new ArrayList<>();
+        TransactionOnBalanceSheet curTransaction;
+
+        for(LoadBhowaInitialData.LoadUserPaid lup : paidUser) {
+            for (Date payableDate : lup.dateAmountMapping.keySet()) {
+                curTransaction = new TransactionOnBalanceSheet();
+                if(lup.dateAmountMapping.get(payableDate).amount == null ||
+                        lup.dateAmountMapping.get(payableDate).amount == 0) {
+                    continue;
+                }
+                else{
+                    curTransaction.amount = lup.dateAmountMapping.get(payableDate).amount;
+                }
+                curTransaction.flatId = "Flat_" + lup.flatNo;
+                curTransaction.transactionFlow = "Credit";
+                curTransaction.expenseType = lup.dateAmountMapping.get(payableDate).expenseType;
+            }
+        }
+    }
+
     public void insertToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
         PreparedStatement pStat = con.prepareStatement(insertToBalanceQuery);
         for (TransactionOnBalanceSheet t : insertTransactions) {
@@ -2053,7 +2076,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             try {
                 //Creating login ID
                 cleanDatabase();
-                generateLoginFlatUser(loadData);
+                //generateLoginFlatUser(loadData);
+                //loadInitialPayables(loadData.payables);
+                loadInitialPayables(loadData.penalty);
                 //   con = getDBInstance();
                 //   con.setAutoCommit(false);
                 //   insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
@@ -2086,6 +2111,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.executeUpdate();
 
             pStat = con.prepareStatement(cleanFlatDatabase);
+            pStat.executeUpdate();
+
+            pStat = con.prepareStatement(cleanFlatPayablesDatabase);
             pStat.executeUpdate();
 
         } catch (Exception e) {
@@ -2333,4 +2361,39 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeUpdate();
     }
 
+
+    public void loadInitialPayables(List<LoadBhowaInitialData.LoadFlatWisePayble> payables) throws Exception {
+        Calendar cal = Calendar.getInstance();
+        PreparedStatement pStat = null;
+        Connection con = null;
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(addSingleFlatPayablesQuery);
+
+            for(LoadBhowaInitialData.LoadFlatWisePayble fwp : payables) {
+                for (Date payableDate : fwp.dateAmountMapping.keySet()) {
+
+                    if(fwp.dateAmountMapping.get(payableDate).amount == null ||
+                            fwp.dateAmountMapping.get(payableDate).amount == 0) {
+                        continue;
+                    }
+                    else{
+                        pStat.setFloat(2, fwp.dateAmountMapping.get(payableDate).amount);
+                    }
+                    cal.setTime(payableDate);
+                    pStat.setString(1, "Flat_" + fwp.flatNo);
+                    pStat.setInt(3, cal.get(Calendar.MONTH));
+                    pStat.setInt(4, cal.get(Calendar.YEAR));
+                    pStat.setFloat(5, fwp.dateAmountMapping.get(payableDate).expenseType.ordinal());
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                }
+            }
+            pStat.executeBatch();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, null);
+        }
+    }
 }

@@ -111,6 +111,8 @@ public class LoadBhowaInitialData {
 
     static String dateFormat = "dd-MMM-yy";
     static SimpleDateFormat sdFormat = new SimpleDateFormat(dateFormat);
+    static String dateFormatMMMYY = "MMM-yy";
+    static SimpleDateFormat sdFormatMMMYY = new SimpleDateFormat(dateFormatMMMYY);
     static String expenseHeader = "Expense initial data-";
     static String payableHeader = "Payable initial data-";
     static String pendingHeader = "Pending Initial Data-";
@@ -145,7 +147,8 @@ public class LoadBhowaInitialData {
     static String Fire="Fire Extinguisher";
     static String SecurityRelated="Security  Related (Gril,Mat etc.)";
     static String Infra="Apartment Infra Structure Repair";
-    static String Park="Children Park";
+    static String Park="Children";
+    static String ParkLBox="Children Park and L Box";
     static String SeptickTank="Septick Tank n Pipe cleaning maintenance";
     static String ClubHouse="Club House ";
     static String Alamari="Alamari purchase";
@@ -154,9 +157,10 @@ public class LoadBhowaInitialData {
     static String Deposit="Deposit";
     static String SanitaryWork="Sanitary Work";
     static String ClubHouseDev="Club-House Dev";
-    static String PipeRepair="PipeRepair";
+    static String PipeRepair="Pipe Repair";
     static String OC="OC, Children Park and L Box";
-    static String SeptickTankCleaning="Septick Tank Cleaning ";
+    static String OC_Only="OC";
+    static String SeptickTankCleaning="Septick Tank Cleaning";
 
     protected static ExpenseType.ExpenseTypeConst getExpenseType(String strExpenseType)
     {
@@ -185,7 +189,7 @@ public class LoadBhowaInitialData {
         else if(Fire.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Fire_Extinguisher;
         else if(SecurityRelated.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Security_Related;
         else if(Infra.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Apartment_InfraStructure_Repair;
-        else if(Park.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Children_Park;
+        else if(ParkLBox.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Children_Park;
         else if(SeptickTank.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Septick_Tank_Pipe_Cleaning;
         else if(ClubHouse.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Club_House;
         else if(Alamari.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Alamari_Purchase;
@@ -195,8 +199,12 @@ public class LoadBhowaInitialData {
         else if(ClubHouseDev.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Club_House;
         else if(PipeRepair.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Apartment_InfraStructure_Repair;
         else if(OC.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Khata_Payable;
+        else if(OC_Only.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Khata_Payable;
         else if(SeptickTankCleaning.equals(strExpenseType)) type = ExpenseType.ExpenseTypeConst.Septick_Tank_Pipe_Cleaning;
-
+        else if(strExpenseType.contains(Park)) type = ExpenseType.ExpenseTypeConst.Children_Park;
+        else {
+            type = ExpenseTypeConst.UNKNOWN;
+        }
         return  type;
     }
 
@@ -257,19 +265,26 @@ public class LoadBhowaInitialData {
             Date cExpenseDate = null;
             Date previousPayableDate = cExpenseDate;
             ExpenseAmountMap currentPayble;
-
+            String strDate = null;
             for(;cIndex < data.length; cIndex++)
             {
                 currentPayble = new ExpenseAmountMap();
                 cExpenseDate = null;
                 try {
                     try {
-                        cExpenseDate = new Date(sdFormat.parse(dateHeader[cIndex].trim()).getTime());
+                        strDate = dateHeader[cIndex].trim();
+                        cExpenseDate = new Date(sdFormat.parse(strDate).getTime());
                         previousPayableDate = cExpenseDate;
                         currentPayble.expenseType = ExpenseTypeConst.Monthly_Maintenance;
                     } catch(Exception e){
                         //Expense type wise payable
-                        currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                        try {
+                            cExpenseDate = new Date(sdFormatMMMYY.parse(strDate).getTime());
+                            previousPayableDate = cExpenseDate;
+                            currentPayble.expenseType = ExpenseTypeConst.Monthly_Maintenance;
+                        }catch(Exception inner) {
+                            currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                        }
                     }
 
                     if(data[cIndex].trim().length() > 0) {
@@ -314,6 +329,12 @@ public class LoadBhowaInitialData {
                         currentPayble.expenseType = ExpenseTypeConst.Penalty;
                     } catch(Exception e){
                         //e.printStackTrace();
+                        try {
+                            cExpenseDate = new Date(sdFormatMMMYY.parse(dateHeader[cIndex].trim()).getTime());
+                            currentPayble.expenseType = ExpenseTypeConst.Penalty;
+                        }catch(Exception inner) {
+                            currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                        }
                     }
 
                     if(data[cIndex].trim().length() > 0 && !data[cIndex].trim().equals("-")) {
@@ -363,8 +384,14 @@ public class LoadBhowaInitialData {
                         previousPayableDate = cExpenseDate;
                         currentPayble.expenseType = ExpenseTypeConst.Monthly_Maintenance;
                     } catch(Exception e){
-                        //Expense type wise payable
-                        currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                        try {
+                            cExpenseDate = new Date(sdFormatMMMYY.parse(dateHeader[cIndex].trim()).getTime());
+                            previousPayableDate = cExpenseDate;
+                            currentPayble.expenseType = ExpenseTypeConst.Monthly_Maintenance;
+                        } catch(Exception inner) {
+                            //Expense type wise payable
+                            currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                        }
                     }
                     //System.out.println("data[cIndex]-" + data[cIndex]);
                     if(data[cIndex].trim().length() > 0 && !data[cIndex].trim().equals("-")) {

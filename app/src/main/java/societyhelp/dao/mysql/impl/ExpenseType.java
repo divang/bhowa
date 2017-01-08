@@ -55,6 +55,7 @@ public class ExpenseType {
         ,MotorRepair
         ,Penalty
         ,Club_Store_Earning
+        ,UNKNOWN
     }
 
     public enum PaymentStatusConst {
