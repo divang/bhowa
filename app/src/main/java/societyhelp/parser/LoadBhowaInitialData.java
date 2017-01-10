@@ -462,6 +462,7 @@ public class LoadBhowaInitialData {
 
     static public class LoadApartmentExpense
     {
+        public int apartmentCashExpenseID;
         public ExpenseType.ExpenseTypeConst expenseType;
         public SortedMap<Date, Float> dateAmountMapping = new TreeMap<>();
 
@@ -486,6 +487,7 @@ public class LoadBhowaInitialData {
 
     static public class LoadApartmentEarning
     {
+        public int apartmentEarningID;
         public ExpenseType.ExpenseTypeConst expenseType;
         public SortedMap<Date, Float> dateAmountMapping = new TreeMap<>();
 

@@ -18,6 +18,7 @@ public class TransactionOnBalanceSheet implements Serializable
     public int transactionFromBankStatementID;
     public int userCashPaymentID;
     public int transactionExpenseId;
+    public int apartmentEarningID;
     public String transactionFlow;
     public int flatWisePayableID;
     public DBAction action = DBAction.INSERT;

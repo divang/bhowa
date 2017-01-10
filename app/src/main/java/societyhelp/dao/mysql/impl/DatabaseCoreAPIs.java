@@ -847,7 +847,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     }
 
 
-    public void saveVerifiedTransactionsDB(List<SocietyHelpTransaction> listTransaction) throws Exception {
+    public void loadTransactionsInVerifiedDB(List<SocietyHelpTransaction> listTransaction) throws Exception {
 
         Connection con = null;
         PreparedStatement pStat = null;
@@ -1477,7 +1477,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 }
             }
 
-            saveVerifiedTransactionsDB(paidTransactions);
+            loadTransactionsInVerifiedDB(paidTransactions);
 
             List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
 
@@ -1518,6 +1518,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.setInt(7, t.transactionExpenseId);
             pStat.setString(8, t.transactionFlow);
             pStat.setInt(9, t.flatWisePayableID);
+            pStat.setInt(10, t.apartmentEarningID);
             pStat.addBatch();
             pStat.clearParameters();
         }
@@ -1543,6 +1544,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 pStat.setInt(7, t.transactionExpenseId);
                 pStat.setString(8, t.transactionFlow);
                 pStat.setInt(9, t.flatWisePayableID);
+                pStat.setInt(10, t.apartmentEarningID);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
@@ -2187,7 +2189,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 Map<String, String> flatIdUserIdMapping = generateLoginFlatUser(loadData);
                 //loadInitialPayables(loadData.payables);
                 //loadInitialPayables(loadData.penalty);
-                loadUserPaid(loadData.userPaid, flatIdUserIdMapping);
+                //loadUserPaid(loadData.userPaid, flatIdUserIdMapping);
+
+                loadToApartmentEarning(loadData.storeRent);
+                loadToApartmentExpense(loadData.apartmentExpenses);
+
                 //   con = getDBInstance();
                 //   con.setAutoCommit(false);
                 //   insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
@@ -2419,53 +2425,122 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return aEarning;
     }
 
-    public void insertToApartmentExpense(Connection con, List<ApartmentExpense> aExpense) throws Exception {
-        /*
-        Expense_Type_Id,Amount,Expend_Date,Expend_By_UserId,
-        Verified,Verified_By,Expendy_Comment,
-        Admin_Comment,Splitted) " +
-			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
-         */
-        PreparedStatement pStat = con.prepareStatement(insertApartmentExpenseQuery);
-        for (ApartmentExpense t : aExpense) {
-            pStat.setInt(1, t.expenseType.ordinal());
-            pStat.setFloat(2, t.amount);
-            pStat.setDate(3, t.expendDate);
-            pStat.setString(4, t.expendByUserId);
-            pStat.setBoolean(5, t.isVerified);
-            pStat.setString(6, t.verifiedBy);
-            pStat.setString(7, t.expendyComment);
-            pStat.setString(6, t.adminComment);
-            pStat.setBoolean(5, t.splitted);
+    public void loadToApartmentExpense(List<LoadBhowaInitialData.LoadApartmentExpense> aExpense) throws Exception {
 
-            pStat.addBatch();
-            pStat.clearParameters();
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet rs = null;
+        try {
+            pStat = con.prepareStatement(insertApartmentExpenseQuery);
+
+            List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
+            TransactionOnBalanceSheet curBalanceSheetTransaction;
+
+            for (LoadBhowaInitialData.LoadApartmentExpense t : aExpense) {
+                for (Date expenseDate : t.dateAmountMapping.keySet()) {
+                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+                    pStat.setInt(1, t.expenseType.ordinal());
+                    pStat.setFloat(2, t.dateAmountMapping.get(expenseDate));
+                    pStat.setDate(3, expenseDate);
+
+                    pStat.setString(4, "");
+                    pStat.setBoolean(5, true);
+                    pStat.setString(6, "superadmin");
+
+                    pStat.setString(7, "");
+                    pStat.setString(8, "");
+                    pStat.setBoolean(9, true);
+
+                    curBalanceSheetTransaction.transactionFlow = "Debit";
+                    curBalanceSheetTransaction.userId = "";
+                    curBalanceSheetTransaction.flatId = "";
+                    curBalanceSheetTransaction.amount = t.dateAmountMapping.get(expenseDate);
+                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                    curBalanceSheetTransaction.expenseType = t.expenseType;
+                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                }
+            }
+            pStat.executeBatch();
+
+            rs = pStat.getGeneratedKeys();
+            int i = 0;
+            for (; rs.next(); ) {
+                aExpense.get(i++).apartmentCashExpenseID = rs.getInt(1);
+                listBalanceSheetTransaction.get(i++).transactionExpenseId = rs.getInt(1);
+            }
+            rs.close();
+
+            insertToPreparedStatementInBatch(listBalanceSheetTransaction);
         }
-        pStat.executeBatch();
-
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            close(con, pStat, rs);
+        }
     }
 
 
-    public void insertToApartmentEarning(Connection con, List<ApartmentEarning> aEarning) throws Exception {
-        /*
-        Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted)
-		VALUES (?, ?, ?, ?, ?, ?, 0)"
-         */
-        PreparedStatement pStat = con.prepareStatement(insertApartmentEarningQuery);
-        for (ApartmentEarning t : aEarning) {
-            pStat.setInt(1, t.expenseType.ordinal());
-            pStat.setFloat(2, t.amount);
-            pStat.setDate(3, t.expendDate);
-            pStat.setBoolean(5, t.isVerified);
-            pStat.setString(6, t.verifiedBy);
-            pStat.setString(6, t.adminComment);
-            pStat.setBoolean(5, t.splitted);
+    public void loadToApartmentEarning(List<LoadBhowaInitialData.LoadApartmentEarning> aEarning) throws Exception {
 
-            pStat.addBatch();
-            pStat.clearParameters();
+        Connection con = null;
+        ResultSet rs = null;
+        PreparedStatement pStat = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertApartmentEarningQuery);
+
+            List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
+            TransactionOnBalanceSheet curBalanceSheetTransaction;
+
+            for (LoadBhowaInitialData.LoadApartmentEarning t : aEarning) {
+                for(Date earnDate : t.dateAmountMapping.keySet())
+                {
+                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+                    pStat.setInt(1, t.expenseType.ordinal());
+                    pStat.setFloat(2, t.dateAmountMapping.get(earnDate));
+                    pStat.setDate(3, earnDate);
+                    pStat.setBoolean(4, true);
+                    pStat.setString(5, "superadmin");
+                    pStat.setString(6, "");
+                    pStat.setBoolean(7, true);
+
+                    curBalanceSheetTransaction.transactionFlow = "Credit";
+                    curBalanceSheetTransaction.userId = "";
+                    curBalanceSheetTransaction.flatId = "";
+                    curBalanceSheetTransaction.amount = t.dateAmountMapping.get(earnDate);
+                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                    curBalanceSheetTransaction.expenseType = t.expenseType;
+                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                }
+            }
+
+            pStat.executeBatch();
+
+            rs = pStat.getGeneratedKeys();
+            int i=0;
+            for (;rs.next();) {
+                aEarning.get(i++).apartmentEarningID = rs.getInt(1);
+                listBalanceSheetTransaction.get(i++).apartmentEarningID = rs.getInt(1);
+            }
+            rs.close();
+
+            insertToPreparedStatementInBatch(listBalanceSheetTransaction);
         }
-        pStat.executeBatch();
-
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            close(con, pStat, rs);
+        }
     }
 
     public void addUserCashPaymentDB(Connection con, List<UserPaid> ud) throws Exception {

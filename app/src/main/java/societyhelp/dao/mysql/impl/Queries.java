@@ -327,9 +327,9 @@ public class Queries {
 	public static final String insertToBalanceQuery =
 					"INSERT INTO Transactions_BalanceSheet (" +
 					"Amount,Verified_By_Admin,Verified_By_User,Expense_Type_Id," +
-					"Transaction_From_Bank_Statement_ID,User_Cash_Payment_ID,Transaction_Expense_Id,Transaction_Flow,Flat_Wise_Payable_ID)" +
+					"Transaction_From_Bank_Statement_ID,User_Cash_Payment_ID,Transaction_Expense_Id,Transaction_Flow,Flat_Wise_Payable_ID,Apartment_Earning_ID)" +
 					"VALUES (?, ?, ?, ?," +
-							" ?, ?, ?, ?, ?)";
+							" ?, ?, ?, ?, ?, ?)";
 
 	public static final String updateBalanceSheet_Transaction =
 			"UPDATE Transactions_BalanceSheet SET Expense_Type_Id=? ,Amount=?," +
@@ -369,12 +369,12 @@ public class Queries {
 	public static final String insertApartmentExpenseQuery =
 			"INSERT INTO Apartment_Expense " +
 			"(Expense_Type_Id,Amount,Expend_Date,Expend_By_UserId,Verified,Verified_By,Expendy_Comment,Admin_Comment,Splitted) " +
-			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
+			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	public static final String insertApartmentEarningQuery =
 			"INSERT INTO Apartment_Earning " +
 					"(Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted) " +
-					"VALUES (?, ?, ?, ?, ?, ?, 0)";
+					"VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 	public static final String cleanLoginDatabase =
 			"delete from Login where Login_Id != 'superadmin'";
