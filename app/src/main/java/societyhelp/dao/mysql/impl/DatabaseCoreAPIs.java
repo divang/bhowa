@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -811,13 +813,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
                 pStat = con.prepareStatement(insertFinalTransactionQuery);
                 for (SocietyHelpTransaction t : bankStatement.allTransactions) {
-                    /*
-                    "Insert into Transactions_Verified (" +
-					"Amount, Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
-					"User_Id, Flat_Id,verified_by, splitted) " +
-					"values (? , ?, ?, ?, ?, " +
-					"? , ?, ?, ?) ";
-                     */
                     if (t.userId != null) {
                         pStat.setFloat(1, t.amount);
                         if (t.transactionDate != null)
@@ -849,6 +844,53 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         }
         return uploadedTransactions;
+    }
+
+
+    public void saveVerifiedTransactionsDB(List<SocietyHelpTransaction> listTransaction) throws Exception {
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet rs = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertFinalTransactionQuery, Statement.RETURN_GENERATED_KEYS);
+
+            for(SocietyHelpTransaction t : listTransaction) {
+                if (t != null && t.userId != null) {
+
+                    pStat.setFloat(1, t.amount);
+                    if (t.transactionDate != null)
+                        pStat.setDate(2, new Date(t.transactionDate.getTime()));
+                    else pStat.setDate(2, new Date(System.currentTimeMillis()));
+                    pStat.setString(3, t.transactionFlow);
+                    pStat.setString(4, t.type);
+                    pStat.setString(5, t.reference);
+                    pStat.setString(6, t.userId);
+                    pStat.setString(7, t.flatId);
+                    pStat.setString(8, t.verifiedBy);
+                    pStat.setBoolean(9, t.splitted);
+
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                }
+            }
+
+            pStat.executeBatch();
+
+            rs = pStat.getGeneratedKeys();
+            int i=0;
+            for (;rs.next();) {
+                listTransaction.get(i++).transactionId = rs.getInt(1);
+            }
+            rs.close();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, rs);
+        }
     }
 
     public List<SocietyHelpTransaction> getMyTransactions(String userId) throws Exception {
@@ -1408,25 +1450,59 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
-    public void loadUserPaid(List<LoadBhowaInitialData.LoadUserPaid> paidUser)
+    public void loadUserPaid(List<LoadBhowaInitialData.LoadUserPaid> paidUser, Map<String, String> flatIdUserIdMapping)
     {
-        List<TransactionOnBalanceSheet> paidTransactions = new ArrayList<>();
-        TransactionOnBalanceSheet curTransaction;
+        try {
+            List<SocietyHelpTransaction> paidTransactions = new ArrayList<>();
+            SocietyHelpTransaction curTransaction;
 
-        for(LoadBhowaInitialData.LoadUserPaid lup : paidUser) {
-            for (Date payableDate : lup.dateAmountMapping.keySet()) {
-                curTransaction = new TransactionOnBalanceSheet();
-                if(lup.dateAmountMapping.get(payableDate).amount == null ||
-                        lup.dateAmountMapping.get(payableDate).amount == 0) {
-                    continue;
+            for (LoadBhowaInitialData.LoadUserPaid lup : paidUser) {
+                for (Date payableDate : lup.dateAmountMapping.keySet()) {
+                    curTransaction = new SocietyHelpTransaction();
+                    if (lup.dateAmountMapping.get(payableDate).amount == null ||
+                            lup.dateAmountMapping.get(payableDate).amount == 0) {
+                        continue;
+                    } else {
+                        curTransaction.amount = lup.dateAmountMapping.get(payableDate).amount;
+                    }
+                    curTransaction.flatId = "Flat_" + lup.flatNo;
+                    curTransaction.userId = flatIdUserIdMapping.get(curTransaction.flatId);
+                    curTransaction.transactionFlow = "Credit";
+                    curTransaction.expenseType = lup.dateAmountMapping.get(payableDate).expenseType;
+                    curTransaction.verifiedBy = "superadmin";
+                    curTransaction.splitted = true;
+                    curTransaction.type = "";
+                    curTransaction.transactionDate = payableDate;
+                    paidTransactions.add(curTransaction);
                 }
-                else{
-                    curTransaction.amount = lup.dateAmountMapping.get(payableDate).amount;
-                }
-                curTransaction.flatId = "Flat_" + lup.flatNo;
-                curTransaction.transactionFlow = "Credit";
-                curTransaction.expenseType = lup.dateAmountMapping.get(payableDate).expenseType;
             }
+
+            saveVerifiedTransactionsDB(paidTransactions);
+
+            List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
+
+            TransactionOnBalanceSheet curBalanceSheetTransaction;
+            for (SocietyHelpTransaction pt : paidTransactions) {
+
+                if (pt.transactionId > 0) {
+                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+
+                    curBalanceSheetTransaction.transactionFlow = "Credit";
+                    curBalanceSheetTransaction.userId = pt.userId;
+                    curBalanceSheetTransaction.flatId = pt.flatId;
+                    curBalanceSheetTransaction.amount = pt.amount;
+                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                    curBalanceSheetTransaction.transactionFromBankStatementID = pt.transactionId;
+                    curBalanceSheetTransaction.expenseType = pt.expenseType;
+                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+                }
+            }
+
+            insertToPreparedStatementInBatch(listBalanceSheetTransaction);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -1446,6 +1522,38 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.clearParameters();
         }
         pStat.executeBatch();
+    }
+
+    public void insertToPreparedStatementInBatch(List<TransactionOnBalanceSheet> listT) throws Exception {
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertToBalanceQuery);
+
+            for(TransactionOnBalanceSheet t : listT) {
+                pStat.setFloat(1, t.amount);
+                pStat.setBoolean(2, t.isVerifiedByAdmin);
+                pStat.setBoolean(3, t.isVerifiedByUser);
+                pStat.setInt(4, t.expenseType.ordinal());
+                pStat.setInt(5, t.transactionFromBankStatementID);
+                pStat.setInt(6, t.userCashPaymentID);
+                pStat.setInt(7, t.transactionExpenseId);
+                pStat.setString(8, t.transactionFlow);
+                pStat.setInt(9, t.flatWisePayableID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+            pStat.executeBatch();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            close(con, pStat, null);
+        }
     }
 
     public void updateToPreparedStatementInBatch(Connection con, List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
@@ -2076,9 +2184,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             try {
                 //Creating login ID
                 cleanDatabase();
-                //generateLoginFlatUser(loadData);
+                Map<String, String> flatIdUserIdMapping = generateLoginFlatUser(loadData);
                 //loadInitialPayables(loadData.payables);
-                loadInitialPayables(loadData.penalty);
+                //loadInitialPayables(loadData.penalty);
+                loadUserPaid(loadData.userPaid, flatIdUserIdMapping);
                 //   con = getDBInstance();
                 //   con.setAutoCommit(false);
                 //   insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
@@ -2116,6 +2225,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat = con.prepareStatement(cleanFlatPayablesDatabase);
             pStat.executeUpdate();
 
+            pStat = con.prepareStatement(cleanTransactionVerficationDatabase);
+            pStat.executeUpdate();
+
+            pStat = con.prepareStatement(cleanBalanceSheetDatabase);
+            pStat.executeUpdate();
+
         } catch (Exception e) {
             throw e;
         } finally {
@@ -2123,12 +2238,13 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
-    public void generateLoginFlatUser(LoadBhowaInitialData.LoadData loadData) throws Exception {
-        RandomString rStr = new RandomString(4);
+    public Map<String, String> generateLoginFlatUser(LoadBhowaInitialData.LoadData loadData) throws Exception {
+
         String curUserId;
         List<String> userIds = new ArrayList<>();
         List<Flat> flatList = new ArrayList<>();
         List<UserDetails> userDetailList = new ArrayList<>();
+        Map<String, String> flatIdUserIdMapping = new HashMap<>();
 
         Flat curFlat;
         UserDetails curUserDetail;
@@ -2155,8 +2271,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     if (userIds.contains(curUserId)) {
                         curUserId += ++i;
                         userIds.add(curUserId);
+                        payable.userId = curUserId;
                     } else {
                         userIds.add(curUserId);
+                        payable.userId = curUserId;
                     }
 
                     curFlat = new Flat();
@@ -2194,6 +2312,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            if(!flatIdUserIdMapping.containsKey(payable.flatId)) flatIdUserIdMapping.put(payable.flatId, payable.userId);
         }
 
         for (LoadBhowaInitialData.LoadTenantUser tenant : loadData.tenantUser) {
@@ -2217,8 +2337,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     if (userIds.contains(curUserId)) {
                         curUserId += ++i;
                         userIds.add(curUserId);
+                        tenant.userId = curUserId;
                     } else {
                         userIds.add(curUserId);
+                        tenant.userId = curUserId;
                     }
 
                     curUserDetailId = tenant.userName.replaceAll("[^a-zA-Z0-9]+", "");
@@ -2230,6 +2352,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                         curUserDetail = new UserDetails();
                         curUserDetail.userId = curUserDetailId;
                         curUserDetail.flatId = "Flat_" +tenant.flatNo;
+                        tenant.flatId = curUserDetail.flatId;
                         curUserDetail.loginId = curUserId;
                         curUserDetail.userName = tenant.userName;
                         curUserDetail.userType = UserDetails.TENANT;
@@ -2248,7 +2371,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         addFlatDetails(flatList);
         addUserDetails(userDetailList);
 
-        //for(UserDetails u : userDetailList) addUserDetails(u);
+        return flatIdUserIdMapping;
     }
 
     public List<UserPaid> getUserPaidFromInitialData(List<LoadBhowaInitialData.LoadUserPaid> data) {

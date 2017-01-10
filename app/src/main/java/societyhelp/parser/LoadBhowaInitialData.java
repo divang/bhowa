@@ -512,6 +512,8 @@ public class LoadBhowaInitialData {
     {
         public String userName;
         public String flatNo;
+        public String userId;
+        public String flatId;
 
         public LoadTenantUser(String name, String flat)
         {
@@ -524,6 +526,7 @@ public class LoadBhowaInitialData {
             StringBuilder str = new StringBuilder();
             str.append("==>flatNo:").append(flatNo);
             str.append(" userName:").append(userName);
+            str.append(" userId:").append(userId);
             return str.toString();
         }
     }

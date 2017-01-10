@@ -388,4 +388,10 @@ public class Queries {
 	public static final String cleanFlatPayablesDatabase =
 			"delete from Flat_Wise_Payable";
 
+	public static final String cleanTransactionVerficationDatabase =
+			"delete from Transactions_Verified";
+
+	public static final String cleanBalanceSheetDatabase =
+			"delete from Transactions_BalanceSheet";
+
 }
