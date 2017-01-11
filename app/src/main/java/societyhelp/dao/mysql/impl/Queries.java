@@ -394,4 +394,10 @@ public class Queries {
 	public static final String cleanBalanceSheetDatabase =
 			"delete from Transactions_BalanceSheet";
 
+	public static final String cleanApartmentEarningDatabase =
+			"delete from Apartment_Earning";
+
+	public static final String cleanApartmentExpenseDatabase =
+			"delete from Apartment_Expense";
+
 }

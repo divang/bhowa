@@ -2184,30 +2184,18 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             ResultSet res = null;
 
             try {
-                //Creating login ID
                 cleanDatabase();
                 Map<String, String> flatIdUserIdMapping = generateLoginFlatUser(loadData);
-                //loadInitialPayables(loadData.payables);
-                //loadInitialPayables(loadData.penalty);
-                //loadUserPaid(loadData.userPaid, flatIdUserIdMapping);
-
+                loadInitialPayables(loadData.payables);
+                loadInitialPayables(loadData.penalty);
+                loadUserPaid(loadData.userPaid, flatIdUserIdMapping);
                 loadToApartmentEarning(loadData.storeRent);
                 loadToApartmentExpense(loadData.apartmentExpenses);
 
-                //   con = getDBInstance();
-                //   con.setAutoCommit(false);
-                //   insertToApartmentExpense(con, getApartmentExpenseFromInitialData(loadData.apartmentExpenses));
-                //   insertToApartmentEarning(con, getApartmentEarningFromInitialData(loadData.storeRent));
-
-                //   con.setAutoCommit(true);
-
             } catch (Exception e) {
                 throw e;
-
             } finally {
-
                 close(con, pStat, res);
-
             }
         }
     }
@@ -2235,6 +2223,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.executeUpdate();
 
             pStat = con.prepareStatement(cleanBalanceSheetDatabase);
+            pStat.executeUpdate();
+
+            pStat = con.prepareStatement(cleanApartmentEarningDatabase);
+            pStat.executeUpdate();
+
+            pStat = con.prepareStatement(cleanApartmentExpenseDatabase);
             pStat.executeUpdate();
 
         } catch (Exception e) {
@@ -2431,36 +2425,39 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         PreparedStatement pStat = null;
         ResultSet rs = null;
         try {
-            pStat = con.prepareStatement(insertApartmentExpenseQuery);
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertApartmentExpenseQuery, Statement.RETURN_GENERATED_KEYS);
 
             List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
             TransactionOnBalanceSheet curBalanceSheetTransaction;
 
             for (LoadBhowaInitialData.LoadApartmentExpense t : aExpense) {
                 for (Date expenseDate : t.dateAmountMapping.keySet()) {
-                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
-                    pStat.setInt(1, t.expenseType.ordinal());
-                    pStat.setFloat(2, t.dateAmountMapping.get(expenseDate));
-                    pStat.setDate(3, expenseDate);
+                    if(t.dateAmountMapping.get(expenseDate) >0 ) {
+                        curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+                        pStat.setInt(1, t.expenseType.ordinal());
+                        pStat.setFloat(2, t.dateAmountMapping.get(expenseDate));
+                        pStat.setDate(3, expenseDate);
 
-                    pStat.setString(4, "");
-                    pStat.setBoolean(5, true);
-                    pStat.setString(6, "superadmin");
+                        pStat.setString(4, "");
+                        pStat.setBoolean(5, true);
+                        pStat.setString(6, "superadmin");
 
-                    pStat.setString(7, "");
-                    pStat.setString(8, "");
-                    pStat.setBoolean(9, true);
+                        pStat.setString(7, "");
+                        pStat.setString(8, "");
+                        pStat.setBoolean(9, true);
 
-                    curBalanceSheetTransaction.transactionFlow = "Debit";
-                    curBalanceSheetTransaction.userId = "";
-                    curBalanceSheetTransaction.flatId = "";
-                    curBalanceSheetTransaction.amount = t.dateAmountMapping.get(expenseDate);
-                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
-                    curBalanceSheetTransaction.expenseType = t.expenseType;
-                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+                        curBalanceSheetTransaction.transactionFlow = "Debit";
+                        curBalanceSheetTransaction.userId = "";
+                        curBalanceSheetTransaction.flatId = "";
+                        curBalanceSheetTransaction.amount = t.dateAmountMapping.get(expenseDate);
+                        curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                        curBalanceSheetTransaction.expenseType = t.expenseType;
+                        listBalanceSheetTransaction.add(curBalanceSheetTransaction);
 
-                    pStat.addBatch();
-                    pStat.clearParameters();
+                        pStat.addBatch();
+                        pStat.clearParameters();
+                    }
                 }
             }
             pStat.executeBatch();
@@ -2468,7 +2465,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             rs = pStat.getGeneratedKeys();
             int i = 0;
             for (; rs.next(); ) {
-                aExpense.get(i++).apartmentCashExpenseID = rs.getInt(1);
                 listBalanceSheetTransaction.get(i++).transactionExpenseId = rs.getInt(1);
             }
             rs.close();
@@ -2492,7 +2488,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         try {
             con = getDBInstance();
-            pStat = con.prepareStatement(insertApartmentEarningQuery);
+            pStat = con.prepareStatement(insertApartmentEarningQuery, Statement.RETURN_GENERATED_KEYS);
 
             List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
             TransactionOnBalanceSheet curBalanceSheetTransaction;
@@ -2500,25 +2496,27 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             for (LoadBhowaInitialData.LoadApartmentEarning t : aEarning) {
                 for(Date earnDate : t.dateAmountMapping.keySet())
                 {
-                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
-                    pStat.setInt(1, t.expenseType.ordinal());
-                    pStat.setFloat(2, t.dateAmountMapping.get(earnDate));
-                    pStat.setDate(3, earnDate);
-                    pStat.setBoolean(4, true);
-                    pStat.setString(5, "superadmin");
-                    pStat.setString(6, "");
-                    pStat.setBoolean(7, true);
+                    if(t.dateAmountMapping.get(earnDate) > 0) {
+                        curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+                        pStat.setInt(1, t.expenseType.ordinal());
+                        pStat.setFloat(2, t.dateAmountMapping.get(earnDate));
+                        pStat.setDate(3, earnDate);
+                        pStat.setBoolean(4, true);
+                        pStat.setString(5, "superadmin");
+                        pStat.setString(6, "");
+                        pStat.setBoolean(7, true);
 
-                    curBalanceSheetTransaction.transactionFlow = "Credit";
-                    curBalanceSheetTransaction.userId = "";
-                    curBalanceSheetTransaction.flatId = "";
-                    curBalanceSheetTransaction.amount = t.dateAmountMapping.get(earnDate);
-                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
-                    curBalanceSheetTransaction.expenseType = t.expenseType;
-                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+                        curBalanceSheetTransaction.transactionFlow = "Credit";
+                        curBalanceSheetTransaction.userId = "";
+                        curBalanceSheetTransaction.flatId = "";
+                        curBalanceSheetTransaction.amount = t.dateAmountMapping.get(earnDate);
+                        curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                        curBalanceSheetTransaction.expenseType = t.expenseType;
+                        listBalanceSheetTransaction.add(curBalanceSheetTransaction);
 
-                    pStat.addBatch();
-                    pStat.clearParameters();
+                        pStat.addBatch();
+                        pStat.clearParameters();
+                    }
                 }
             }
 
@@ -2527,7 +2525,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             rs = pStat.getGeneratedKeys();
             int i=0;
             for (;rs.next();) {
-                aEarning.get(i++).apartmentEarningID = rs.getInt(1);
                 listBalanceSheetTransaction.get(i++).apartmentEarningID = rs.getInt(1);
             }
             rs.close();
