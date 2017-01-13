@@ -14,6 +14,7 @@ public class Flat implements Serializable {
     public float maintenanceAmount;
     public String block;
     public boolean status;
+    public String owner;
 
     @Override
     public String toString() {
@@ -24,6 +25,7 @@ public class Flat implements Serializable {
         str.append(" maintenanceAmount=").append(maintenanceAmount);
         str.append(" block=").append(block);
         str.append(" status=").append(status);
+        str.append(" owner=").append(owner);
         return str.toString();
     }
 

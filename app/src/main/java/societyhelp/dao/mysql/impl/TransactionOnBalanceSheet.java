@@ -1,6 +1,7 @@
 package societyhelp.dao.mysql.impl;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  * Created by divang.sharma on 12/15/2016.
@@ -9,7 +10,11 @@ public class TransactionOnBalanceSheet implements Serializable
 {
     public int balanceSheetTransactionID;
     public String userId;
+    public String userName;
     public String flatId;
+    public String flatNo;
+    public String block;
+    public int area;
     public float amount;
     public float amountInitial;
     public boolean isVerifiedByAdmin;
@@ -21,7 +26,10 @@ public class TransactionOnBalanceSheet implements Serializable
     public int apartmentEarningID;
     public String transactionFlow;
     public int flatWisePayableID;
+    public Date transactionDate;
     public DBAction action = DBAction.INSERT;
+
+    public static final int initDataLoadFlatWisePayableId = -2;
 
     public enum DBAction {
         INSERT,

@@ -22,6 +22,8 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
     public ExpenseType.PaymentStatusConst paymentStatus;
     public String paymentIds;
 
+    public static final String InitialDataLoad = "Load_From_XLS";
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

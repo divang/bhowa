@@ -184,8 +184,8 @@ public class Queries {
 					"from Flat f";
 
 	public static final String addSingleFlatPayablesQuery =
-			"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type_Id) " +
-					"values (?, ?, ?, ?, ? )";
+			"insert into Flat_Wise_Payable (Flat_Id, Amount, Month, Year, Expense_Type_Id, Comments, Payment_Status_ID) " +
+					"values (?, ?, ?, ?, ?, ?, ? )";
 
 	public static final String flatWiseTransactionsQuery =
 					"select * from " +
@@ -294,11 +294,20 @@ public class Queries {
 	public static final String balanceSheetQuery =
 			"SELECT tbs.Balance_Sheet_Transaction_ID, tbs.Amount, tbs.Verified_By_Admin, tbs.Verified_By_User,tbs.Expense_Type_Id,"+
 					"tbs.Transaction_From_Bank_Statement_ID, tbs.User_Cash_Payment_ID, tbs.Transaction_Expense_Id, tv.User_Id User_Id_tv, tv.Flat_Id User_Id_tv,"+
-					"ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud, ae.Expend_By_UserId User_Id_ae "+
-					"FROM Transactions_BalanceSheet tbs "+
-					"left join Transactions_Verified tv on tbs.Transaction_From_Bank_Statement_ID = tv.Transaction_From_Bank_Statement_ID "+
-					"left join User_Paid ud on tbs.User_Cash_Payment_ID = ud.User_Cash_Payment_ID   "+
-					"left join Apartment_Expense ae on tbs.Transaction_Expense_Id = ae.Apartment_Cash_Expense_ID  ";
+					"ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud, ae.Expend_By_UserId User_Id_ae, "+
+					"tbs.Transaction_Flow, et.Type, tv.Transaction_Mode,"+
+					"tv.Transaction_Date UserPaidDate, aearn.Earned_Date ApartmentEarnDate, ae.Expend_Date ApartmentExpenseDate,"+
+					"f.Flat_Number, f.Block_Number, f.Area, userD.Name "+
+					" FROM Transactions_BalanceSheet tbs " +
+					" left join Transactions_Verified tv on tbs.Transaction_From_Bank_Statement_ID = tv.Transaction_From_Bank_Statement_ID " +
+					" left join User_Paid ud on tbs.User_Cash_Payment_ID = ud.User_Cash_Payment_ID  " +
+					" left join Apartment_Expense ae on tbs.Transaction_Expense_Id = ae.Apartment_Cash_Expense_ID " +
+					" left join Expense_Type et on et.Expense_Type_Id = tbs.Expense_Type_Id" +
+					" left join Flat f on f.Flat_Id = tv.Flat_Id" +
+					" left join Login l on l.Login_Id = tv.User_Id" +
+					" left join User_Details userD on userD.Login_Id = l.Login_Id" +
+					" left join Apartment_Earning aearn on aearn.Apartment_Earning_ID = tbs.Apartment_Earning_ID";
+
 
 
 	public static final String paidFlatnExpenseTypeWiseAmountQuery =
@@ -314,7 +323,7 @@ public class Queries {
 	public static final String allFlatWiseAmountQuery =
 				"SELECT Flat_Wise_Payable_ID,Flat_Id,Status,Month, " +
 						"Year,Amount,Type,Comments, " +
-						"Payment_IDs,Status_Type " +
+						"Status_Type " +
 						"FROM Flat_Wise_Payable fwp " +
 						"left join Expense_Type et " +
 						"on fwp.Expense_Type_Id = et.Expense_Type_Id " +

@@ -21,6 +21,7 @@ import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
+import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
@@ -427,7 +428,10 @@ public class HomeActivity extends DashBoardActivity {
                         public void run() {
                             try {
                                 List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
-                                Util.generateBalanceSheet(balanceSheetData);
+                                List<FlatWisePayable> payables = SocietyHelpDatabaseFactory.getDBInstance().getFlatWisePayables();
+
+                                Util.generateBalanceSheet(balanceSheetData, payables);
+
                             }catch (Exception e)
                             {
                                 Log.e("Error","Insert verified data has problem",e);
@@ -507,4 +511,6 @@ public class HomeActivity extends DashBoardActivity {
         }
         return  listIds.toString();
     }
+
+    
 }
