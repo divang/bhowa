@@ -1453,6 +1453,16 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         pStat.executeBatch();
     }
 
+    public String getFlatId(String flatNo)
+    {
+        try {
+            return String.format("Flat_%03d", Integer.parseInt(flatNo));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Flat_"+flatNo;
+    }
+
     public void loadUserPaid(List<LoadBhowaInitialData.LoadUserPaid> paidUser, Map<String, String> flatIdUserIdMapping) {
         try {
             List<SocietyHelpTransaction> paidTransactions = new ArrayList<>();
@@ -1467,7 +1477,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     } else {
                         curTransaction.amount = lup.dateAmountMapping.get(payableDate).amount;
                     }
-                    curTransaction.flatId = "Flat_" + lup.flatNo;
+                    curTransaction.flatId = getFlatId(lup.flatNo); //"Flat_" + lup.flatNo;
                     curTransaction.userId = flatIdUserIdMapping.get(curTransaction.flatId);
                     curTransaction.transactionFlow = "Credit";
                     curTransaction.expenseType = lup.dateAmountMapping.get(payableDate).expenseType;
@@ -2051,7 +2061,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     {
                         t.transactionDate = result.getDate(17);
                     }
-                    //t.transactionDate =
                 } else
                 {
                     t.transactionDate = result.getDate(19);
@@ -2067,6 +2076,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 t.userCashPaymentID = result.getInt(7);
                 t.transactionExpenseId = result.getInt(8);
                 t.userName = result.getString(23);
+                t.flatNo = result.getString(20);
+                t.block = result.getString(21);
+                t.area = result.getInt(22);
 
                 if (t.transactionFromBankStatementID > 0) {
                     t.userId = result.getString(9);
@@ -2272,6 +2284,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public Map<String, String> generateLoginFlatUser(LoadBhowaInitialData.LoadData loadData) throws Exception {
 
         String curUserId;
+        List<String> loginIds = new ArrayList<>();
         List<String> userIds = new ArrayList<>();
         List<Flat> flatList = new ArrayList<>();
         List<UserDetails> userDetailList = new ArrayList<>();
@@ -2299,27 +2312,35 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                             }
                         }
                     }
-                    if (userIds.contains(curUserId)) {
+                    if (loginIds.contains(curUserId)) {
                         curUserId += ++i;
-                        userIds.add(curUserId);
-                        payable.userId = curUserId;
+                        loginIds.add(curUserId);
+                        payable.loginId = curUserId;
                     } else {
-                        userIds.add(curUserId);
-                        payable.userId = curUserId;
+                        loginIds.add(curUserId);
+                        payable.loginId = curUserId;
                     }
 
                     curFlat = new Flat();
                     curFlat.area = payable.area;
                     curFlat.block = payable.blockNo;
                     curFlat.flatNumber = payable.flatNo;
-                    curFlat.flatId = "Flat_" + curFlat.flatNumber;
+                    curFlat.flatId = getFlatId(curFlat.flatNumber); //"Flat_" + curFlat.flatNumber;
                     curFlat.maintenanceAmount = payable.maintenanceAmount;
                     flatList.add(curFlat);
 
-                    payable.loginId = curUserId;
+                    //payable.loginId = curUserId;
                     payable.flatId = curFlat.flatId;
 
                     curUserDetailId = payable.userName.replaceAll("[^a-zA-Z0-9]+", "");
+                    if (userIds.contains(curUserDetailId)) {
+                        curUserDetailId += ++i;
+                        userIds.add(curUserDetailId);
+                        payable.userId = curUserDetailId;
+                    } else {
+                        userIds.add(curUserDetailId);
+                        payable.userId = curUserDetailId;
+                    }
 
                     for (UserDetails addedUser : userDetailList) {
                         if (addedUser.userId.equals(curUserDetailId)) userDetailIdFound = true;
@@ -2365,23 +2386,30 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                             }
                         }
                     }
-                    if (userIds.contains(curUserId)) {
+                    if (loginIds.contains(curUserId)) {
                         curUserId += ++i;
-                        userIds.add(curUserId);
+                        loginIds.add(curUserId);
                         tenant.userId = curUserId;
                     } else {
-                        userIds.add(curUserId);
+                        loginIds.add(curUserId);
                         tenant.userId = curUserId;
                     }
 
                     curUserDetailId = tenant.userName.replaceAll("[^a-zA-Z0-9]+", "");
+                    if (userIds.contains(curUserDetailId)) {
+                        curUserDetailId += ++i;
+                        userIds.add(curUserDetailId);
+                    } else {
+                        userIds.add(curUserDetailId);
+                    }
+
                     for (UserDetails addedUser : userDetailList) {
                         if (addedUser.userId.equals(curUserDetailId)) userDetailIdFound = true;
                     }
                     if (!userDetailIdFound) {
                         curUserDetail = new UserDetails();
                         curUserDetail.userId = curUserDetailId;
-                        curUserDetail.flatId = "Flat_" + tenant.flatNo;
+                        curUserDetail.flatId = getFlatId(tenant.flatNo);//"Flat_" + tenant.flatNo;
                         tenant.flatId = curUserDetail.flatId;
                         curUserDetail.loginId = curUserId;
                         curUserDetail.userName = tenant.userName;
@@ -2397,7 +2425,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             }
         }
 
-        createUserLogin(userIds, "superadmin");
+        createUserLogin(loginIds, "superadmin");
         addFlatDetails(flatList);
         addUserDetails(userDetailList);
 
@@ -2599,7 +2627,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                         pStat.setFloat(2, fwp.dateAmountMapping.get(payableDate).amount);
                     }
                     cal.setTime(payableDate);
-                    pStat.setString(1, "Flat_" + fwp.flatNo);
+                    //pStat.setString(1, "Flat_" + fwp.flatNo);
+                    pStat.setString(1, getFlatId(fwp.flatNo));
                     pStat.setInt(3, cal.get(Calendar.MONTH));
                     pStat.setInt(4, cal.get(Calendar.YEAR));
                     pStat.setFloat(5, fwp.dateAmountMapping.get(payableDate).expenseType.ordinal());

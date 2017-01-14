@@ -10,6 +10,7 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
 
     public int paymentId;
     public String flatId;
+    public String flatNo;
     public boolean status;
     public int month;
     public int year;

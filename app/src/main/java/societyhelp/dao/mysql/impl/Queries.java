@@ -304,11 +304,8 @@ public class Queries {
 					" left join Apartment_Expense ae on tbs.Transaction_Expense_Id = ae.Apartment_Cash_Expense_ID " +
 					" left join Expense_Type et on et.Expense_Type_Id = tbs.Expense_Type_Id" +
 					" left join Flat f on f.Flat_Id = tv.Flat_Id" +
-					" left join Login l on l.Login_Id = tv.User_Id" +
-					" left join User_Details userD on userD.Login_Id = l.Login_Id" +
+					" left join User_Details userD on userD.User_Id = tv.User_Id" +
 					" left join Apartment_Earning aearn on aearn.Apartment_Earning_ID = tbs.Apartment_Earning_ID";
-
-
 
 	public static final String paidFlatnExpenseTypeWiseAmountQuery =
 				"select  User_Cash_Payment_ID,User_ID,Flat_ID,sum(Amount) as Total_Paid," +

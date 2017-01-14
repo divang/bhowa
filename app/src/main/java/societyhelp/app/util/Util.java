@@ -1,26 +1,29 @@
 package societyhelp.app.util;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
-import  jxl.*;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import jxl.write.biff.RowsExceededException;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
@@ -46,9 +49,28 @@ public class Util {
         }, showTimeInMilis);
     }
 
-    public static Map<String, List<FlatWisePayable>> getFlatAndItsPayables(List<FlatWisePayable> payables)
+
+    static class TransactionOnBalanceSheetComparator implements Comparator<TransactionOnBalanceSheet>
     {
-        HashMap<String, List<FlatWisePayable>> data = new HashMap<>();
+        @Override
+        public int compare(TransactionOnBalanceSheet o1, TransactionOnBalanceSheet o2) {
+            return o1.transactionDate.compareTo(o2.transactionDate);
+        }
+    }
+
+    static class FlatWisePayableComparator implements Comparator<FlatWisePayable>
+    {
+        @Override
+        public int compare(FlatWisePayable o1, FlatWisePayable o2) {
+            if(o1.year != o2.year) return o1.year - o2.year;
+            if(o1.month != o2.month) return o1.month - o2.month;
+            return 0;
+        }
+    }
+
+    public static TreeMap<String, List<FlatWisePayable>> getFlatAndItsPayables(List<FlatWisePayable> payables, Map<String, FlatSummary> flatSummary)
+    {
+        TreeMap<String, List<FlatWisePayable>> data = new TreeMap<>();
         for(FlatWisePayable fp : payables){
             if(fp.expenseType.equals(ExpenseType.ExpenseTypeConst.Penalty)) continue;
             if(data.containsKey(fp.flatId)) {
@@ -61,13 +83,33 @@ public class Util {
             }
         }
 
+        int tSum = 0;
+        for(String flatId : data.keySet())
+        {
+            tSum = 0;
+            if(!flatSummary.containsKey(flatId))
+            {
+                FlatSummary flatSum = new FlatSummary();
+                flatSum.flatId = flatId;
+                flatSummary.put(flatId, flatSum);
+            }
+            for(FlatWisePayable p : data.get(flatId)){
+                tSum += p.amount;
+            }
+            flatSummary.get(flatId).receivable = tSum;
+        }
+
+        for(String flatKey : data.keySet()){
+            Collections.sort(data.get(flatKey), new FlatWisePayableComparator());
+        }
+
         return data;
     }
 
 
-    public static Map<String, List<FlatWisePayable>> getFlatAndItsPenalty(List<FlatWisePayable> payables)
+    public static TreeMap<String, List<FlatWisePayable>> getFlatAndItsPenalty(List<FlatWisePayable> payables, Map<String, FlatSummary> flatSummary)
     {
-        HashMap<String, List<FlatWisePayable>> data = new HashMap<>();
+        TreeMap<String, List<FlatWisePayable>> data = new TreeMap<>();
         for(FlatWisePayable fp : payables){
             if(fp.expenseType.equals(ExpenseType.ExpenseTypeConst.Penalty)) {
                 if (data.containsKey(fp.flatId)) {
@@ -80,22 +122,70 @@ public class Util {
             }
         }
 
+
+        int tSum = 0;
+        for(String flatId : data.keySet())
+        {
+            tSum = 0;
+            if(!flatSummary.containsKey(flatId))
+            {
+                FlatSummary flatSum = new FlatSummary();
+                flatSum.flatId = flatId;
+                flatSummary.put(flatId, flatSum);
+            }
+            for(FlatWisePayable p : data.get(flatId)){
+                tSum += p.amount;
+            }
+            flatSummary.get(flatId).penality = tSum;
+        }
+
+        for(String flatKey : data.keySet()){
+            Collections.sort(data.get(flatKey), new FlatWisePayableComparator());
+        }
         return data;
     }
 
-    public static Map<String, List<TransactionOnBalanceSheet>> getFlatAndItsPayment(List<TransactionOnBalanceSheet> paid)
+    public static TreeMap<String, List<TransactionOnBalanceSheet>> getFlatAndItsPayment(List<TransactionOnBalanceSheet> paid, Map<String, FlatSummary> flatSummary)
     {
-        HashMap<String, List<TransactionOnBalanceSheet>> data = new HashMap<>();
-        for(TransactionOnBalanceSheet p : paid){
-            if(data.containsKey(p.flatId)) {
-                data.get(p.flatId).add(p);
+        TreeMap<String, List<TransactionOnBalanceSheet>> data = new TreeMap<>();
+
+            for (TransactionOnBalanceSheet p : paid) {
+                if (p != null && p.flatId != null) {
+                    try {
+                        if (data.containsKey(p.flatId)) {
+                            data.get(p.flatId).add(p);
+                        } else {
+                            List<TransactionOnBalanceSheet> transactions = new ArrayList<>();
+                            transactions.add(p);
+                            data.put(p.flatId, transactions);
+                        }
+                    }catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
             }
-            else{
-                List<TransactionOnBalanceSheet> transactions = new ArrayList<>();
-                transactions.add(p);
-                data.put(p.flatId, transactions);
+
+        int tSum = 0;
+        for(String flatId : data.keySet())
+        {
+            tSum = 0;
+            if(!flatSummary.containsKey(flatId))
+            {
+                FlatSummary flatSum = new FlatSummary();
+                flatSum.flatId = flatId;
+                flatSummary.put(flatId, flatSum);
             }
+            for(TransactionOnBalanceSheet p : data.get(flatId)){
+                tSum += p.amount;
+            }
+            flatSummary.get(flatId).received = tSum;
         }
+
+        for(String flatKey : data.keySet()){
+            Collections.sort(data.get(flatKey), new TransactionOnBalanceSheetComparator());
+        }
+
         return data;
     }
 
@@ -106,12 +196,26 @@ public class Util {
             if(flats.containsKey(t.flatId)) continue;
             Flat f = new Flat();
             f.flatId = t.flatId;
+            try {
+                f.flatNumber = String.format("%03d", Integer.parseInt(t.flatNo));
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             f.block = t.block;
             f.area = t.area;
             f.owner = t.userName;
             flats.put(t.flatId, f);
         }
         return flats;
+    }
+
+    public static class FlatSummary {
+
+        public String flatId;
+        public int receivable;
+        public int received;
+        public int Balance;
+        public int penality;
     }
 
     public static void generateBalanceSheet(List<TransactionOnBalanceSheet> data, List<FlatWisePayable> payables) {
@@ -140,33 +244,52 @@ public class Util {
             WritableSheet sheet = workbook.createSheet("Individual wise Details", 0);
 
             try {
-                sheet.addCell(new Label(0, 0, "Amount Receivable")); // column and row
+                Map<String, FlatSummary> flatSummary = new HashMap<>();
+                Map<String, List<FlatWisePayable>> receivable = getFlatAndItsPayables(payables, flatSummary);
+                Map<String, List<FlatWisePayable>> penalty = getFlatAndItsPenalty(payables, flatSummary);
+                Map<String, List<TransactionOnBalanceSheet>> paid = getFlatAndItsPayment(data, flatSummary);
 
-                sheet.addCell(new Label(0, 1, "Sr no.")); // column and row
-                sheet.addCell(new Label(1, 1, "Flat no"));
-                sheet.addCell(new Label(2, 1, "Block"));
-                sheet.addCell(new Label(3, 1, "Owner Name"));
-                sheet.addCell(new Label(4, 1, "Sq Ft"));
-                sheet.addCell(new Label(5, 1, "Receivable"));
-                sheet.addCell(new Label(6, 1, "Received"));
-                sheet.addCell(new Label(7, 1, "Balance"));
+                WritableFont headingTop = new WritableFont(WritableFont.COURIER, 12);
+                headingTop.setBoldStyle(WritableFont.BOLD);
+                WritableCellFormat headingTopCellFormat = new WritableCellFormat(headingTop);
 
-                Map<String, List<FlatWisePayable>> receivable = getFlatAndItsPayables(payables);
+                WritableFont headingColumn = new WritableFont(WritableFont.COURIER, 10);
+                headingColumn.setBoldStyle(WritableFont.BOLD);
+                WritableCellFormat headingColumnCellFormat = new WritableCellFormat(headingColumn);
 
+                //Static heading
+                sheet.addCell(new Label(0, 0, "Amount Receivable", headingTopCellFormat)); // column and row
+                sheet.addCell(new Label(0, 1, "Sr no.", headingColumnCellFormat)); // column and row
+                sheet.addCell(new Label(1, 1, "Flat no", headingColumnCellFormat));
+                sheet.addCell(new Label(2, 1, "Block", headingColumnCellFormat));
+                sheet.addCell(new Label(3, 1, "Owner Name", headingColumnCellFormat));
+                sheet.addCell(new Label(4, 1, "Sq Ft", headingColumnCellFormat));
+                sheet.addCell(new Label(5, 1, "Receivable", headingColumnCellFormat));
+                sheet.addCell(new Label(6, 1, "Received", headingColumnCellFormat));
+                sheet.addCell(new Label(7, 1, "Balance", headingColumnCellFormat));
+                //Month year column heading
                 int col=8;
+                int srNo = 1;
                 for(String flatNo : receivable.keySet()) {
-                    for (FlatWisePayable curT : receivable.get(flatNo)) {
-                        if (curT.month > 0)
-                            sheet.addCell(new Label(col++, 1, curT.month + "-" + curT.year));
-                        else
-                            sheet.addCell(new Label(col++, 1, curT.expenseType.name()));
+                    if(receivable.containsKey(flatNo) && receivable.get(flatNo) != null) {
+                        for (FlatWisePayable curT : receivable.get(flatNo)) {
+                            if (curT != null) {
+                                if (curT.month >= 0)
+                                    sheet.addCell(new Label(col++, 1, curT.month + 1 + "-" + curT.year, headingColumnCellFormat)); //FIx month value while loading initial data
+                                else if (curT.expenseType != null)
+                                    sheet.addCell(new Label(col++, 1, curT.expenseType.name(), headingColumnCellFormat));
+                            }
+                        }
                     }
+                    break;
                 }
 
                 int i=1;
 
                 boolean setFlatDetails;
                 Flat curFlat;
+                FlatSummary cFlatSum;
+                //Receivable data
                 for(String flatNo : receivable.keySet()) {
                     i++;
                     col=8;
@@ -174,11 +297,15 @@ public class Util {
                     for(FlatWisePayable curT : receivable.get(flatNo)) {
                         if(!setFlatDetails) {
                             curFlat = flats.get(curT.flatId);
-                            sheet.addCell(new Label(0, i, i -1 + "" ));
-                            sheet.addCell(new Label(1, i, curT.flatId));
+                            cFlatSum = flatSummary.get(curT.flatId);
+                            sheet.addCell(new Label(0, i, srNo++ + "" ));
+                            sheet.addCell(new Label(1, i, curFlat.flatNumber));
                             sheet.addCell(new Label(2, i, curFlat.block));
                             sheet.addCell(new Label(3, i, curFlat.owner));
                             sheet.addCell(new Label(4, i, curFlat.area +""));
+                            sheet.addCell(new Label(5, i, (cFlatSum.receivable + cFlatSum.penality) + ""));
+                            sheet.addCell(new Label(6, i, cFlatSum.received +""));
+                            sheet.addCell(new Label(7, i, (cFlatSum.receivable - cFlatSum.received)+""));
                             setFlatDetails = true;
                         }
                         //5,6,7 column skip
@@ -186,10 +313,11 @@ public class Util {
                     }
                 }
 
-                sheet.addCell(new Label(0, i++, "Amount Received")); // column and row
+                i++;
 
-                Map<String, List<TransactionOnBalanceSheet>> paid = getFlatAndItsPayment(data);
-
+                sheet.addCell(new Label(0, i++, "Amount Received", headingTopCellFormat)); // column and row
+                srNo = 1;
+                //Amount Received
                 for(String flatNo : paid.keySet()) {
                     i++;
                     col=8;
@@ -197,8 +325,8 @@ public class Util {
                     for(TransactionOnBalanceSheet curBT : paid.get(flatNo)) {
                         if(!setFlatDetails) {
                             curFlat = flats.get(curBT.flatId);
-                            sheet.addCell(new Label(0, i, i -1 + "" ));
-                            sheet.addCell(new Label(1, i, curBT.flatId));
+                            sheet.addCell(new Label(0, i, srNo++ + "" ));
+                            sheet.addCell(new Label(1, i, curFlat.flatNumber));
                             sheet.addCell(new Label(2, i, curFlat.block));
                             sheet.addCell(new Label(3, i, curFlat.owner));
                             sheet.addCell(new Label(4, i, curFlat.area +""));
@@ -209,11 +337,10 @@ public class Util {
                     }
                 }
 
-                //
-                sheet.addCell(new Label(0, i++, "Penalty Receivabled")); // column and row
-
-                Map<String, List<FlatWisePayable>> penalty = getFlatAndItsPenalty(payables);
-
+                i++;
+                sheet.addCell(new Label(0, i++, "Penalty Receivabled",headingTopCellFormat)); // column and row
+                srNo = 1;
+                //Penalty Receivabled
                 for(String flatNo : penalty.keySet()) {
                     i++;
                     col=8;
@@ -221,8 +348,8 @@ public class Util {
                     for(FlatWisePayable curPen : penalty.get(flatNo)) {
                         if(!setFlatDetails) {
                             curFlat = flats.get(curPen.flatId);
-                            sheet.addCell(new Label(0, i, i -1 + "" ));
-                            sheet.addCell(new Label(1, i, curPen.flatId));
+                            sheet.addCell(new Label(0, i, srNo + "" ));
+                            sheet.addCell(new Label(1, i, curFlat.flatNumber));
                             sheet.addCell(new Label(2, i, curFlat.block));
                             sheet.addCell(new Label(3, i, curFlat.owner));
                             sheet.addCell(new Label(4, i, curFlat.area +""));
@@ -233,9 +360,7 @@ public class Util {
                     }
                 }
 
-            } catch (RowsExceededException e) {
-                e.printStackTrace();
-            } catch (WriteException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             workbook.write();
@@ -244,7 +369,7 @@ public class Util {
             } catch (WriteException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
