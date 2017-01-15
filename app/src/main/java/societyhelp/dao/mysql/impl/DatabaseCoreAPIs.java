@@ -2629,7 +2629,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     cal.setTime(payableDate);
                     //pStat.setString(1, "Flat_" + fwp.flatNo);
                     pStat.setString(1, getFlatId(fwp.flatNo));
-                    pStat.setInt(3, cal.get(Calendar.MONTH));
+                    pStat.setInt(3, cal.get(Calendar.MONTH) + 1);
                     pStat.setInt(4, cal.get(Calendar.YEAR));
                     pStat.setFloat(5, fwp.dateAmountMapping.get(payableDate).expenseType.ordinal());
                     pStat.setString(6, "Load data from current XLS file");

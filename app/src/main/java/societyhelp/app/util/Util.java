@@ -6,11 +6,14 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import java.io.File;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,21 +37,16 @@ import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
  */
 public class Util {
 
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+    protected static Calendar calendar = Calendar.getInstance();
 
-    public static void CustomToast(Context context, String msg, int showTimeInMilis)
-    {
-        final Toast toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-        toast.show();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toast.cancel();
-            }
-        }, showTimeInMilis);
+    public static class FlatSummary {
+
+        public String flatId;
+        public int receivable;
+        public int received;
+        public int Balance;
+        public int penality;
     }
-
 
     static class TransactionOnBalanceSheetComparator implements Comparator<TransactionOnBalanceSheet>
     {
@@ -68,7 +66,32 @@ public class Util {
         }
     }
 
-    public static TreeMap<String, List<FlatWisePayable>> getFlatAndItsPayables(List<FlatWisePayable> payables, Map<String, FlatSummary> flatSummary)
+    static class BalanceSheetDateRage {
+        public Date startDate;
+        public int startMonth;
+        public int startYear;
+        public Date endDate;
+        public int endMonth;
+        public int endYear;
+    }
+
+
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+
+    public static void CustomToast(Context context, String msg, int showTimeInMilis)
+    {
+        final Toast toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, showTimeInMilis);
+    }
+
+    public static TreeMap<String, List<FlatWisePayable>> getFlatAndItsPayables(List<FlatWisePayable> payables, Map<String, FlatSummary> flatSummary, BalanceSheetDateRage dateRage)
     {
         TreeMap<String, List<FlatWisePayable>> data = new TreeMap<>();
         for(FlatWisePayable fp : payables){
@@ -95,9 +118,13 @@ public class Util {
             }
             for(FlatWisePayable p : data.get(flatId)){
                 tSum += p.amount;
+
             }
             flatSummary.get(flatId).receivable = tSum;
+
+            data.put(flatId, addMissingDate(data.get(flatId), dateRage));
         }
+
 
         for(String flatKey : data.keySet()){
             Collections.sort(data.get(flatKey), new FlatWisePayableComparator());
@@ -106,8 +133,87 @@ public class Util {
         return data;
     }
 
+    public static List<FlatWisePayable> addMissingDate(List<FlatWisePayable> initialPayables, BalanceSheetDateRage dateRage)
+    {
+        List<FlatWisePayable> allMissingDates = new ArrayList<>();
+        boolean monthYearFound;
+        FlatWisePayable curPayable;
 
-    public static TreeMap<String, List<FlatWisePayable>> getFlatAndItsPenalty(List<FlatWisePayable> payables, Map<String, FlatSummary> flatSummary)
+        for(int curMonth = dateRage.startMonth, curYear = dateRage.startYear ;(curYear < dateRage.endYear)
+                || (curYear == dateRage.endYear && curMonth <= dateRage.endMonth); curMonth++)
+        {
+            monthYearFound = false;
+            for(FlatWisePayable f : initialPayables)
+            {
+                   if(f.month == curMonth && f.year == curYear) {
+                       monthYearFound = true;
+                       break;
+                   }
+            }
+
+            if(!monthYearFound){
+                curPayable = new FlatWisePayable();
+                curPayable.year = curYear;
+                curPayable.month = curMonth;
+                curPayable.amount = 0;
+                allMissingDates.add(curPayable);
+            }
+
+            if(curMonth == 12) {
+                curMonth = 1;
+                curYear++;
+            }
+        }
+        allMissingDates.addAll(initialPayables);
+        return allMissingDates;
+    }
+
+    public static List<TransactionOnBalanceSheet> addMissingDateInPaid(List<TransactionOnBalanceSheet> initialPaid, BalanceSheetDateRage dateRage)
+    {
+        List<TransactionOnBalanceSheet> allMissingDates = new ArrayList<>();
+        boolean monthYearFound;
+        TransactionOnBalanceSheet curPaid;
+        int month;
+        int year;
+
+        for(int curMonth = dateRage.startMonth, curYear = dateRage.startYear ;(curYear < dateRage.endYear)
+                || (curYear == dateRage.endYear && curMonth <= dateRage.endMonth); curMonth++)
+        {
+            monthYearFound = false;
+            for(TransactionOnBalanceSheet f : initialPaid)
+            {
+                calendar.clear();
+                calendar.setTime(f.transactionDate);
+                month = calendar.get(Calendar.MONTH) + 1;
+                year = calendar.get(Calendar.YEAR);
+
+                if(month == curMonth && year == curYear) {
+                    monthYearFound = true;
+                    break;
+                }
+            }
+
+            if(!monthYearFound){
+                curPaid = new TransactionOnBalanceSheet();
+                calendar.clear();;
+                calendar.set(Calendar.MONTH, curMonth - 1);
+                calendar.set(Calendar.YEAR, curMonth -1);
+                curPaid.transactionDate = new Date(calendar.getTime().getTime());
+                curPaid.amount = 0;
+                allMissingDates.add(curPaid);
+            }
+
+            if(curMonth == 12) {
+                curMonth = 1;
+                curYear++;
+            }
+        }
+        allMissingDates.addAll(initialPaid);
+        return allMissingDates;
+    }
+
+
+    public static TreeMap<String, List<FlatWisePayable>> getFlatAndItsPenalty(List<FlatWisePayable> payables, Map<String, FlatSummary> flatSummary, BalanceSheetDateRage dateRage)
     {
         TreeMap<String, List<FlatWisePayable>> data = new TreeMap<>();
         for(FlatWisePayable fp : payables){
@@ -145,7 +251,7 @@ public class Util {
         return data;
     }
 
-    public static TreeMap<String, List<TransactionOnBalanceSheet>> getFlatAndItsPayment(List<TransactionOnBalanceSheet> paid, Map<String, FlatSummary> flatSummary)
+    public static TreeMap<String, List<TransactionOnBalanceSheet>> getFlatAndItsPayment(List<TransactionOnBalanceSheet> paid, Map<String, FlatSummary> flatSummary, BalanceSheetDateRage dateRage)
     {
         TreeMap<String, List<TransactionOnBalanceSheet>> data = new TreeMap<>();
 
@@ -182,7 +288,7 @@ public class Util {
             flatSummary.get(flatId).received = tSum;
         }
 
-        for(String flatKey : data.keySet()){
+        for(String flatKey : data.keySet()) {
             Collections.sort(data.get(flatKey), new TransactionOnBalanceSheetComparator());
         }
 
@@ -209,13 +315,32 @@ public class Util {
         return flats;
     }
 
-    public static class FlatSummary {
+    public static BalanceSheetDateRage getDateRage(List<FlatWisePayable> payables)
+    {
+        BalanceSheetDateRage rage = new BalanceSheetDateRage();
+        Date curDate;
+        for(FlatWisePayable f : payables) {
+            calendar.clear();
+            calendar.set(Calendar.MONTH, f.month);
+            calendar.set(Calendar.YEAR, f.year);
+            curDate = new Date(calendar.getTime().getTime());
 
-        public String flatId;
-        public int receivable;
-        public int received;
-        public int Balance;
-        public int penality;
+            if(rage.startDate == null) {
+                rage.startDate = curDate;
+                rage.startMonth = rage.endMonth = f.month;
+                rage.endDate= curDate;
+                rage.startYear = rage.endYear = f.year;
+            } else if(rage.startDate.compareTo(curDate) > 0) {
+                rage.startDate = curDate;
+                rage.startMonth = f.month;
+                rage.startYear = f.year;
+            } else if(rage.endDate.compareTo(curDate) < 0) {
+                rage.endDate = curDate;
+                rage.endMonth = f.month;
+                rage.endYear = f.year;
+            }
+        }
+        return rage;
     }
 
     public static void generateBalanceSheet(List<TransactionOnBalanceSheet> data, List<FlatWisePayable> payables) {
@@ -238,6 +363,8 @@ public class Util {
         WritableWorkbook workbook;
 
         try {
+            BalanceSheetDateRage dateRange = getDateRage(payables);
+
             Map<String, Flat> flats = getFlatDetails(data);
             workbook = Workbook.createWorkbook(file, wbSettings);
             //Excel sheet name. 0 represents first sheet
@@ -245,9 +372,9 @@ public class Util {
 
             try {
                 Map<String, FlatSummary> flatSummary = new HashMap<>();
-                Map<String, List<FlatWisePayable>> receivable = getFlatAndItsPayables(payables, flatSummary);
-                Map<String, List<FlatWisePayable>> penalty = getFlatAndItsPenalty(payables, flatSummary);
-                Map<String, List<TransactionOnBalanceSheet>> paid = getFlatAndItsPayment(data, flatSummary);
+                Map<String, List<FlatWisePayable>> receivable = getFlatAndItsPayables(payables, flatSummary, dateRange);
+                Map<String, List<FlatWisePayable>> penalty = getFlatAndItsPenalty(payables, flatSummary, dateRange);
+                Map<String, List<TransactionOnBalanceSheet>> paid = getFlatAndItsPayment(data, flatSummary, dateRange);
 
                 WritableFont headingTop = new WritableFont(WritableFont.COURIER, 12);
                 headingTop.setBoldStyle(WritableFont.BOLD);
