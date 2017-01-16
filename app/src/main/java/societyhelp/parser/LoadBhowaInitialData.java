@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -19,18 +20,14 @@ import com.opencsv.CSVReader;
 public class LoadBhowaInitialData {
 
     static LoadData loadData;
+    static Calendar calendar = Calendar.getInstance();
 
-    /*public static void main(String[] args) {
-        System.out.println("Loading ...");
-        loadInitialData("D:\\workspace_android\\societyhelp\\docs\\initial_data\\LoadData.csv");
-        System.out.println("Loaded");
-    }
-    */
     public static LoadData loadInitialData(String dataFilePath)
     {
         loadData = new LoadData();
         CSVReader reader = null;
         DataTye currentDataType = DataTye.NONE;
+
 
         try {
             reader = new CSVReader(new FileReader(dataFilePath));
@@ -293,6 +290,9 @@ public class LoadBhowaInitialData {
 
                     if(cExpenseDate == null) {
                         cExpenseDate = previousPayableDate;
+                        calendar.setTime(previousPayableDate);
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        previousPayableDate = new Date(calendar.getTimeInMillis());
                     }
                     parsedData.addData(cExpenseDate, currentPayble);
 
@@ -317,20 +317,24 @@ public class LoadBhowaInitialData {
             LoadFlatWisePayble parsedData = new LoadFlatWisePayble(data[1], data[2], data[3], 0, 0);
             int cIndex = 4;
             Date cExpenseDate = null;
+            Date previousPayableDate = cExpenseDate;
             ExpenseAmountMap currentPayble;
 
             for(;cIndex < data.length; cIndex++)
             {
                 currentPayble = new ExpenseAmountMap();
+                cExpenseDate = null;
                 try {
                     try {
-                        System.out.println("addPenalty -> dateHeader[cIndex]-"+dateHeader[cIndex]);
+                        //System.out.println("addPenalty -> dateHeader[cIndex]-"+dateHeader[cIndex]);
                         cExpenseDate = new Date(sdFormat.parse(dateHeader[cIndex].trim()).getTime());
+                        previousPayableDate = cExpenseDate;
                         currentPayble.expenseType = ExpenseTypeConst.Penalty;
                     } catch(Exception e){
                         //e.printStackTrace();
                         try {
                             cExpenseDate = new Date(sdFormatMMMYY.parse(dateHeader[cIndex].trim()).getTime());
+                            previousPayableDate = cExpenseDate;
                             currentPayble.expenseType = ExpenseTypeConst.Penalty;
                         }catch(Exception inner) {
                             currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
@@ -341,6 +345,16 @@ public class LoadBhowaInitialData {
                         currentPayble.amount = Float.parseFloat(data[cIndex].replace(",",""));
                     }
 
+                    if(cExpenseDate == null) {
+                        cExpenseDate = previousPayableDate;
+                        calendar.setTime(previousPayableDate);
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        previousPayableDate = new Date(calendar.getTimeInMillis());
+                    }
+
+                    parsedData.addData(cExpenseDate, currentPayble);
+
+                    /*
                     if(cExpenseDate != null && currentPayble != null)
                     {
                         parsedData.addData(cExpenseDate, currentPayble);
@@ -349,7 +363,7 @@ public class LoadBhowaInitialData {
                     {
                         System.err.println("addPenalty -> cExpenseDate-"+cExpenseDate+ " currentPayble-"+ currentPayble);
                     }
-
+                    */
                 } catch (Exception e)
                 {
                     e.printStackTrace();
@@ -400,6 +414,9 @@ public class LoadBhowaInitialData {
 
                     if(cExpenseDate == null) {
                         cExpenseDate = previousPayableDate;
+                        calendar.setTime(previousPayableDate);
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        previousPayableDate = new Date(calendar.getTimeInMillis());
                     }
                     parsedData.addData(cExpenseDate, currentPayble);
 

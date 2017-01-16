@@ -3,6 +3,7 @@ package societyhelp.app.util;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -138,13 +139,14 @@ public class Util {
         List<FlatWisePayable> allMissingDates = new ArrayList<>();
         boolean monthYearFound;
         FlatWisePayable curPayable;
-
+        FlatWisePayable copyOfFirstPayble = null;
         for(int curMonth = dateRage.startMonth, curYear = dateRage.startYear ;(curYear < dateRage.endYear)
                 || (curYear == dateRage.endYear && curMonth <= dateRage.endMonth); curMonth++)
         {
             monthYearFound = false;
             for(FlatWisePayable f : initialPayables)
             {
+                if(copyOfFirstPayble == null) copyOfFirstPayble = f;
                    if(f.month == curMonth && f.year == curYear) {
                        monthYearFound = true;
                        break;
@@ -156,6 +158,8 @@ public class Util {
                 curPayable.year = curYear;
                 curPayable.month = curMonth;
                 curPayable.amount = 0;
+                curPayable.flatId = copyOfFirstPayble.flatId;
+
                 allMissingDates.add(curPayable);
             }
 
@@ -175,6 +179,7 @@ public class Util {
         TransactionOnBalanceSheet curPaid;
         int month;
         int year;
+        TransactionOnBalanceSheet copyOfFirstTransaction = null;
 
         for(int curMonth = dateRage.startMonth, curYear = dateRage.startYear ;(curYear < dateRage.endYear)
                 || (curYear == dateRage.endYear && curMonth <= dateRage.endMonth); curMonth++)
@@ -182,6 +187,7 @@ public class Util {
             monthYearFound = false;
             for(TransactionOnBalanceSheet f : initialPaid)
             {
+                if(copyOfFirstTransaction == null)copyOfFirstTransaction = f;
                 calendar.clear();
                 calendar.setTime(f.transactionDate);
                 month = calendar.get(Calendar.MONTH) + 1;
@@ -197,8 +203,9 @@ public class Util {
                 curPaid = new TransactionOnBalanceSheet();
                 calendar.clear();;
                 calendar.set(Calendar.MONTH, curMonth - 1);
-                calendar.set(Calendar.YEAR, curMonth -1);
+                calendar.set(Calendar.YEAR, curYear);
                 curPaid.transactionDate = new Date(calendar.getTime().getTime());
+                curPaid.flatId = copyOfFirstTransaction.flatId;
                 curPaid.amount = 0;
                 allMissingDates.add(curPaid);
             }
@@ -243,6 +250,8 @@ public class Util {
                 tSum += p.amount;
             }
             flatSummary.get(flatId).penality = tSum;
+
+            data.put(flatId, addMissingDate(data.get(flatId), dateRage));
         }
 
         for(String flatKey : data.keySet()){
@@ -256,7 +265,7 @@ public class Util {
         TreeMap<String, List<TransactionOnBalanceSheet>> data = new TreeMap<>();
 
             for (TransactionOnBalanceSheet p : paid) {
-                if (p != null && p.flatId != null) {
+                if (p != null && p.flatId != null && p.flatId.length() >0) {
                     try {
                         if (data.containsKey(p.flatId)) {
                             data.get(p.flatId).add(p);
@@ -286,6 +295,8 @@ public class Util {
                 tSum += p.amount;
             }
             flatSummary.get(flatId).received = tSum;
+
+            data.put(flatId, addMissingDateInPaid(data.get(flatId), dateRage));
         }
 
         for(String flatKey : data.keySet()) {
@@ -303,8 +314,10 @@ public class Util {
             Flat f = new Flat();
             f.flatId = t.flatId;
             try {
+                if(t.flatNo == null || t.flatNo.length() == 0) continue;
                 f.flatNumber = String.format("%03d", Integer.parseInt(t.flatNo));
             }catch (Exception e) {
+                Log.i("info", "flatNo - " + t.flatNo);
                 e.printStackTrace();
             }
             f.block = t.block;
@@ -376,11 +389,11 @@ public class Util {
                 Map<String, List<FlatWisePayable>> penalty = getFlatAndItsPenalty(payables, flatSummary, dateRange);
                 Map<String, List<TransactionOnBalanceSheet>> paid = getFlatAndItsPayment(data, flatSummary, dateRange);
 
-                WritableFont headingTop = new WritableFont(WritableFont.COURIER, 12);
+                WritableFont headingTop = new WritableFont(WritableFont.COURIER, 14);
                 headingTop.setBoldStyle(WritableFont.BOLD);
                 WritableCellFormat headingTopCellFormat = new WritableCellFormat(headingTop);
 
-                WritableFont headingColumn = new WritableFont(WritableFont.COURIER, 10);
+                WritableFont headingColumn = new WritableFont(WritableFont.COURIER, 12);
                 headingColumn.setBoldStyle(WritableFont.BOLD);
                 WritableCellFormat headingColumnCellFormat = new WritableCellFormat(headingColumn);
 
@@ -401,10 +414,12 @@ public class Util {
                     if(receivable.containsKey(flatNo) && receivable.get(flatNo) != null) {
                         for (FlatWisePayable curT : receivable.get(flatNo)) {
                             if (curT != null) {
-                                if (curT.month >= 0)
-                                    sheet.addCell(new Label(col++, 1, curT.month + 1 + "-" + curT.year, headingColumnCellFormat)); //FIx month value while loading initial data
+                                if (curT.expenseType.equals(ExpenseType.ExpenseTypeConst.Monthly_Maintenance))
+                                    sheet.addCell(new Label(col++, 1, curT.month + "-" + curT.year, headingColumnCellFormat)); //FIx month value while loading initial data
                                 else if (curT.expenseType != null)
                                     sheet.addCell(new Label(col++, 1, curT.expenseType.name(), headingColumnCellFormat));
+                                else
+                                    sheet.addCell(new Label(col++, 1, curT.month + "-" + curT.year, headingColumnCellFormat)); //FIx month value while loading initial data
                             }
                         }
                     }
@@ -416,7 +431,7 @@ public class Util {
                 boolean setFlatDetails;
                 Flat curFlat;
                 FlatSummary cFlatSum;
-                //Receivable data
+                //Receivable data -----------------------------------------------------------------------
                 for(String flatNo : receivable.keySet()) {
                     i++;
                     col=8;
@@ -443,8 +458,33 @@ public class Util {
                 i++;
 
                 sheet.addCell(new Label(0, i++, "Amount Received", headingTopCellFormat)); // column and row
+                //Static heading
+                sheet.addCell(new Label(0, i, "Sr no.", headingColumnCellFormat)); // column and row
+                sheet.addCell(new Label(1, i, "Flat no", headingColumnCellFormat));
+                sheet.addCell(new Label(2, i, "Block", headingColumnCellFormat));
+                sheet.addCell(new Label(3, i, "Owner Name", headingColumnCellFormat));
+                sheet.addCell(new Label(4, i, "Sq Ft", headingColumnCellFormat));
+                sheet.addCell(new Label(5, i, "Receivable", headingColumnCellFormat));
+                sheet.addCell(new Label(6, i, "Received", headingColumnCellFormat));
+                sheet.addCell(new Label(7, i, "Balance", headingColumnCellFormat));
+                //Month year column heading
+                col=8;
+                for(String flatNo : receivable.keySet()) {
+                    if(receivable.containsKey(flatNo) && receivable.get(flatNo) != null) {
+                        for (FlatWisePayable curT : receivable.get(flatNo)) {
+                            if (curT != null) {
+                                if (curT.month >= 0)
+                                    sheet.addCell(new Label(col++, i, curT.month + "-" + curT.year, headingColumnCellFormat)); //FIx month value while loading initial data
+                                else if (curT.expenseType != null)
+                                    sheet.addCell(new Label(col++, i, curT.expenseType.name(), headingColumnCellFormat));
+                            }
+                        }
+                    }
+                    break;
+                }
+
                 srNo = 1;
-                //Amount Received
+                //Amount Received ------------------------------------------------------------------------
                 for(String flatNo : paid.keySet()) {
                     i++;
                     col=8;
@@ -466,6 +506,31 @@ public class Util {
 
                 i++;
                 sheet.addCell(new Label(0, i++, "Penalty Receivabled",headingTopCellFormat)); // column and row
+                //Static heading
+                sheet.addCell(new Label(0, i, "Sr no.", headingColumnCellFormat)); // column and row
+                sheet.addCell(new Label(1, i, "Flat no", headingColumnCellFormat));
+                sheet.addCell(new Label(2, i, "Block", headingColumnCellFormat));
+                sheet.addCell(new Label(3, i, "Owner Name", headingColumnCellFormat));
+                sheet.addCell(new Label(4, i, "Sq Ft", headingColumnCellFormat));
+                sheet.addCell(new Label(5, i, "Receivable", headingColumnCellFormat));
+                sheet.addCell(new Label(6, i, "Received", headingColumnCellFormat));
+                sheet.addCell(new Label(7, i, "Balance", headingColumnCellFormat));
+                //Month year column heading
+                col=8;
+                for(String flatNo : receivable.keySet()) {
+                    if(receivable.containsKey(flatNo) && receivable.get(flatNo) != null) {
+                        for (FlatWisePayable curT : receivable.get(flatNo)) {
+                            if (curT != null) {
+                                if (curT.month >= 0)
+                                    sheet.addCell(new Label(col++, i, curT.month + "-" + curT.year, headingColumnCellFormat)); //FIx month value while loading initial data
+                                else if (curT.expenseType != null)
+                                    sheet.addCell(new Label(col++, i, curT.expenseType.name(), headingColumnCellFormat));
+                            }
+                        }
+                    }
+                    break;
+                }
+
                 srNo = 1;
                 //Penalty Receivabled
                 for(String flatNo : penalty.keySet()) {

@@ -2,8 +2,6 @@ package societyhelp.dao.mysql.impl;
 
 import android.util.Log;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -13,7 +11,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1456,6 +1453,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public String getFlatId(String flatNo)
     {
         try {
+            if(flatNo != null) flatNo = flatNo.trim();
             return String.format("Flat_%03d", Integer.parseInt(flatNo));
         }catch (Exception e) {
             e.printStackTrace();
