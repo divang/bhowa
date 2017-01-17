@@ -202,7 +202,7 @@ adb push  D:\workspace_android\societyhelp\docs\initial_data\Paid.csv  /storage/
 adb push  D:\workspace_android\societyhelp\docs\initial_data\Payable.csv  /storage/self/primary/Download
 adb push  D:\workspace_android\societyhelp\docs\initial_data\Pending.csv  /storage/self/primary/Download
 adb push  D:\workspace_android\societyhelp\docs\initial_data\LoadDataNew.csv  /storage/self/primary/Download
-	
+adb pull /storage/self/primary/societyhelp/balanceSheet.xls D:\workspace_android\societyhelp\docs\initial_data	
 	
 Read only issue :
 $./adb shell
@@ -218,3 +218,8 @@ delete from Transactions_Staging_Data;
 delete from Transactions_Verified;
 delete from Flat_Wise_Payable;
 
+SELECT count(*) FROM `sql6151810`.`Flat_Wise_Payable`
+union
+SELECT count(*)   FROM `sql6151810`.`Transactions_BalanceSheet` 
+union
+SELECT count(*)  FROM `sql6151810`.`Transactions_Verified` 

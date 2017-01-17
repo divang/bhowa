@@ -155,7 +155,7 @@ public class LoadBhowaInitialData {
     static String SanitaryWork="Sanitary Work";
     static String ClubHouseDev="Club-House Dev";
     static String PipeRepair="Pipe Repair";
-    static String OC="OC, Children Park and L Box";
+    static String OC="OC Children Park and L Box";
     static String OC_Only="OC";
     static String SeptickTankCleaning="Septick Tank Cleaning";
 
@@ -289,10 +289,10 @@ public class LoadBhowaInitialData {
                     }
 
                     if(cExpenseDate == null) {
-                        cExpenseDate = previousPayableDate;
                         calendar.setTime(previousPayableDate);
                         calendar.add(Calendar.DAY_OF_MONTH, 1);
                         previousPayableDate = new Date(calendar.getTimeInMillis());
+                        cExpenseDate = previousPayableDate;
                     }
                     parsedData.addData(cExpenseDate, currentPayble);
 
@@ -346,10 +346,10 @@ public class LoadBhowaInitialData {
                     }
 
                     if(cExpenseDate == null) {
-                        cExpenseDate = previousPayableDate;
                         calendar.setTime(previousPayableDate);
                         calendar.add(Calendar.DAY_OF_MONTH, 1);
                         previousPayableDate = new Date(calendar.getTimeInMillis());
+                        cExpenseDate = previousPayableDate;
                     }
 
                     parsedData.addData(cExpenseDate, currentPayble);
@@ -413,10 +413,10 @@ public class LoadBhowaInitialData {
                     }
 
                     if(cExpenseDate == null) {
-                        cExpenseDate = previousPayableDate;
                         calendar.setTime(previousPayableDate);
                         calendar.add(Calendar.DAY_OF_MONTH, 1);
                         previousPayableDate = new Date(calendar.getTimeInMillis());
+                        cExpenseDate = previousPayableDate;
                     }
                     parsedData.addData(cExpenseDate, currentPayble);
 
