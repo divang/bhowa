@@ -337,7 +337,8 @@ public class LoadBhowaInitialData {
                             previousPayableDate = cExpenseDate;
                             currentPayble.expenseType = ExpenseTypeConst.Penalty;
                         }catch(Exception inner) {
-                            currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                            //currentPayble.expenseType = getExpenseType(dateHeader[cIndex].trim());
+                            currentPayble.expenseType = ExpenseTypeConst.Penalty;
                         }
                     }
 
