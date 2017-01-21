@@ -88,7 +88,11 @@ public class TransactionHomeActivity extends DashBoardActivity {
                     public void run() {
 
                         try {
+                            Log.d("info","Initial CSV parsing started ..... ");
+                            long startTime = System.currentTimeMillis();
                             LoadBhowaInitialData.LoadData initialData =LoadBhowaInitialData.loadInitialData(path);
+                            long endTime = System.currentTimeMillis();
+                            Log.d("info","Initial CSV parsing time - "+ (endTime - startTime));
                             SocietyHelpDatabaseFactory.getDBInstance().loadInitialData(initialData);
                             //Call auto split
                             //Show balance sheet / download

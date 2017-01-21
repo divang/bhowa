@@ -21,10 +21,12 @@ import java.util.TreeSet;
 
 import societyhelp.app.util.RandomString;
 import societyhelp.app.util.SocietyHelpConstant;
+import societyhelp.app.util.Util;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.DatabaseConstant;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.parser.LoadBhowaInitialData;
+import societyhelp.parser.LoadBhowaInitialData.LoadData;
 
 public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, SocietyHelpConstant {
 
@@ -82,7 +84,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 result.close();
             }
         } catch (SQLException e) {
-            Log.e("Error", "Connection close has some problem.", e);
+            //Log.e("Error", "Connection close has some problem.", e);
         }
     }
 
@@ -101,7 +103,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 result.close();
             }
         } catch (SQLException e) {
-            Log.e("Error", "Connection close has some problem.", e);
+            //Log.e("Error", "Connection close has some problem.", e);
         }
     }
 
@@ -135,7 +137,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 //int societyId = result.getInt(5);
                 init(url, user, pass);
                 //Reinitialize the factory class, so always new instance will use these configuration.
-                SocietyHelpDatabaseFactory.init(url, user, pass);
+                //SocietyHelpDatabaseFactory.init(url, user, pass);
                 return true;
             }
 
@@ -1305,7 +1307,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
 
         } catch (Exception e) {
-            Log.e("error", "Error while generating splitted transactions.", e);
+            //Log.e("error", "Error while generating splitted transactions.", e);
             throw e;
         }
         return splittedPaidAmountFlatWise;
@@ -1353,7 +1355,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             con.commit(); //transaction block end
         } catch (Exception e) {
-            Log.e("Error", "Message - " + e.getMessage());
+            //Log.e("Error", "Message - " + e.getMessage());
             //throw e;
         } finally {
             close(con, pStat, res);
@@ -1471,7 +1473,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     curTransaction = new SocietyHelpTransaction();
                     if (lup.dateAmountMapping.get(payableDate).amount == null ||
                             lup.dateAmountMapping.get(payableDate).amount == 0) {
-                        continue;
+                        //continue;
+                        curTransaction.amount = 0;
                     } else {
                         curTransaction.amount = lup.dateAmountMapping.get(payableDate).amount;
                     }
@@ -1496,7 +1499,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
                 if (pt.transactionId > 0) {
                     curBalanceSheetTransaction = new TransactionOnBalanceSheet();
-
                     curBalanceSheetTransaction.transactionFlow = "Credit";
                     curBalanceSheetTransaction.userId = pt.userId;
                     curBalanceSheetTransaction.flatId = pt.flatId;
@@ -2225,16 +2227,46 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             ResultSet res = null;
 
             try {
+
+                long startTime = System.currentTimeMillis();
                 cleanDatabase();
+                long endTime = System.currentTimeMillis();
+                System.out.println("Cleaning (milis) - " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
                 Map<String, String> flatIdUserIdMapping = generateLoginFlatUser(loadData);
+                endTime = System.currentTimeMillis();
+                System.out.println("Flat Login User (milis)- " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
                 loadInitialPayables(loadData.payables);
+                endTime = System.currentTimeMillis();
+                System.out.println("Payables(milis)- " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
                 loadInitialPayables(loadData.penalty);
+                endTime = System.currentTimeMillis();
+                System.out.println("Penality (milis)- " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
                 loadUserPaid(loadData.userPaid, flatIdUserIdMapping);
+                endTime = System.currentTimeMillis();
+                System.out.println("User Paid (milis)- " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
                 loadToApartmentEarning(loadData.storeRent);
+                endTime = System.currentTimeMillis();
+                System.out.println("Apartement Earning (milis)- " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
                 loadToApartmentExpense(loadData.apartmentExpenses);
+                endTime = System.currentTimeMillis();
+                System.out.println("Apartment Expense (milis)- " + (endTime - startTime));
+                startTime = System.currentTimeMillis();
 
             } catch (Exception e) {
-                throw e;
+                e.printStackTrace();
+                //Log.e("error", e.getMessage(), e);
             } finally {
                 close(con, pStat, res);
             }
@@ -2248,6 +2280,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
         try {
             con = getDBInstance();
+
             pStat = con.prepareStatement(cleanLoginDatabase);
             pStat.executeUpdate();
 
@@ -2259,6 +2292,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             pStat = con.prepareStatement(cleanFlatPayablesDatabase);
             pStat.executeUpdate();
+
 
             pStat = con.prepareStatement(cleanTransactionVerficationDatabase);
             pStat.executeUpdate();
@@ -2347,6 +2381,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                         curUserDetail = new UserDetails();
                         curUserDetail.userId = curUserDetailId;
                         curUserDetail.flatId = payable.flatId;
+                        curUserDetail.isActive = true;
                         curUserDetail.loginId = payable.loginId;
                         curUserDetail.userName = payable.userName;
                         curUserDetail.userType = UserDetails.OWNER;
@@ -2408,6 +2443,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                         curUserDetail = new UserDetails();
                         curUserDetail.userId = curUserDetailId;
                         curUserDetail.flatId = getFlatId(tenant.flatNo);//"Flat_" + tenant.flatNo;
+                        curUserDetail.isActive = true;
                         tenant.flatId = curUserDetail.flatId;
                         curUserDetail.loginId = curUserId;
                         curUserDetail.userName = tenant.userName;
@@ -2546,7 +2582,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             List<TransactionOnBalanceSheet> listBalanceSheetTransaction = new ArrayList<>();
             TransactionOnBalanceSheet curBalanceSheetTransaction;
-
+//"(Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted) " +
             for (LoadBhowaInitialData.LoadApartmentEarning t : aEarning) {
                 for (Date earnDate : t.dateAmountMapping.keySet()) {
                     if (t.dateAmountMapping.get(earnDate) > 0) {
@@ -2620,7 +2656,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
                     if (fwp.dateAmountMapping.get(payableDate).amount == null ||
                             fwp.dateAmountMapping.get(payableDate).amount == 0) {
-                        continue;
+                        //continue;
+                        pStat.setFloat(2, 0);
                     } else {
                         pStat.setFloat(2, fwp.dateAmountMapping.get(payableDate).amount);
                     }
