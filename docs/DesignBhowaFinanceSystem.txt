@@ -223,3 +223,21 @@ union
 SELECT count(*)   FROM `sql6151810`.`Transactions_BalanceSheet` 
 union
 SELECT count(*)  FROM `sql6151810`.`Transactions_Verified` 
+
+DROP TABLE IF EXISTS `Apartment_Earning`;
+DROP TABLE IF EXISTS `Apartment_Expense`;
+DROP TABLE IF EXISTS `Authorizations`;
+DROP TABLE IF EXISTS `Bank_Statement`;
+DROP TABLE IF EXISTS `Expense_Type`;
+DROP TABLE IF EXISTS `Flat`;
+DROP TABLE IF EXISTS `Flat_Wise_Payable`;
+DROP TABLE IF EXISTS `Login`;
+DROP TABLE IF EXISTS `Notification`;
+DROP TABLE IF EXISTS `Society`;
+DROP TABLE IF EXISTS `Transactions_BalanceSheet`;
+DROP TABLE IF EXISTS `Transactions_Balancesheet`;
+DROP TABLE IF EXISTS `Transactions_Staging_Data`;
+DROP TABLE IF EXISTS `Transactions_Verified`;
+DROP TABLE IF EXISTS `User_Details`;
+DROP TABLE IF EXISTS `User_Paid`;
+DROP TABLE IF EXISTS `User_Payment_Status`;
