@@ -5,9 +5,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -28,6 +30,7 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import societyhelp.dao.mysql.impl.ExpenseType;
+import societyhelp.dao.mysql.impl.ExpenseType.ExpenseTypeConst;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
@@ -42,6 +45,7 @@ public class Util {
     public static class FlatSummary {
 
         public String flatId;
+        public String ownerName;
         public int receivable;
         public int received;
         public int Balance;
@@ -305,6 +309,79 @@ public class Util {
         return data;
     }
 
+    public static TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> getApartmentExpense(List<TransactionOnBalanceSheet> expense, BalanceSheetDateRage dateRage)
+    {
+        TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> data = new TreeMap<>();
+
+        for (TransactionOnBalanceSheet p : expense) {
+            if (p != null && p.transactionFlow.equals("Debit")) {
+                try {
+                    if (data.containsKey(p.expenseType)) {
+                        data.get(p.expenseType).add(p);
+                    } else {
+                        List<TransactionOnBalanceSheet> transactions = new ArrayList<>();
+                        transactions.add(p);
+                        data.put(p.expenseType, transactions);
+                    }
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for(ExpenseType.ExpenseTypeConst eKey : data.keySet()) {
+            Collections.sort(data.get(eKey), new TransactionOnBalanceSheetComparator());
+        }
+
+        return data;
+    }
+
+
+    public static List<TransactionOnBalanceSheet> getApartmentEarning(List<TransactionOnBalanceSheet> earned, BalanceSheetDateRage dateRage)
+    {
+        List<TransactionOnBalanceSheet> data = new ArrayList<TransactionOnBalanceSheet>();
+
+        for (TransactionOnBalanceSheet p : earned) {
+            if (p != null && p.expenseType.equals(ExpenseType.ExpenseTypeConst.Club_Store_Earning) && p.transactionFlow != null && p.transactionFlow.equals("Credit")) {
+                try {
+                    data.add(p);
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        data = addMissingDateInPaid(data, dateRage);
+
+        Collections.sort(data, new TransactionOnBalanceSheetComparator());
+
+        return data;
+    }
+
+    public static List<TransactionOnBalanceSheet> getInterestIncome(List<TransactionOnBalanceSheet> earned, BalanceSheetDateRage dateRage)
+    {
+        List<TransactionOnBalanceSheet> data = new ArrayList<TransactionOnBalanceSheet>();
+
+        for (TransactionOnBalanceSheet p : earned) {
+            if (p != null && p.expenseType.equals(ExpenseType.ExpenseTypeConst.Interest_Income)) {
+                try {
+                    data.add(p);
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        data = addMissingDateInPaid(data, dateRage);
+
+        Collections.sort(data, new TransactionOnBalanceSheetComparator());
+
+        return data;
+    }
+
     public static Map<String, Flat> getFlatDetails(List<TransactionOnBalanceSheet> data)
     {
         Map<String, Flat> flats = new HashMap<>();
@@ -388,6 +465,9 @@ public class Util {
                 Map<String, List<FlatWisePayable>> receivable = getFlatAndItsPayables(payables, flatSummary, dateRange);
                 Map<String, List<FlatWisePayable>> penalty = getFlatAndItsPenalty(payables, flatSummary, dateRange);
                 Map<String, List<TransactionOnBalanceSheet>> paid = getFlatAndItsPayment(data, flatSummary, dateRange);
+                List<TransactionOnBalanceSheet> aparmentEarning = getApartmentEarning(data, dateRange);
+                List<TransactionOnBalanceSheet> interestIncome = getInterestIncome(data, dateRange);
+                Map<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> expense = getApartmentExpense(data, dateRange);
 
                 WritableFont headingTop = new WritableFont(WritableFont.COURIER, 14);
                 headingTop.setBoldStyle(WritableFont.BOLD);
@@ -396,6 +476,8 @@ public class Util {
                 WritableFont headingColumn = new WritableFont(WritableFont.COURIER, 12);
                 headingColumn.setBoldStyle(WritableFont.BOLD);
                 WritableCellFormat headingColumnCellFormat = new WritableCellFormat(headingColumn);
+
+                //Receivable data -----------------------------------------------------------------------
 
                 //Static heading
                 sheet.addCell(new Label(0, 0, "Amount Receivable", headingTopCellFormat)); // column and row
@@ -431,7 +513,7 @@ public class Util {
                 boolean setFlatDetails;
                 Flat curFlat;
                 FlatSummary cFlatSum;
-                //Receivable data -----------------------------------------------------------------------
+
                 for(String flatNo : receivable.keySet()) {
                     i++;
                     col=8;
@@ -445,6 +527,7 @@ public class Util {
                             sheet.addCell(new Label(2, i, curFlat.block));
                             sheet.addCell(new Label(3, i, curFlat.owner));
                             sheet.addCell(new Label(4, i, curFlat.area +""));
+                            cFlatSum.ownerName = curFlat.owner;
                             sheet.addCell(new Label(5, i, (cFlatSum.receivable + cFlatSum.penality) + ""));
                             sheet.addCell(new Label(6, i, cFlatSum.received +""));
                             sheet.addCell(new Label(7, i, (cFlatSum.receivable + cFlatSum.penality - cFlatSum.received)+""));
@@ -455,6 +538,8 @@ public class Util {
                     }
                 }
 
+
+                //Amount Received ------------------------------------------------------------------------
                 i++;
 
                 sheet.addCell(new Label(0, i++, "Amount Received", headingTopCellFormat)); // column and row
@@ -492,7 +577,7 @@ public class Util {
                 }
 
                 srNo = 1;
-                //Amount Received ------------------------------------------------------------------------
+
                 for(String flatNo : paid.keySet()) {
                     i++;
                     col=8;
@@ -511,6 +596,8 @@ public class Util {
                         sheet.addCell(new Label(col++, i, curBT.amount + ""));
                     }
                 }
+
+                //Penalty Receivabled -------------------------------------------
 
                 i++;
                 sheet.addCell(new Label(0, i++, "Penalty Receivabled",headingTopCellFormat)); // column and row
@@ -548,7 +635,6 @@ public class Util {
                 }
 
                 srNo = 1;
-                //Penalty Receivabled
                 for(String flatNo : penalty.keySet()) {
                     i++;
                     col=8;
@@ -567,6 +653,134 @@ public class Util {
                         sheet.addCell(new Label(col++, i, curPen.amount + ""));
                     }
                 }
+
+
+                //Store room + Party Hall Earning -------------------------------------------
+
+                i++;
+                sheet.addCell(new Label(0, i++, "Store Room + Party Hall Income",headingTopCellFormat)); // column and row
+                //Month year column heading
+                col=0;
+                for (TransactionOnBalanceSheet tb : aparmentEarning) {
+                    calendar.setTime(tb.transactionDate);
+                    sheet.addCell(new Label(col++, i, (calendar.get(Calendar.MONTH) +1 ) + "-" + calendar.get(Calendar.YEAR), headingColumnCellFormat)); //FIx month value while loading initial data
+                }
+
+                i++;
+                col=0;
+                float totalAparmentEarning =0;
+                for (TransactionOnBalanceSheet tb : aparmentEarning) {
+                    sheet.addCell(new Label(col++, i, tb.amount + "")); //FIx month value while loading initial data
+                    totalAparmentEarning += tb.amount;
+                }
+
+                //Interest Income -------------------------------------------
+
+                i++;
+                sheet.addCell(new Label(0, i++, "Interest Income",headingTopCellFormat)); // column and row
+                //Month year column heading
+                col=0;
+                float totalInterestCome =0;
+                for (TransactionOnBalanceSheet tb : interestIncome) {
+                    calendar.setTime(tb.transactionDate);
+                    sheet.addCell(new Label(col++, i, (calendar.get(Calendar.MONTH) +1 ) + "-" + calendar.get(Calendar.YEAR), headingColumnCellFormat)); //FIx month value while loading initial data
+
+                }
+
+                i++;
+                col=0;
+                for (TransactionOnBalanceSheet tb : interestIncome) {
+                    sheet.addCell(new Label(col++, i, tb.amount + "")); //FIx month value while loading initial data
+                    totalInterestCome += tb.amount;
+                }
+
+                //================================== other sheet ================================
+                WritableSheet sheetIncomeExpenseSheet = workbook.createSheet("Income Expense Summary", 1);
+                i=0;
+                float totalIncome = 0;
+                float totalExpense = 0;
+                //Apartment Expenses ------------------------------------------------------------------------
+
+
+                sheetIncomeExpenseSheet.addCell(new Label(0, i++, "Apartment Expenses", headingTopCellFormat)); // column and row
+                //Static heading
+                sheetIncomeExpenseSheet.addCell(new Label(0, i, "Flat No", headingColumnCellFormat)); // column and row
+                sheetIncomeExpenseSheet.addCell(new Label(1, i, "Owner", headingColumnCellFormat)); // column and row
+                sheetIncomeExpenseSheet.addCell(new Label(2, i, "Total Income", headingColumnCellFormat));
+                sheetIncomeExpenseSheet.addCell(new Label(3, i, "Expense type", headingColumnCellFormat)); // column and row
+                sheetIncomeExpenseSheet.addCell(new Label(4, i, "Total Expense", headingColumnCellFormat));
+                //Month year column heading
+                col=5;
+                for(ExpenseTypeConst eType : expense.keySet()) {
+                    if(expense.containsKey(eType) && expense.get(eType) != null) {
+                        for (TransactionOnBalanceSheet curT : expense.get(eType)) {
+                            if (curT != null) {
+                                calendar.setTime(curT.transactionDate);
+                                sheetIncomeExpenseSheet.addCell(new Label(col++, i, (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR), headingColumnCellFormat)); //FIx month value while loading initial data
+                            }
+                        }
+                    }
+                    break;
+                }
+
+                int noOfRows = flatSummary.keySet().size() > expense.size() ? flatSummary.keySet().size() : expense.size();
+                Iterator<ExpenseTypeConst> expenseIterator = expense.keySet().iterator();
+                Iterator<String> flatIncomeIterator = flatSummary.keySet().iterator();
+                for(int j=0; j < noOfRows;j++) {
+                    i++;
+
+                    if(flatIncomeIterator.hasNext()) {
+                        String flatId = flatIncomeIterator.next();
+                        sheetIncomeExpenseSheet.addCell(new Label(0, i, flatId));
+                        sheetIncomeExpenseSheet.addCell(new Label(1, i, flatSummary.get(flatId).ownerName));
+                        sheetIncomeExpenseSheet.addCell(new Label(2, i, flatSummary.get(flatId).received + ""));
+                        totalIncome += flatSummary.get(flatId).received;
+                    }
+
+                    int total =0;
+
+                    if(expenseIterator.hasNext())
+                    {
+                        ExpenseTypeConst eType = expenseIterator.next();
+                        col=5;
+                        setFlatDetails = false;
+                        total=0;
+                        for(TransactionOnBalanceSheet curBT : expense.get(eType)) {
+                            total += curBT.amount;
+                        }
+                        for(TransactionOnBalanceSheet curBT : expense.get(eType)) {
+                            if(!setFlatDetails) {
+                                sheetIncomeExpenseSheet.addCell(new Label(3, i, curBT.expenseType.toString()));
+                                sheetIncomeExpenseSheet.addCell(new Label(4, i, total + ""));
+                                setFlatDetails = true;
+                                totalExpense += total;
+                            }
+                            //5,6,7 column skip
+                            sheetIncomeExpenseSheet.addCell(new Label(col++, i, curBT.amount + ""));
+                        }
+                    }
+                }
+
+                i++;
+                sheetIncomeExpenseSheet.addCell(new Label(1, i, "Store Rent"));
+                sheetIncomeExpenseSheet.addCell(new Label(2, i, totalAparmentEarning + ""));
+                totalIncome += totalAparmentEarning;
+                i++;
+                sheetIncomeExpenseSheet.addCell(new Label(1, i, "Interest Income"));
+                sheetIncomeExpenseSheet.addCell(new Label(2, i, totalInterestCome + ""));
+                totalIncome += totalInterestCome;
+
+                i++;
+                sheetIncomeExpenseSheet.addCell(new Label(1, i, "Total Income", headingColumnCellFormat));
+                sheetIncomeExpenseSheet.addCell(new Label(2, i, totalIncome + "", headingColumnCellFormat));
+
+                sheetIncomeExpenseSheet.addCell(new Label(3, i, "Total Expense", headingColumnCellFormat));
+                sheetIncomeExpenseSheet.addCell(new Label(4, i, totalExpense + "", headingColumnCellFormat));
+
+                i = i + 2;
+                sheetIncomeExpenseSheet.addCell(new Label(3, i, "Balance", headingColumnCellFormat));
+                sheetIncomeExpenseSheet.addCell(new Label(4, i, (totalIncome - totalExpense)  + "", headingColumnCellFormat));
+
 
             } catch (Exception e) {
                 e.printStackTrace();

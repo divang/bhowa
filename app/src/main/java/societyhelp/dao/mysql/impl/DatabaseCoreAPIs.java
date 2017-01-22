@@ -1,6 +1,6 @@
 package societyhelp.dao.mysql.impl;
 
-import android.util.Log;
+//import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -40,7 +40,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception e) {
             e.getStackTrace();
-            Log.e("Error", "Driver Initialization failed", e);
+            //Log.e("Error", "Driver Initialization failed", e);
         }
     }
 
@@ -2054,7 +2054,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
                 if(result.getString(14).equals("Credit"))
                 {
-                    if(result.getString(15).equals("Club_Store_Earning"))
+                    if(result.getString(15).equals("Club_Store_Earning") || result.getString(15).equals("Interest_Income"))
                     {
                         t.transactionDate = result.getDate(18);
                     }else
@@ -2090,7 +2090,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                     t.userId = result.getString(13);
                     t.flatId = "";
                 }
-
+                t.transactionFlow = result.getString(14);
                 list.add(t);
             }
 
@@ -2257,6 +2257,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 loadToApartmentEarning(loadData.storeRent);
                 endTime = System.currentTimeMillis();
                 System.out.println("Apartement Earning (milis)- " + (endTime - startTime));
+
+                startTime = System.currentTimeMillis();
+                loadToApartmentEarning(loadData.interestIncome);
+                endTime = System.currentTimeMillis();
+                System.out.println("Interest Income (milis)- " + (endTime - startTime));
 
                 startTime = System.currentTimeMillis();
                 loadToApartmentExpense(loadData.apartmentExpenses);
@@ -2525,31 +2530,31 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             for (LoadBhowaInitialData.LoadApartmentExpense t : aExpense) {
                 for (Date expenseDate : t.dateAmountMapping.keySet()) {
-                    if (t.dateAmountMapping.get(expenseDate) > 0) {
-                        curBalanceSheetTransaction = new TransactionOnBalanceSheet();
-                        pStat.setInt(1, t.expenseType.ordinal());
-                        pStat.setFloat(2, t.dateAmountMapping.get(expenseDate));
-                        pStat.setDate(3, expenseDate);
+                    //if (t.dateAmountMapping.get(expenseDate) > 0) {
+                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+                    pStat.setInt(1, t.expenseType.ordinal());
+                    pStat.setFloat(2, t.dateAmountMapping.get(expenseDate));
+                    pStat.setDate(3, expenseDate);
 
-                        pStat.setString(4, "");
-                        pStat.setBoolean(5, true);
-                        pStat.setString(6, "superadmin");
+                    pStat.setString(4, "");
+                    pStat.setBoolean(5, true);
+                    pStat.setString(6, "superadmin");
 
-                        pStat.setString(7, "");
-                        pStat.setString(8, "");
-                        pStat.setBoolean(9, true);
+                    pStat.setString(7, "");
+                    pStat.setString(8, "");
+                    pStat.setBoolean(9, true);
 
-                        curBalanceSheetTransaction.transactionFlow = "Debit";
-                        curBalanceSheetTransaction.userId = "";
-                        curBalanceSheetTransaction.flatId = "";
-                        curBalanceSheetTransaction.amount = t.dateAmountMapping.get(expenseDate);
-                        curBalanceSheetTransaction.isVerifiedByAdmin = true;
-                        curBalanceSheetTransaction.expenseType = t.expenseType;
-                        listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+                    curBalanceSheetTransaction.transactionFlow = "Debit";
+                    curBalanceSheetTransaction.userId = "";
+                    curBalanceSheetTransaction.flatId = "";
+                    curBalanceSheetTransaction.amount = t.dateAmountMapping.get(expenseDate);
+                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                    curBalanceSheetTransaction.expenseType = t.expenseType;
+                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
 
-                        pStat.addBatch();
-                        pStat.clearParameters();
-                    }
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                    //}
                 }
             }
             pStat.executeBatch();
@@ -2585,27 +2590,27 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 //"(Expense_Type_Id,Amount,Earned_Date,Verified,Verified_By,Admin_Comment,Splitted) " +
             for (LoadBhowaInitialData.LoadApartmentEarning t : aEarning) {
                 for (Date earnDate : t.dateAmountMapping.keySet()) {
-                    if (t.dateAmountMapping.get(earnDate) > 0) {
-                        curBalanceSheetTransaction = new TransactionOnBalanceSheet();
-                        pStat.setInt(1, t.expenseType.ordinal());
-                        pStat.setFloat(2, t.dateAmountMapping.get(earnDate));
-                        pStat.setDate(3, earnDate);
-                        pStat.setBoolean(4, true);
-                        pStat.setString(5, "superadmin");
-                        pStat.setString(6, "");
-                        pStat.setBoolean(7, true);
+                    //if (t.dateAmountMapping.get(earnDate) > 0) {
+                    curBalanceSheetTransaction = new TransactionOnBalanceSheet();
+                    pStat.setInt(1, t.expenseType.ordinal());
+                    pStat.setFloat(2, t.dateAmountMapping.get(earnDate));
+                    pStat.setDate(3, earnDate);
+                    pStat.setBoolean(4, true);
+                    pStat.setString(5, "superadmin");
+                    pStat.setString(6, "");
+                    pStat.setBoolean(7, true);
 
-                        curBalanceSheetTransaction.transactionFlow = "Credit";
-                        curBalanceSheetTransaction.userId = "";
-                        curBalanceSheetTransaction.flatId = "";
-                        curBalanceSheetTransaction.amount = t.dateAmountMapping.get(earnDate);
-                        curBalanceSheetTransaction.isVerifiedByAdmin = true;
-                        curBalanceSheetTransaction.expenseType = t.expenseType;
-                        listBalanceSheetTransaction.add(curBalanceSheetTransaction);
+                    curBalanceSheetTransaction.transactionFlow = "Credit";
+                    curBalanceSheetTransaction.userId = "";
+                    curBalanceSheetTransaction.flatId = "";
+                    curBalanceSheetTransaction.amount = t.dateAmountMapping.get(earnDate);
+                    curBalanceSheetTransaction.isVerifiedByAdmin = true;
+                    curBalanceSheetTransaction.expenseType = t.expenseType;
+                    listBalanceSheetTransaction.add(curBalanceSheetTransaction);
 
-                        pStat.addBatch();
-                        pStat.clearParameters();
-                    }
+                    pStat.addBatch();
+                    pStat.clearParameters();
+                    //}
                 }
             }
 

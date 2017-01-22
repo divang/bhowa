@@ -80,6 +80,8 @@ public class LoadBhowaInitialData {
                     case TENANT_INITIAL_DATA:
                         addFlatTenant(data);
                         break;
+                    case Interest_Income_INITIAL_DATA:
+                        addIntrestIncome(currentHeader, data);
                     case NONE:
                         break;
                 }
@@ -116,7 +118,7 @@ public class LoadBhowaInitialData {
     static String paidHeader = "Paid Initial data-";
     static String storeHeader = "Store Room - Club House Initial data-";
     static String headers[] = {expenseHeader, payableHeader, pendingHeader, paidHeader, storeHeader};
-    static enum DataTye { EXPENSE_INITIAL_DATA, PAYABLE_INITIAL_DATA, PENALTY_INITIAL_DATA, PAID_INITIAL_DATA, STORERENT_INITIAL_DATA, TENANT_INITIAL_DATA, NONE };
+    static enum DataTye { EXPENSE_INITIAL_DATA, PAYABLE_INITIAL_DATA, PENALTY_INITIAL_DATA, PAID_INITIAL_DATA, STORERENT_INITIAL_DATA, TENANT_INITIAL_DATA, Interest_Income_INITIAL_DATA, NONE };
     static LoadData finalData = new LoadData();
 
     //Expense string in csv
@@ -209,7 +211,7 @@ public class LoadBhowaInitialData {
     {
         try
         {
-           loadData.tenantUser.add(new LoadTenantUser(data[0], data[1]));
+            loadData.tenantUser.add(new LoadTenantUser(data[0], data[1]));
         }
         catch(Exception e)
         {
@@ -468,6 +470,38 @@ public class LoadBhowaInitialData {
 
     }
 
+    protected static void addIntrestIncome(String[] dateHeader, String[] amount)
+    {
+        try
+        {
+            LoadApartmentEarning obj = new LoadApartmentEarning(ExpenseType.ExpenseTypeConst.Interest_Income);
+            int cIndex = 0;
+            Date cExpenseDate;
+            float cAmount;
+            for(;cIndex < amount.length; cIndex++)
+            {
+                cAmount = 0;
+                try {
+                    cExpenseDate = new Date(sdFormat.parse(dateHeader[cIndex]).getTime());
+                    if(amount[cIndex].trim().length() > 0) {
+                        cAmount = Float.parseFloat(amount[cIndex].replace(",",""));
+                    }
+                    obj.addData(cExpenseDate, cAmount);
+                } catch (Exception e)
+                {
+                    //e.printStackTrace();
+                }
+            }
+
+            loadData.interestIncome.add(obj);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     static public class LoadData
     {
         public List<LoadApartmentExpense> apartmentExpenses = new ArrayList<>();
@@ -475,6 +509,7 @@ public class LoadBhowaInitialData {
         public List<LoadFlatWisePayble> payables = new ArrayList<>();
         public List<LoadFlatWisePayble> penalty = new ArrayList<>();
         public List<LoadApartmentEarning> storeRent = new ArrayList<>();
+        public List<LoadApartmentEarning> interestIncome = new ArrayList<>();
         public List<LoadTenantUser> tenantUser = new ArrayList<>();
     }
 

@@ -55,6 +55,7 @@ public class ExpenseType {
         ,MotorRepair
         ,Penalty
         ,Club_Store_Earning
+        ,Interest_Income
         ,UNKNOWN
     }
 
