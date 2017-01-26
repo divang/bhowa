@@ -24,11 +24,35 @@ import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.app.util.Util;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.DatabaseConstant;
-import societyhelp.dao.SocietyHelpDatabaseFactory;
+//import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.parser.LoadBhowaInitialData;
 import societyhelp.parser.LoadBhowaInitialData.LoadData;
 
 public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, SocietyHelpConstant {
+
+    private static long autoSplitId;
+
+    public static void main(String[] args) {
+
+        try {
+
+            DatabaseCoreAPIs db = new DatabaseCoreAPIs("jdbc:mysql://localhost:3306/societyhelp", "root", "root123");
+            System.out.println("Start parsing ...");
+            long sTime = System.currentTimeMillis();
+			
+			/*LoadData ld = LoadBhowaInitialData.loadInitialData("D:\\workspace_android\\societyhelp\\docs\\initial_data\\LoadDataNew.csv");
+			long eTime = System.currentTimeMillis();
+			System.out.println("Parsed.(milis) - " + (eTime - sTime));
+			db.loadInitialData(ld);
+			sTime = System.currentTimeMillis();
+			Util.generateBalanceSheet(db.getBalanceSheetData(), db.getFlatWisePayables());
+			eTime = System.currentTimeMillis();
+			System.out.println("Generate XLS (milis) - " + (eTime - sTime));*/
+            //db.rollbackAutoSplit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private String databaseDBURL;
     private String databaseUser;
@@ -235,6 +259,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
                 return true;
             } catch (Exception e) {
+                e.printStackTrace();
                 throw e;
             } finally {
                 close(con, pStat, null);
@@ -824,7 +849,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                         pStat.setString(7, t.flatId);
                         pStat.setString(8, t.verifiedBy);
                         pStat.setBoolean(9, t.splitted);
-
+                        pStat.setLong(10, autoSplitId);
                         pStat.addBatch();
                         pStat.clearParameters();
                         uploadedTransactions.add(t);
@@ -1313,6 +1338,62 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return splittedPaidAmountFlatWise;
     }
 
+    public void rollbackAutoSplit()
+    {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            con.setAutoCommit(false); //transaction block start
+
+            pStat = con.prepareStatement(rollbackUserPaidDataQuery);
+            pStat.executeUpdate();
+            pStat.close();
+
+            pStat = con.prepareStatement(rollbackTransactionVerifiedQuery);
+            pStat.execute();
+            pStat.close();
+
+            pStat = con.prepareStatement(rollbackTransactionsBalanceSheet);
+            pStat.execute();
+            pStat.close();
+
+            pStat = con.prepareStatement(rollbackFlatWisePayable);
+            pStat.execute();
+            pStat.close();
+
+            pStat = con.prepareStatement(rollbackApartmentExpense);
+            pStat.execute();
+            pStat.close();
+
+            pStat = con.prepareStatement(rollbackApartmentEarning);
+            pStat.execute();
+            pStat.close();
+
+            pStat = con.prepareStatement(insertFromBalanceRollbackDataQuery);
+            pStat.execute();
+            pStat.close();
+
+            pStat = con.prepareStatement(deleteAllBackupDataQuery);
+            pStat.execute();
+            pStat.close();
+
+            con.commit(); //transaction block end
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Log.e("Error", "Message - " + e.getMessage());
+            //throw e;
+        } finally {
+            autoSplitId = 0;
+            close(con, pStat, res);
+        }
+
+
+    }
+
     public boolean addToBalanceSheet(List<TransactionOnBalanceSheet> readyToAddInBalanceSheet,
                                      List<UserPaid> unSplitedUserCashPayment, List<SocietyHelpTransaction> unSplitedTransactions,
                                      List<FlatWisePayable> unPaidAmountFlatWise) {
@@ -1327,11 +1408,19 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         //do not make entry of advance update transaction
         List<TransactionOnBalanceSheet> advancePayment = toBeInsertAsAdvancePayment(unSplitedUserCashPayment, unSplitedTransactions);
 
+
         Connection con = null;
         PreparedStatement pStat = null;
         ResultSet res = null;
 
         try {
+            autoSplitId = System.currentTimeMillis();
+            deleteAutoSplitIdDB();
+            insertAutoSplitIdDB(autoSplitId);
+
+            deleteAllBackupData();
+            insertToRollbackDataInBatch(updateTransaction);
+
             List<SocietyHelpTransaction> debitTransactions = getUnSplittedDebitTransactions();
             List<TransactionOnBalanceSheet> tobeInsertedDebitTransactions = convertDebitedTransactionToBalanceSheetTransaction(debitTransactions);
             List<ApartmentExpense> apartmentCashExpense = getUnSplittedApartmentCashExpense();
@@ -1354,10 +1443,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             updateSplittedApartementCashExpense(con, apartmentCashExpense); //update Apartment expense table
 
             con.commit(); //transaction block end
+
         } catch (Exception e) {
             //Log.e("Error", "Message - " + e.getMessage());
             //throw e;
         } finally {
+            autoSplitId = 0;
             close(con, pStat, res);
         }
         return false;
@@ -1378,7 +1469,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         PreparedStatement pStat = con.prepareStatement(updateBankTransactionSpillted);
         for (TransactionOnBalanceSheet t : insertTransactions) {
             if (t.transactionFromBankStatementID > 0) {
-                pStat.setInt(1, t.transactionFromBankStatementID);
+                pStat.setLong(1, autoSplitId);
+                pStat.setInt(2, t.transactionFromBankStatementID);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
@@ -1391,7 +1483,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         PreparedStatement pStat = con.prepareStatement(updateBankTransactionSpillted);
         for (TransactionOnBalanceSheet t : advanceTransactions) {
             if (t.transactionFromBankStatementID > 0) {
-                pStat.setInt(1, t.transactionFromBankStatementID);
+                pStat.setLong(1, autoSplitId);
+                pStat.setInt(2, t.transactionFromBankStatementID);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
@@ -1401,7 +1494,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         PreparedStatement pStatCash = con.prepareStatement(updateUserCashSpitted);
         for (TransactionOnBalanceSheet t : advanceTransactions) {
             if (t.userCashPaymentID > 0) {
-                pStatCash.setInt(1, t.userCashPaymentID);
+                pStat.setLong(1, autoSplitId);
+                pStatCash.setInt(2, t.userCashPaymentID);
                 pStatCash.addBatch();
                 pStatCash.clearParameters();
             }
@@ -1414,7 +1508,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         for (TransactionOnBalanceSheet t : insertTransactions) {
 
             if (t.userCashPaymentID > 0) {
-                pStat.setInt(1, t.userCashPaymentID);
+                pStat.setLong(1, autoSplitId);
+                pStat.setInt(2, t.userCashPaymentID);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
@@ -1425,7 +1520,8 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
     public void updateSplittedApartementCashExpense(Connection con, List<ApartmentExpense> cashExpense) throws Exception {
         PreparedStatement pStat = con.prepareStatement(updateApartmentCashSpitted);
         for (ApartmentExpense t : cashExpense) {
-            pStat.setInt(1, t.apartmentCashExpenseId);
+            pStat.setLong(1, autoSplitId);
+            pStat.setInt(2, t.apartmentCashExpenseId);
             pStat.addBatch();
             pStat.clearParameters();
         }
@@ -1438,13 +1534,15 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             if (java.lang.Float.compare(t.amount, 0) == 0) {
                 pStat.setInt(1, 2); //means Full_Paid check table User_Payment_Status
-                pStat.setInt(2, t.paymentId);
+                pStat.setLong(2, autoSplitId);
+                pStat.setInt(3, t.paymentId);
                 pStat.addBatch();
                 pStat.clearParameters();
 
             } else if (java.lang.Float.compare(t.amountInitial, t.amount) > 0) {
                 pStat.setInt(1, 3); //means Partial_Paid check table User_Payment_Status
-                pStat.setInt(2, t.paymentId);
+                pStat.setLong(2, autoSplitId);
+                pStat.setInt(3, t.paymentId);
                 pStat.addBatch();
                 pStat.clearParameters();
             }
@@ -1529,10 +1627,56 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.setString(8, t.transactionFlow);
             pStat.setInt(9, t.flatWisePayableID);
             pStat.setInt(10, t.apartmentEarningID);
+            pStat.setLong(11, autoSplitId);
             pStat.addBatch();
             pStat.clearParameters();
         }
         pStat.executeBatch();
+    }
+
+    public void insertToRollbackDataInBatch(List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertToBalanceRollbackDataQuery);
+            for (TransactionOnBalanceSheet t : insertTransactions) {
+                pStat.setInt(1, t.balanceSheetTransactionID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+            pStat.executeBatch();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        finally {
+            close(con, pStat, null);
+        }
+    }
+//insertFromBalanceRollbackDataQuery
+
+    public void insertFromRollbackDataToBalanceSheet(List<TransactionOnBalanceSheet> insertTransactions) throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertToBalanceRollbackDataQuery);
+            for (TransactionOnBalanceSheet t : insertTransactions) {
+                pStat.setInt(1, t.balanceSheetTransactionID);
+                pStat.addBatch();
+                pStat.clearParameters();
+            }
+            pStat.executeBatch();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        finally {
+            close(con, pStat, null);
+        }
     }
 
     public void insertToPreparedStatementInBatch(List<TransactionOnBalanceSheet> listT) throws Exception {
@@ -1580,6 +1724,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat.setInt(4, t.transactionFromBankStatementID);
             pStat.setInt(5, t.flatWisePayableID);
             pStat.setInt(6, t.balanceSheetTransactionID);
+            pStat.setLong(7, autoSplitId);
             pStat.addBatch();
             pStat.clearParameters();
         }
@@ -2685,4 +2830,58 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             close(con, pStat, null);
         }
     }
+
+    public void deleteAllBackupData() throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(deleteAllBackupDataQuery);
+            pStat.executeUpdate();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+
+    }
+
+    public void insertAutoSplitIdDB(long autoSplitId) throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(insertLastAutoSplitQuery);
+            pStat.setLong(1, autoSplitId);
+            pStat.executeUpdate();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+    }
+
+    public void deleteAutoSplitIdDB() throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+            con = getDBInstance();
+            pStat = con.prepareStatement(deleteLastAutoSplitQuery);
+            pStat.executeUpdate();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+    }
+
 }
