@@ -10,7 +10,7 @@ public class Queries {
 			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, s.Society_Id from " +
 					" login l" +
 					" inner join " +
-					" Society s " +
+					" society s " +
 					" on l.Society_Id = s.Society_Id " +
 					" where l.Login_Id= ? " +
 					" and l.Password = ?" +
@@ -72,7 +72,7 @@ public class Queries {
 
 	public static final String createLoginQuery =
 			//"Insert into login(Login_Id, Password) values (?, ?)"; //old query single database
-			//New query with Master login database and Other Society database
+			//New query with Master login database and Other society database
 			"Insert into login(Login_Id, Password, Society_Id) " +
 					" select  ?, ?, Society_Id from login where login_id= ?";
 
@@ -343,7 +343,7 @@ public class Queries {
 					"FROM flat_wise_payable fwp " +
 					"left join expense_type et " +
 					"on fwp.Expense_Type_Id = et.Expense_Type_Id " +
-					"left join User_Payment_Status ups " +
+					"left join user_payment_status ups " +
 					"on ups.Payment_Status_Id =fwp.Payment_Status_ID";
 
 	public static final String allAuthorizationsQuery =
