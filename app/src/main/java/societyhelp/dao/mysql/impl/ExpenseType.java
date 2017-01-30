@@ -64,6 +64,7 @@ public class ExpenseType {
         Not_Paid,
         Full_Paid,
         Partial_Paid,
-        Initial_Load_Data
+        Initial_Load_Data,
+        Initial_Load_Advance_Paid
     }
 }
