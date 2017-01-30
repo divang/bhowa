@@ -81,7 +81,7 @@ public class LoadBhowaInitialData {
                         addFlatTenant(data);
                         break;
                     case Interest_Income_INITIAL_DATA:
-                        addIntrestIncome(currentHeader, data);
+                    	addIntrestIncome(currentHeader, data);
                     case NONE:
                         break;
                 }
@@ -211,7 +211,7 @@ public class LoadBhowaInitialData {
     {
         try
         {
-            loadData.tenantUser.add(new LoadTenantUser(data[0], data[1]));
+           loadData.tenantUser.add(new LoadTenantUser(data[0], data[1]));
         }
         catch(Exception e)
         {
@@ -265,7 +265,7 @@ public class LoadBhowaInitialData {
             Date previousPayableDate = cExpenseDate;
             ExpenseAmountMap currentPayble;
             String strDate = null;
-            for(;cIndex < data.length; cIndex++)
+            for(;cIndex < dateHeader.length; cIndex++)
             {
                 currentPayble = new ExpenseAmountMap();
                 cExpenseDate = null;
@@ -391,7 +391,7 @@ public class LoadBhowaInitialData {
             Date previousPayableDate = cExpenseDate;
             ExpenseAmountMap currentPayble;
 
-            for(;cIndex < data.length; cIndex++)
+            for(;cIndex < dateHeader.length; cIndex++)
             {
                 currentPayble = new ExpenseAmountMap();
                 cExpenseDate = null;
@@ -501,7 +501,7 @@ public class LoadBhowaInitialData {
         }
 
     }
-
+    
     static public class LoadData
     {
         public List<LoadApartmentExpense> apartmentExpenses = new ArrayList<>();

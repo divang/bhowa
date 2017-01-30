@@ -253,20 +253,37 @@ public class Queries {
 
 	public static final String payableAndPaidFlatWiseAmountQuery =
 			"select fwp.Flat_Wise_Payable_ID, fwp.Amount Payable, sum(tbs.Amount) Paid, " +
-					"et.Type, et.Expense_Type_Id, et.Payable_Priority, " +
-					"fwp.Flat_Id, fwp.Status, " +
-					"fwp.Month, fwp.Year,  " +
-					"fwp.Comments, fwp.Payment_Status_ID " +
-					"from flat_wise_payable as fwp " +
-					//"left join  " +
-					//"flat_wise_payable_paid_mapping as fwppm " +
-					//"on fwp.Flat_Wise_Payable_ID = fwppm.Flat_Wise_Payable_ID " +
-					"left join transactions_balancesheet as tbs " +
-					"on fwp.Flat_Wise_Payable_ID = tbs.Flat_Wise_Payable_ID " +
-					"left join expense_type et on et.Expense_Type_Id = fwp.Expense_Type_Id " +
-					"where Payment_Status_ID in (1,3) " +
-					"group by fwp.Flat_Wise_Payable_ID";
+			"et.Type, et.Expense_Type_Id, et.Payable_Priority, " +
+			"fwp.Flat_Id, fwp.Status, " +
+			"fwp.Month, fwp.Year,  " +
+			"fwp.Comments, fwp.Payment_Status_ID " +
+			"from flat_wise_payable as fwp " +
+			//"left join  " +
+			//"flat_wise_payable_paid_mapping as fwppm " +
+			//"on fwp.Flat_Wise_Payable_ID = fwppm.Flat_Wise_Payable_ID " +
+			"left join transactions_balancesheet as tbs " +
+			"on fwp.Flat_Wise_Payable_ID = tbs.Flat_Wise_Payable_ID " +
+			"left join expense_type et on et.Expense_Type_Id = fwp.Expense_Type_Id " +
+			"where Payment_Status_ID in (1,3) " +
+			"group by fwp.Flat_Wise_Payable_ID";
 
+	public static final String initialPayableFlatWiseAmountQuery = 
+			"select sum(fwp.Amount) InitialPayable, "+ 
+			"fwp.Flat_Id, fwp.Status "+ 																																								
+			"from flat_wise_payable as fwp  "+ 
+			"where Payment_Status_ID in (4,5)  "+
+			"group by fwp.Flat_Id";
+	
+	public static final String initialPaidFlatWiseAmountQuery =
+			"SELECT tv.Flat_Id, sum(tbs.Amount), tbs.Flat_Wise_Payable_ID "+
+			"FROM transactions_balancesheet tbs  "+
+			"left join transactions_verified tv  "+
+			"on tbs.Transaction_From_Bank_Statement_ID = tv.Transaction_From_Bank_Statement_ID "+ 
+			"WHERE tbs.Flat_Wise_Payable_ID in (-1, -2) "+
+			"and tbs.Transaction_Flow = 'Credit'  "+
+			"and tv.Flat_Id is not null "+
+			"group by tv.Flat_Id";
+	
 	public static final String unSplittedCreditTransactionsQuery =
 			"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date,Transaction_Flow," +
 					"Transaction_Mode,Transaction_Reference,User_Id,Flat_Id," +
@@ -299,7 +316,7 @@ public class Queries {
 					"ud.User_Id User_Id_ud, ud.Flat_Id Flat_Id_ud, ae.Expend_By_UserId User_Id_ae, "+
 					"tbs.Transaction_Flow, et.Type, tv.Transaction_Mode,"+
 					"tv.Transaction_Date UserPaidDate, aearn.Earned_Date ApartmentEarnDate, ae.Expend_Date ApartmentExpenseDate,"+
-					"f.Flat_Number, f.Block_Number, f.Area, userD.Name "+
+					"f.Flat_Number, f.Block_Number, f.Area, userD.Name, ud.Paid_Date  "+
 					" FROM transactions_balancesheet tbs " +
 					" left join transactions_verified tv on tbs.Transaction_From_Bank_Statement_ID = tv.Transaction_From_Bank_Statement_ID " +
 					" left join user_paid ud on tbs.User_Cash_Payment_ID = ud.User_Cash_Payment_ID  " +

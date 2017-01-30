@@ -18,6 +18,7 @@ import societyhelp.app.DetailTransactionViewActivity;
 import societyhelp.app.HomeTransactionActivity;
 import societyhelp.app.R;
 import societyhelp.app.SplitTransactionsFlatWiseActivity;
+import societyhelp.app.UserAliasMappingActivity;
 import societyhelp.app.VerifiedCashPaymentActivity;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.FileChooser;
@@ -88,11 +89,11 @@ public class TransactionHomeActivity extends DashBoardActivity {
                     public void run() {
 
                         try {
-                            Log.d("info","Initial CSV parsing started ..... ");
+                            Log.d("info", "Initial CSV parsing started ..... ");
                             long startTime = System.currentTimeMillis();
-                            LoadBhowaInitialData.LoadData initialData =LoadBhowaInitialData.loadInitialData(path);
+                            LoadBhowaInitialData.LoadData initialData = LoadBhowaInitialData.loadInitialData(path);
                             long endTime = System.currentTimeMillis();
-                            Log.d("info","Initial CSV parsing time - "+ (endTime - startTime));
+                            Log.d("info", "Initial CSV parsing time - " + (endTime - startTime));
                             SocietyHelpDatabaseFactory.getDBInstance().loadInitialData(initialData);
                             //Call auto split
                             //Show balance sheet / download
@@ -189,6 +190,29 @@ public class TransactionHomeActivity extends DashBoardActivity {
                     intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);
 
                     startActivity(intentMyDues);
+                } catch (Exception e) {
+                    Log.e("Error", "Fetching My dues verified data has problem", e);
+                }
+                progress.dismiss();
+                progress.cancel();
+            }
+        }).start();
+    }
+
+    public void mapPDFNameToIUser(View v) {
+
+        final BankStatement bankStat = (BankStatement) getIntent().getSerializableExtra("bankStat");
+        progress = ProgressDialog.show(this, null, "Getting not Mapped PDF Names ...", true, true);
+        progress.setCancelable(true);
+        progress.show();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    List<StagingTransaction> stagingTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllStaggingTransaction();
+                    Intent intent = new Intent(getApplicationContext(), UserAliasMappingActivity.class);
+                    byte[] data = CustomSerializer.serializeObject(stagingTransactions);
+                    intent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, data);
+                    startActivity(intent);
                 } catch (Exception e) {
                     Log.e("Error", "Fetching My dues verified data has problem", e);
                 }

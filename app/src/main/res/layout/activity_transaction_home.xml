@@ -93,6 +93,15 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
+
+                <Button
+                    android:id="@+id/transaction_report_activity_btn_view_map_user_alias"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_user_mapping"
+                    android:onClick="mapPDFNameToIUser"
+                    android:text="@string/mapUserAliasIconText"
+                    />
+
                 <Button
                     android:id="@+id/upload_initial_data"
                     style="@style/HomeButton"

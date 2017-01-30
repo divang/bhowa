@@ -19,12 +19,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
+import societyhelp.dao.mysql.impl.StagingTransaction;
 import societyhelp.dao.mysql.impl.UserDetails;
 
-public class UserAliasMappingActivity extends AppCompatActivity {
+public class UserAliasMappingActivity extends DashBoardActivity {
 
     List<UserDetails> users;
     private ProgressDialog progress;
@@ -38,7 +40,8 @@ public class UserAliasMappingActivity extends AppCompatActivity {
             TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
             layoutParams.setMargins(10, 10, 10, 10);
 
-            final BankStatement bankStat = (BankStatement) getIntent().getSerializableExtra("bankStat");
+            final byte[] data = (byte[]) getIntent().getSerializableExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS);
+            final List<StagingTransaction> sTrans = (List<StagingTransaction>)CustomSerializer.deserializeObject(data);
             final TableLayout tableL = (TableLayout) findViewById(R.id.reportTableLayout);
             users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
             tableL.invalidate();
@@ -52,7 +55,7 @@ public class UserAliasMappingActivity extends AppCompatActivity {
             tableL.addView(nameColHeading);
 
 
-            for (String btName : getUniqueNamesInTransaction(bankStat)) {
+            for (String btName : getUniqueNamesInTransaction(sTrans)) {
                 TableRow row = new TableRow(this);
 
                 row.setLayoutParams(layoutParams);
@@ -125,6 +128,14 @@ public class UserAliasMappingActivity extends AppCompatActivity {
     {
         List<String> unameList = new ArrayList<>();
         for(SocietyHelpTransaction bt : bankStat.allTransactions) if(!unameList.contains(bt.name.toUpperCase().trim())) unameList.add(bt.name.toUpperCase().trim());
+        return unameList;
+    }
+
+
+    private List<String> getUniqueNamesInTransaction(List<StagingTransaction> transactions)
+    {
+        List<String> unameList = new ArrayList<>();
+        for(StagingTransaction bt : transactions) if(!unameList.contains(bt.name.toUpperCase().trim())) unameList.add(bt.name.toUpperCase().trim());
         return unameList;
     }
 

@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.util.List;
+
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
+import societyhelp.dao.mysql.impl.StagingTransaction;
 
 public class HomeTransactionActivity extends DashBoardActivity {
 
@@ -21,8 +25,10 @@ public class HomeTransactionActivity extends DashBoardActivity {
             switch (v.getId()) {
 
                 case R.id.transaction_report_activity_btn_view_map_user_alias:
+                    List<StagingTransaction> stagingTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllStaggingTransaction();
                     intent = new Intent(this, UserAliasMappingActivity.class);
-                    intent.putExtra("bankStat", bankStat);
+                    byte[] data = CustomSerializer.serializeObject(stagingTransactions);
+                    intent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, data);
                     startActivity(intent);
                     break;
 

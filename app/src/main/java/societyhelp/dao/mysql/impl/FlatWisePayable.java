@@ -29,11 +29,13 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("paymentId=").append(paymentId);
+        str.append(" flatId=").append(flatId);
+        str.append(" flatNo=").append(flatNo);
         str.append(" status=").append(status);
         str.append(" month=").append(month);
         str.append(" year=").append(year);
         str.append(" amount=").append(amount);
-        str.append(", amountInitial=").append(amountInitial);
+        str.append(" amountInitial=").append(amountInitial);
         str.append(" comments=").append(comments);
         str.append(" expenseType=").append(expenseType);
         str.append(" expenseTypeId=").append(expenseTypeId);
