@@ -486,4 +486,7 @@ public class Queries {
 					" INNER JOIN last_auto_split las on las.Auto_Split_Id = T.Auto_Split_Id"+
 					" WHERE las.Auto_Split_Id != 0";
 
+	public static final String createSocietyQuery =
+			"INSERT INTO society (Society_Name, Email_Id, Admin_Mobile_No, City, Country) VALUES (?, ?, ?, ?, ?)";
+
 }

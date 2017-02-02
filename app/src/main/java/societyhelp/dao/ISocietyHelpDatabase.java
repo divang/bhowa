@@ -4,6 +4,7 @@ import java.util.List;
 
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
+import societyhelp.dao.mysql.impl.SocietyDetails;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.Login;
@@ -238,4 +239,11 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     void loadInitialData(LoadBhowaInitialData.LoadData data) throws Exception;
+
+    /**
+     * It adds the society details
+     * @param societyDetails
+     * @throws Exception
+     */
+    void createSociety(SocietyDetails societyDetails) throws Exception;
 }

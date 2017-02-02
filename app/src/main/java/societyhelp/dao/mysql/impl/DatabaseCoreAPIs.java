@@ -2536,10 +2536,10 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 t.month = result.getInt(4);
                 t.year = result.getInt(5);
                 t.amount = result.getFloat(6);
-                t.expenseType = ExpenseType.ExpenseTypeConst.valueOf(result.getString(7).trim().replace("\n", "").replace("\r", "").replaceAll(" ",""));
+                t.expenseType = ExpenseType.ExpenseTypeConst.valueOf(result.getString(7).trim().replace("\n", "").replace("\r", "").replaceAll(" ", ""));
                 t.comments = result.getString(8);
                 //t.paymentIds = result.getString(9);
-                t.paymentStatus = ExpenseType.PaymentStatusConst.valueOf(result.getString(9).trim().replace("\n", "").replace("\r", "").replaceAll(" ",""));
+                t.paymentStatus = ExpenseType.PaymentStatusConst.valueOf(result.getString(9).trim().replace("\n", "").replace("\r", "").replaceAll(" ", ""));
                 list.add(t);
             }
 
@@ -3090,5 +3090,34 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             close(con, pStat, res);
         }
     }
-    
+
+    public void createSociety(Object obj) throws Exception {
+
+        if(obj instanceof SocietyDetails) {
+            SocietyDetails societyDetails = (SocietyDetails) obj;
+            Connection con = null;
+            PreparedStatement pStat = null;
+            ResultSet res = null;
+
+            try {
+                con = getDBInstance();
+                pStat = con.prepareStatement(createSocietyQuery);
+
+                pStat.setString(1, societyDetails.societyName);
+                pStat.setString(2, societyDetails.emailId);
+                pStat.setString(3, societyDetails.mobileNo);
+                pStat.setString(4, societyDetails.city);
+                pStat.setString(5, societyDetails.country);
+
+                pStat.executeUpdate();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            } finally {
+                close(con, pStat, res);
+            }
+        }
+    }
+
 }

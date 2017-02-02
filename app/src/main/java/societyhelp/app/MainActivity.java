@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
     }
 
     //Requesting permission
-    private void requestStoragePermission(){
+    private void requestStoragePermission() {
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             //If the user has denied the permission previously your code will come to this block
             //Here you can explain why you need this permission
             //Explain here why you need this permission
@@ -68,16 +68,16 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         //Checking the request code of our request
-        if(requestCode == STORAGE_PERMISSION_CODE){
+        if (requestCode == STORAGE_PERMISSION_CODE) {
 
             //If permission is granted
-            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 //Displaying a toast
-                Toast.makeText(this,"Permission granted now you can read the storage",Toast.LENGTH_LONG).show();
-            }else{
+                Toast.makeText(this, "Permission granted now you can read the storage", Toast.LENGTH_LONG).show();
+            } else {
                 //Displaying another toast if permission is not granted
-                Toast.makeText(this,"Oops you just denied the permission",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -88,9 +88,9 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         setContentView(R.layout.activity_main);
         setCustomToolBar();
 
-        if(isReadStorageAllowed()){
+        if (isReadStorageAllowed()) {
             //If permission is already having then showing the toast
-            Toast.makeText(MainActivity.this,"You already have the permission",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "You already have the permission", Toast.LENGTH_LONG).show();
             //Existing the method with return
         } else {
             //If the app has not the permission then asking for the permission
@@ -123,8 +123,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         });
     }
 
-    private void doTask(View v, TextView userNameText, TextView passwordText)
-    {
+    private void doTask(View v, TextView userNameText, TextView passwordText) {
         try {
             UserDetails userLogin = new UserDetails();
             userLogin.userName = userNameText.getText().toString();
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                 prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, userLogin.userName).commit();
                 UserDetails ud = SocietyHelpDatabaseFactory.getDBInstance().getMyDetails(userLogin.userName);
-                if(ud != null) {
+                if (ud != null) {
                     prefs.edit().putString(CONST_FLAT_ID_KEY_PREF_MANAGER, ud.flatId).commit();
                     prefs.edit().putString(CONST_USER_AUTHS_PREF_MANAGER, ud.getAuthorizationList()).commit();
                 }
@@ -143,11 +142,9 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
             } else {
                 runOnUiThread(changeMessage);
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e("Error", "Login connectivity has problem", e);
-        }
-        finally {
+        } finally {
             progress.dismiss();
             progress.cancel();
         }
@@ -169,23 +166,31 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
     };
 
     //Set the Master Database for login
-    private void initDB()
-    {
+    private void initDB() {
         String dbUrl = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_URL, getApplicationContext());
         String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
         String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
-        Log.d("----------  Database", "dbUrl-"+ dbUrl + " dbUser-" + dbUser + " dbPass-" + dbPass);
+        Log.d("----------  Database", "dbUrl-" + dbUrl + " dbUser-" + dbUser + " dbPass-" + dbPass);
         SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
         SocietyHelpDatabaseFactory.initMasterDB(dbUrl, dbUser, dbPass);
     }
 
-    protected void setCustomToolBar()
-    {
+    protected void setCustomToolBar() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         //displaying custom ActionBar
         View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
         actionBar.setCustomView(mActionBarView);
         actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+    }
+
+
+    public void createNewSociety(View v) {
+        try {
+            Intent societyIntent = new Intent(v.getContext(), CreateSocietyActivity.class);
+            startActivity(societyIntent);
+        } catch (Exception e) {
+
+        }
     }
 }

@@ -97,4 +97,9 @@
     <string name="title_activity_verify_splitted_transaction">Verify Split Transactions</string>
     <!-- End Custom Tool bar Title  -->
 
+    <string name="Title_New_Society_Create"><i><u>Create New Society</u></i></string>
+    <string name="title_activity_create_society">CreateSocietyActivity</string>
+
+    <string name="Society_Add_Response">Thanks!!! for showing interest. Will get back to you shortly over supplied Mail.</string>
+    <string name="title_activity_status_message">StatusMessageActivity</string>
 </resources>

@@ -52,7 +52,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		getFlatWisePayables,
 		getAllStagingTransactions,
 		balanceSheetData,
-		loadInitialData
+		loadInitialData,
+		createSociety
 	}
 
 	@Override
@@ -201,6 +202,9 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 				case loadInitialData:
 					dbCore.loadInitialData(params[1]);
 					break;
+
+				case createSociety:
+					dbCore.createSociety(params[1]);
 			}
 
 		}catch(Exception e){
@@ -546,6 +550,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	@Override
 	public void loadInitialData(LoadBhowaInitialData.LoadData data) throws Exception {
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.loadInitialData.name(), data);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void createSociety(SocietyDetails societyDetails) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createSociety.name(), societyDetails);
 		try {
 			aTask.get();
 		} catch (Exception e) {

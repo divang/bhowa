@@ -31,6 +31,8 @@
 
     <color name="btnEnableColor">#4e69a2</color>
 
+    <color name="textCreateSocietyColor">#444fa2</color>
+
     <color name="tableStaticHeaderColor">#d8d8d8</color>
 
     <color name="tableStaticLeftColumnColor">#758ab6</color>
