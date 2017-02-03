@@ -197,6 +197,27 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_auto_split_verify"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_manual_split"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/splitTransactionText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_save_manual_split"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_varified_credit"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/saveSplitTransactionText"
+                    />
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

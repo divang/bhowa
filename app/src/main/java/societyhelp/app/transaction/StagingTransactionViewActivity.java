@@ -16,7 +16,6 @@ import java.util.List;
 import societyhelp.app.DashBoardActivity;
 import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
-import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.StagingTransaction;
 
 public class StagingTransactionViewActivity extends DashBoardActivity {

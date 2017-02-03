@@ -3120,4 +3120,92 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
+    public List<TransactionOnBalanceSheet> userWiseAutoSplitTransactions(String loginId) throws Exception {
+        List<TransactionOnBalanceSheet> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(userWiseAutoSplitTransactionsQuery);
+            pStat.setString(1, loginId);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                /*
+    			"SELECT tv.flat_id, ud.Name, Balance_Sheet_Transaction_ID,tb.Transaction_From_Bank_Statement_ID, " +
+					"tv.Amount total_amount, tb.Amount splitted_amount, " +
+					"tv.Transaction_Date," +
+					"Verified_By_Admin, Verified_By_User, Expense_Type_Id, tb.Transaction_Flow," +
+					"tb.Flat_Wise_Payable_ID" +
+
+               */
+                TransactionOnBalanceSheet t = new TransactionOnBalanceSheet();
+                t.flatId = result.getString(1);
+                t.userName = result.getString(2);
+                t.balanceSheetTransactionID = result.getInt(3);
+                t.transactionFromBankStatementID = result.getInt(4);
+                t.amount = result.getFloat(5);
+                t.amountInitial = result.getFloat(6);
+                t.transactionDate = result.getDate(7);
+                t.isVerifiedByAdmin = result.getBoolean(8);
+                t.isVerifiedByUser = result.getBoolean(9);
+                t.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(10)];
+                t.transactionFlow = result.getString(11);
+                t.flatWisePayableID = result.getInt(12);
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
+    public List<TransactionOnBalanceSheet> flatWiseAutoSplitTransactions(String flatId) throws Exception {
+        List<TransactionOnBalanceSheet> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(flatWiseAutoSplitTransactionsQuery);
+            pStat.setString(1, flatId);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                /*
+    			"SELECT tv.flat_id, ud.Name, Balance_Sheet_Transaction_ID,tb.Transaction_From_Bank_Statement_ID, " +
+					"tv.Amount total_amount, tb.Amount splitted_amount, " +
+					"tv.Transaction_Date," +
+					"Verified_By_Admin, Verified_By_User, Expense_Type_Id, tb.Transaction_Flow," +
+					"tb.Flat_Wise_Payable_ID" +
+
+               */
+                TransactionOnBalanceSheet t = new TransactionOnBalanceSheet();
+                t.flatId = result.getString(1);
+                t.userName = result.getString(2);
+                t.balanceSheetTransactionID = result.getInt(3);
+                t.transactionFromBankStatementID = result.getInt(4);
+                t.amount = result.getFloat(5);
+                t.amountInitial = result.getFloat(6);
+                t.transactionDate = result.getDate(7);
+                t.isVerifiedByAdmin = result.getBoolean(8);
+                t.isVerifiedByUser = result.getBoolean(9);
+                t.expenseType = ExpenseType.ExpenseTypeConst.values()[result.getInt(10)];
+                t.transactionFlow = result.getString(11);
+                t.flatWisePayableID = result.getInt(12);
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
 }

@@ -53,7 +53,9 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		getAllStagingTransactions,
 		balanceSheetData,
 		loadInitialData,
-		createSociety
+		createSociety,
+		userWiseAutoSplitTransactions,
+		flatWiseAutoSplitTransactions
 	}
 
 	@Override
@@ -205,6 +207,15 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 
 				case createSociety:
 					dbCore.createSociety(params[1]);
+					break;
+
+				case userWiseAutoSplitTransactions:
+					dbCore.userWiseAutoSplitTransactions(String.valueOf(params[1]));
+					break;
+
+				case flatWiseAutoSplitTransactions:
+					dbCore.flatWiseAutoSplitTransactions(String.valueOf(params[1]));
+					break;
 			}
 
 		}catch(Exception e){
@@ -562,6 +573,27 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createSociety.name(), societyDetails);
 		try {
 			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<TransactionOnBalanceSheet> userWiseAutoSplitTransactions(String loginId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.userWiseAutoSplitTransactions.name(), loginId);
+		try {
+			return (List<TransactionOnBalanceSheet>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	@Override
+	public List<TransactionOnBalanceSheet> flatWiseAutoSplitTransactions(String flatId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.flatWiseAutoSplitTransactions.name(), flatId);
+		try {
+			return (List<TransactionOnBalanceSheet>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

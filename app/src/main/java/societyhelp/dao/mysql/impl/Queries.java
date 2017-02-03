@@ -489,4 +489,43 @@ public class Queries {
 	public static final String createSocietyQuery =
 			"INSERT INTO society (Society_Name, Email_Id, Admin_Mobile_No, City, Country) VALUES (?, ?, ?, ?, ?)";
 
+	public static final String userWiseAutoSplitTransactionsQuery =
+			"SELECT tv.flat_id, ud.Name, Balance_Sheet_Transaction_ID,tb.Transaction_From_Bank_Statement_ID, " +
+					"tv.Amount total_amount, tb.Amount splitted_amount, " +
+					"tv.Transaction_Date," +
+					"Verified_By_Admin, Verified_By_User, Expense_Type_Id, tb.Transaction_Flow," +
+					"tb.Flat_Wise_Payable_ID" +
+					"FROM transactions_balancesheet tb " +
+					"inner join" +
+					"transactions_verified tv " +
+					"on tv.Transaction_From_Bank_Statement_ID = tb.Transaction_From_Bank_Statement_ID" +
+					"inner join " +
+					"user_details ud " +
+					"on ud.User_Id = tv.User_Id" +
+					"where " +
+					"ud.Login_Id = ?" +
+					"and tb.Transaction_Flow='Credit' " +
+					"and tb.Verified_By_User = 0 " +
+					"and tv.Amount !=0 " +
+					"and tb.Amount !=0 ";
+
+	public static final String flatWiseAutoSplitTransactionsQuery =
+			"SELECT tv.flat_id, ud.Name, Balance_Sheet_Transaction_ID,tb.Transaction_From_Bank_Statement_ID, " +
+					"tv.Amount total_amount, tb.Amount splitted_amount, " +
+					"tv.Transaction_Date," +
+					"Verified_By_Admin, Verified_By_User, Expense_Type_Id, tb.Transaction_Flow," +
+					"tb.Flat_Wise_Payable_ID" +
+					"FROM transactions_balancesheet tb " +
+					"inner join" +
+					"transactions_verified tv " +
+					"on tv.Transaction_From_Bank_Statement_ID = tb.Transaction_From_Bank_Statement_ID" +
+					"inner join " +
+					"user_details ud " +
+					"on ud.User_Id = tv.User_Id" +
+					"where " +
+					"tv.flat_id = ? " +
+					"and tb.Transaction_Flow='Credit' " +
+					"and tb.Verified_By_User = 0 " +
+					"and tv.Amount !=0 " +
+					"and tb.Amount !=0 ";
 }

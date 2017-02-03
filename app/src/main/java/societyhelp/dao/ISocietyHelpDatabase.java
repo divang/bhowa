@@ -246,4 +246,19 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     void createSociety(SocietyDetails societyDetails) throws Exception;
+
+    /**
+     * All auto split transaction which are not validate by user. Use for Rented users
+     * @return
+     * @throws Exception
+     */
+    List<TransactionOnBalanceSheet> userWiseAutoSplitTransactions(String loginId) throws Exception;
+
+    /**
+     * All auto split transaction which are not validate by user. Use for Owner
+     * @return
+     * @throws Exception
+     */
+    List<TransactionOnBalanceSheet> flatWiseAutoSplitTransactions(String flatId) throws Exception;
+
 }
