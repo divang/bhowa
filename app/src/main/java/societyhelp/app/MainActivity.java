@@ -135,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                 UserDetails ud = SocietyHelpDatabaseFactory.getDBInstance().getMyDetails(userLogin.userName);
                 if (ud != null) {
                     prefs.edit().putString(CONST_FLAT_ID_KEY_PREF_MANAGER, ud.flatId).commit();
+                    if(ud.userType.equals("Owner")) prefs.edit().putBoolean(CONST_OWNER_KEY_PREF_MANAGER, true).commit();
+                    else prefs.edit().putBoolean(CONST_OWNER_KEY_PREF_MANAGER, false).commit();
                     prefs.edit().putString(CONST_USER_AUTHS_PREF_MANAGER, ud.getAuthorizationList()).commit();
                 }
                 Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);

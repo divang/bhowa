@@ -205,7 +205,7 @@
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_manual_split"
                     android:onClick="onButtonClicker"
-                    android:text="@string/splitTransactionText"
+                    android:text="@string/splitTransactionsHomeTest"
                     />
 
                 <Button
@@ -213,7 +213,7 @@
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_varified_credit"
                     android:onClick="onButtonClicker"
-                    android:text="@string/saveSplitTransactionText"
+                    android:text="@string/expenseReportPieChartText"
                     />
 
             </LinearLayout>

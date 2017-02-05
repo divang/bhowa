@@ -3208,4 +3208,82 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return list;
     }
 
+    public List<SocietyHelpTransaction> getFlatWiseUnSplittedTransaction(String flatId) throws Exception {
+        List<SocietyHelpTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(flatWiseUnSplittedTransactionQuery);
+            pStat.setString(1, flatId);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                /*
+                    Transaction_From_Bank_Statement_ID,Amount,Transaction_Date," +
+					"Transaction_Mode,Transaction_Reference, ud.User_Id, ud.Name ," +
+					"tv.Flat_Id,Verified_By " +
+				 */
+                SocietyHelpTransaction t = new SocietyHelpTransaction();
+                t.transactionId = result.getInt(1);
+                t.amount = result.getFloat(2);
+                t.transactionDate = result.getDate(3);
+                t.type = result.getString(4);
+                t.reference = result.getString(5);
+                t.userId = result.getString(6);
+                t.name  = result.getString(7);
+                t.flatId = result.getString(8);
+                t.verifiedBy = result.getString(9);
+
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
+    public List<SocietyHelpTransaction> getUserWiseUnSplittedTransaction(String loginId) throws Exception {
+        List<SocietyHelpTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(userWiseUnSplittedTransactionQuery);
+            pStat.setString(1, loginId);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                /*
+                    Transaction_From_Bank_Statement_ID,Amount,Transaction_Date," +
+					"Transaction_Mode,Transaction_Reference, ud.User_Id, ud.Name ," +
+					"tv.Flat_Id,Verified_By " +
+				 */
+                SocietyHelpTransaction t = new SocietyHelpTransaction();
+                t.transactionId = result.getInt(1);
+                t.amount = result.getFloat(2);
+                t.transactionDate = result.getDate(3);
+                t.type = result.getString(4);
+                t.reference = result.getString(5);
+                t.userId = result.getString(6);
+                t.name  = result.getString(7);
+                t.flatId = result.getString(8);
+                t.verifiedBy = result.getString(9);
+
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
 }

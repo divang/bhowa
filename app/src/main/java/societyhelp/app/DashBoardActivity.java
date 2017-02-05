@@ -20,10 +20,15 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.List;
+
+import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.SocietyHelpConstant;
 
 public abstract class DashBoardActivity extends AppCompatActivity implements SocietyHelpConstant {
@@ -43,6 +48,11 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         return v;
     }
 
+    public boolean isOwner() {
+        Boolean v = prefs.getBoolean(CONST_OWNER_KEY_PREF_MANAGER, false);
+        Log.d("info", "Is owner from preference manager :" + v);
+        return v;
+    }
 
     public String getAuthIds() {
         String v = prefs.getString(CONST_USER_AUTHS_PREF_MANAGER, "");
@@ -115,6 +125,34 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
         recyclableTextView.setHeight(fixedHeightInPixels);
         recyclableTextView.setGravity(Gravity.CENTER);
         return recyclableTextView;
+    }
+
+    public EditText makeTableRowWithEditText(int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        EditText recyclableTextView = new EditText(this);
+        recyclableTextView.setTextColor(Color.BLACK);
+        //recyclableTextView.setTextSize(10);
+        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
+        recyclableTextView.setHeight(fixedHeightInPixels);
+        recyclableTextView.setGravity(Gravity.CENTER);
+        return recyclableTextView;
+    }
+
+    public Spinner makeTableRowWithSpinner(List<String> list, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        Spinner recyclableSpinnerView = new Spinner(this);
+        try {
+            recyclableSpinnerView.setAdapter(new ListViewAdaptor(getApplicationContext(), list));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*recyclableTextView.setText(text);
+        recyclableTextView.setTextColor(Color.BLACK);
+        //recyclableTextView.setTextSize(10);
+        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
+        recyclableTextView.setHeight(fixedHeightInPixels);
+        recyclableTextView.setGravity(Gravity.CENTER);*/
+        return recyclableSpinnerView;
     }
 
     public TextView makeTableRowWithText(String text, int iGravity) {

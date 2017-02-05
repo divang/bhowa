@@ -11,6 +11,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import societyhelp.app.transaction.TransactionHomeActivity;
 import societyhelp.app.util.FileChooser;
@@ -23,6 +24,7 @@ import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
 import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
@@ -444,6 +446,70 @@ public class HomeActivity extends DashBoardActivity {
                     verifiedTransTaskThread.start();
                     break;
 
+                case R.id.home_activity_btn_view_auto_split_verify:
+                    progress = ProgressDialog.show(this, null, "Getting auto splitted / un splitted data from Database", true, false);
+                    progress.show();
+                    Thread autoTransactionTaskThread = new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                List<TransactionOnBalanceSheet> autoSplittedTransactions;
+                                List<SocietyHelpTransaction> unSplittedTransactions;
+
+                                if(isOwner()) {
+                                    autoSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().flatWiseAutoSplitTransactions(getFlatId());
+                                    unSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().getFlatWiseUnSplittedTransaction(getFlatId());
+                                }
+                                else
+                                {
+                                    autoSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().userWiseAutoSplitTransactions(getLoginId());
+                                    unSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().getUserWiseUnSplittedTransaction(getLoginId());
+                                }
+
+                                String expenseTypes = getExpenseTypes();
+
+                                Intent innerIntent = new Intent(getApplicationContext(), ManualSplitActivity.class);
+
+                                innerIntent.putExtra(CONST_UNSPLITTED_TRANSACTIONS, CustomSerializer.serializeObject(unSplittedTransactions));
+                                innerIntent.putExtra(CONST_SPLITTED_TRANSACTIONS, CustomSerializer.serializeObject(autoSplittedTransactions));
+                                innerIntent.putExtra(CONST_EXPENSE_TYPES, expenseTypes);
+
+                                startActivity(innerIntent);
+
+                            }catch (Exception e)
+                            {
+                                Log.e("Error","Insert verified data has problem",e);
+                            }
+
+                            progress.dismiss();
+                            progress.cancel();
+                        }
+                    });
+                    autoTransactionTaskThread.start();
+                    break;
+
+                case R.id.home_activity_btn_save_manual_split:
+                    progress = ProgressDialog.show(this, null, "Downloading Apartment Expense from Database ...", true, false);
+                    progress.show();
+                    Thread expenseThread = new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
+                                TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense = Util.getApartmentExpense(balanceSheetData, null);
+                                Intent innerIntent = new Intent(getApplicationContext(), ExpenseReportInPieChartActivity.class);
+                                innerIntent.putExtra(CONST_APARTMENT_EXPENSE_DATA, CustomSerializer.serializeObject(apartmentExpense));
+                                startActivity(innerIntent);
+
+                            }catch (Exception e)
+                            {
+                                Log.e("Error","Insert verified data has problem",e);
+                            }
+
+                            progress.dismiss();
+                            progress.cancel();
+                        }
+                    });
+                    expenseThread.start();
+                    break;
             }
         }catch (Exception e)
         {

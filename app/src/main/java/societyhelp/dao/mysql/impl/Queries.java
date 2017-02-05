@@ -528,4 +528,35 @@ public class Queries {
 					"and tb.Verified_By_User = 0 " +
 					"and tv.Amount !=0 " +
 					"and tb.Amount !=0 ";
+
+	public static final String flatWiseUnSplittedTransactionQuery=
+			"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date," +
+					"Transaction_Mode,Transaction_Reference, ud.User_Id, ud.Name ," +
+					"tv.Flat_Id,Verified_By " +
+					"FROM " +
+					"transactions_verified tv " +
+					"inner join " +
+					"user_details ud " +
+					"on ud.User_Id = tv.User_Id " +
+					"where " +
+					"tv.flat_id = ? " +
+					"and tv.Transaction_Flow='Credit' " +
+					"and tv.Splitted = 0 " +
+					"and tv.Amount !=0 ";
+
+
+	public static final String userWiseUnSplittedTransactionQuery=
+			"SELECT Transaction_From_Bank_Statement_ID,Amount,Transaction_Date," +
+					"Transaction_Mode,Transaction_Reference, ud.User_Id, ud.Name ," +
+					"tv.Flat_Id,Verified_By " +
+					"FROM " +
+					"transactions_verified tv " +
+					"inner join " +
+					"user_details ud " +
+					"on ud.User_Id = tv.User_Id " +
+					"where " +
+					"ud.Login_Id = ? " +
+					"and tv.Transaction_Flow='Credit' " +
+					"and tv.Splitted = 0 " +
+					"and tv.Amount !=0 ";
 }

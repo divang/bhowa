@@ -33,7 +33,9 @@
     <string name="splitTransactionText">View Splitted Transaction</string>
     <string name="saveSplitTransactionText">Export Balance Sheet in XLS</string>
     <string name="validateUserExpenseIconText">Validate User Expense</string>
-
+    <string name="verifyAutoSplitTransactionHomeTest">Verify auto split</string>
+    <string name="splitTransactionsHomeTest">Split your transactions</string>
+    <string name="expenseReportPieChartText">Expense Report Pie Chart</string>
     <!-- Color -->
     <color name="white">#FFFFFF</color>
 
@@ -96,6 +98,7 @@
     <string name="title_activity_verify_user_cash_deposit">Verify User Cash Deposit</string>
     <string name="title_activity_verify_splitted_transaction">Verify Split Transactions</string>
     <string name="title_activity_user_revert_auto_split">Revert Auto Split</string>
+    <string name="title_apartment_expense_report">Apartment Expense Report</string>
     <!-- End Custom Tool bar Title  -->
 
     <string name="Title_New_Society_Create"><i><u>Create New Society</u></i></string>
@@ -106,4 +109,6 @@
     <string name="title_activity_manual_split">ManualSplitActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_expense_report_in_pie_chart">ExpenseReportInPieChartActivity
+    </string>
 </resources>

@@ -55,7 +55,9 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		loadInitialData,
 		createSociety,
 		userWiseAutoSplitTransactions,
-		flatWiseAutoSplitTransactions
+		flatWiseAutoSplitTransactions,
+		userWiseUnSplittedTransactions,
+		flatWiseUnSplittedTransactions
 	}
 
 	@Override
@@ -200,21 +202,23 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 				case balanceSheetData:
 					result = dbCore.getBalanceSheetData();
 					break;
-
 				case loadInitialData:
 					dbCore.loadInitialData(params[1]);
 					break;
-
 				case createSociety:
 					dbCore.createSociety(params[1]);
 					break;
-
 				case userWiseAutoSplitTransactions:
-					dbCore.userWiseAutoSplitTransactions(String.valueOf(params[1]));
+					result = dbCore.userWiseAutoSplitTransactions(String.valueOf(params[1]));
 					break;
-
 				case flatWiseAutoSplitTransactions:
-					dbCore.flatWiseAutoSplitTransactions(String.valueOf(params[1]));
+					result = dbCore.flatWiseAutoSplitTransactions(String.valueOf(params[1]));
+					break;
+				case userWiseUnSplittedTransactions:
+					result = dbCore.getUserWiseUnSplittedTransaction(String.valueOf(params[1]));
+					break;
+				case flatWiseUnSplittedTransactions:
+					result = dbCore.getFlatWiseUnSplittedTransaction(String.valueOf(params[1]));
 					break;
 			}
 
@@ -594,6 +598,26 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.flatWiseAutoSplitTransactions.name(), flatId);
 		try {
 			return (List<TransactionOnBalanceSheet>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<SocietyHelpTransaction> getUserWiseUnSplittedTransaction(String loginId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.userWiseUnSplittedTransactions.name(), loginId);
+		try {
+			return (List<SocietyHelpTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<SocietyHelpTransaction> getFlatWiseUnSplittedTransaction(String flatId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.flatWiseUnSplittedTransactions.name(), flatId);
+		try {
+			return (List<SocietyHelpTransaction>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

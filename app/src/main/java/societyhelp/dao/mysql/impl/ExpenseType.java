@@ -1,9 +1,11 @@
 package societyhelp.dao.mysql.impl;
 
+import java.io.Serializable;
+
 /**
  * Created by divang.sharma on 9/20/2016.
  */
-public class ExpenseType {
+public class ExpenseType implements Serializable{
 
     public int expenseTypeId;
     public String type;
@@ -18,7 +20,7 @@ public class ExpenseType {
         return str.toString();
     }
 
-    public enum ExpenseTypeConst {
+    public enum ExpenseTypeConst implements Serializable {
         Advance_Payment
         ,Monthly_Maintenance
         ,Initial_Payable
@@ -59,7 +61,7 @@ public class ExpenseType {
         ,UNKNOWN
     }
 
-    public enum PaymentStatusConst {
+    public enum PaymentStatusConst  implements Serializable {
         Unknown,
         Not_Paid,
         Full_Paid,

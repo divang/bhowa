@@ -261,4 +261,20 @@ public interface ISocietyHelpDatabase {
      */
     List<TransactionOnBalanceSheet> flatWiseAutoSplitTransactions(String flatId) throws Exception;
 
+    /**
+     * Get all user's unsplitted transactions
+     * @param loginId
+     * @return
+     * @throws Exception
+     */
+    public List<SocietyHelpTransaction> getUserWiseUnSplittedTransaction(String loginId) throws Exception;
+
+    /**
+     * Get all flat's unsplitted transactions
+     * @param flatId
+     * @return
+     * @throws Exception
+     */
+    public List<SocietyHelpTransaction> getFlatWiseUnSplittedTransaction(String flatId) throws Exception;
+
 }

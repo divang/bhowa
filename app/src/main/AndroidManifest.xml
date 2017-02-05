@@ -66,6 +66,10 @@
             android:name=".ManualSplitActivity"
             android:label="@string/title_activity_manual_split" >
         </activity>
+        <activity
+            android:name=".ExpenseReportInPieChartActivity"
+            android:label="@string/title_activity_expense_report_in_pie_chart" >
+        </activity>
     </application>
 
 </manifest>

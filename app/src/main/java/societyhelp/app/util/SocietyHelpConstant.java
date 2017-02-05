@@ -6,6 +6,7 @@ package societyhelp.app.util;
 public interface SocietyHelpConstant {
     String CONST_LOGIN_ID_KEY_PREF_MANAGER = "loginId";
     String CONST_FLAT_ID_KEY_PREF_MANAGER = "flatId";
+    String CONST_OWNER_KEY_PREF_MANAGER = "owner";
     String CONST_USER_AUTHS_PREF_MANAGER = "authIds";
     String CONST_DB_URL = "db_url";
     String CONST_DB_USER = "db_user";
@@ -22,7 +23,11 @@ public interface SocietyHelpConstant {
     String CONST_ALL_USERS = "allUsers";
     String CONST_PDF_ALL_STAGING_TRANSACTIONS = "allStagingPDFTransaction";
 
+    String CONST_UNSPLITTED_TRANSACTIONS = "unSplittedTransactions";
+    String CONST_SPLITTED_TRANSACTIONS = "splittedTransactions";
     //Transaction flow debit / credit
     String CONST_DEBIT_TRANSACTION_FLOW = "Debit";
     String CONST_CREDIT_TRANSACTION_FLOW = "Credit";
+
+    String CONST_APARTMENT_EXPENSE_DATA = "apartmentExpenseData";
 }
