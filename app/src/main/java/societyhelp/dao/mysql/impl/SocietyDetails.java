@@ -22,5 +22,6 @@ public class SocietyDetails implements Serializable{
     public Timestamp serviceStartDate;
     public Timestamp serviceRenewalDate;
     public float chargePerFlat;
+    public boolean status;
 
 }

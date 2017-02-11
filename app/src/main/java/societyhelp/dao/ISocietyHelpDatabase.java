@@ -277,4 +277,10 @@ public interface ISocietyHelpDatabase {
      */
     public List<SocietyHelpTransaction> getFlatWiseUnSplittedTransaction(String flatId) throws Exception;
 
+    /**
+     * Get all society
+     * @return
+     * @throws Exception
+     */
+    public List<SocietyDetails> getAllSociety() throws Exception;
 }

@@ -559,4 +559,8 @@ public class Queries {
 					"and tv.Transaction_Flow='Credit' " +
 					"and tv.Splitted = 0 " +
 					"and tv.Amount !=0 ";
+
+	public static final String allSocietyQuery =
+			"SELECT Society_Id,Society_Name,Database_URL,Database_User,Database_Password,Email_Id,Admin_Mobile_No,Created_Date," +
+					"Service_Start_Date,Service_Renewal_Date,Charge_Per_Flat,City,Country,Address,Status FROM societyhelp";
 }

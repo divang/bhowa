@@ -57,7 +57,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		userWiseAutoSplitTransactions,
 		flatWiseAutoSplitTransactions,
 		userWiseUnSplittedTransactions,
-		flatWiseUnSplittedTransactions
+		flatWiseUnSplittedTransactions,
+		getSociety
 	}
 
 	@Override
@@ -219,6 +220,9 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 				case flatWiseUnSplittedTransactions:
 					result = dbCore.getFlatWiseUnSplittedTransaction(String.valueOf(params[1]));
+					break;
+				case getSociety:
+					result = dbCore.getAllSociety();
 					break;
 			}
 
@@ -618,6 +622,16 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.flatWiseUnSplittedTransactions.name(), flatId);
 		try {
 			return (List<SocietyHelpTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<SocietyDetails> getAllSociety() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getSociety.name());
+		try {
+			return (List<SocietyDetails>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

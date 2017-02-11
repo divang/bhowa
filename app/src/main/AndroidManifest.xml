@@ -70,6 +70,10 @@
             android:name=".ExpenseReportInPieChartActivity"
             android:label="@string/title_activity_expense_report_in_pie_chart" >
         </activity>
+        <activity
+            android:name=".reports.AllExpenseReportActivity"
+            android:label="@string/title_activity_all_expense_report" >
+        </activity>
     </application>
 
 </manifest>

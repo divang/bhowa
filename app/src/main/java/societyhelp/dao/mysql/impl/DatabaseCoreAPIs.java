@@ -3286,4 +3286,46 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return list;
     }
 
+    public List<SocietyDetails> getAllSociety() throws Exception {
+        List<SocietyDetails> allSociety = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+			/*
+			SELECT Society_Id,Society_Name,Database_URL,Database_User,Database_Password,
+			Email_Id,Admin_Mobile_No,Created_Date,Service_Start_Date,
+			Service_Renewal_Date,Charge_Per_Flat,City,Country,Address,Status FROM societyhelp
+			 */
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(allSocietyQuery);
+            result = pStat.executeQuery();
+            SocietyDetails society;
+            while (result.next()) {
+                society = new SocietyDetails();
+                society.societyId = result.getInt(0);
+                society.societyName = result.getString(1);
+                society.databaseURL = result.getString(2);
+                society.databaseUser = result.getString(3);
+                society.databasePassword = result.getString(4);
+                society.emailId = result.getString(5);
+                society.mobileNo = result.getString(6);
+                society.serviceStartDate = result.getTimestamp(7);
+                society.serviceRenewalDate = result.getTimestamp(8);
+                society.chargePerFlat = result.getFloat(9);
+                society.city = result.getString(10);
+                society.country = result.getString(11);
+                society.address = result.getString(12);
+                society.status = result.getBoolean(13);
+                allSociety.add(society);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return allSociety;
+    }
+
 }

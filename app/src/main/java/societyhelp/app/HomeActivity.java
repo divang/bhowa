@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import societyhelp.app.reports.AllExpenseReportActivity;
 import societyhelp.app.transaction.TransactionHomeActivity;
 import societyhelp.app.util.FileChooser;
 import societyhelp.app.util.CustomSerializer;
@@ -495,7 +496,8 @@ public class HomeActivity extends DashBoardActivity {
                             try {
                                 List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
                                 TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense = Util.getApartmentExpense(balanceSheetData, null);
-                                Intent innerIntent = new Intent(getApplicationContext(), ExpenseReportInPieChartActivity.class);
+                                //Intent innerIntent = new Intent(getApplicationContext(), ExpenseReportInPieChartActivity.class);
+                                Intent innerIntent = new Intent(getApplicationContext(), AllExpenseReportActivity.class);
                                 innerIntent.putExtra(CONST_APARTMENT_EXPENSE_DATA, CustomSerializer.serializeObject(apartmentExpense));
                                 startActivity(innerIntent);
 
