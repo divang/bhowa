@@ -19,6 +19,26 @@
                 style="@style/DashboardLinerLayout">
 
                 <Button
+                    android:id="@+id/home_activity_btn_add_water_reading"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_verify_auto_split"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/addWaterReadingText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_water_reading"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_transactions"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/viewWaterReadingText"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
                     android:id="@+id/home_activity_btn_create_login"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_login_create"
@@ -215,7 +235,6 @@
                     android:onClick="onButtonClicker"
                     android:text="@string/expenseReportPieChartText"
                     />
-
             </LinearLayout>
 
         </LinearLayout>

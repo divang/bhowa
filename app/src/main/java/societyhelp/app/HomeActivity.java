@@ -512,6 +512,10 @@ public class HomeActivity extends DashBoardActivity {
                     });
                     expenseThread.start();
                     break;
+
+                //home_activity_btn_view_water_reading
+
+                //home_activity_btn_add_water_reading
             }
         }catch (Exception e)
         {
