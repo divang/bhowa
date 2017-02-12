@@ -563,4 +563,12 @@ public class Queries {
 	public static final String allSocietyQuery =
 			"SELECT Society_Id,Society_Name,Database_URL,Database_User,Database_Password,Email_Id,Admin_Mobile_No,Created_Date," +
 					"Service_Start_Date,Service_Renewal_Date,Charge_Per_Flat,City,Country,Address,Status FROM societyhelp";
+
+	public static final String allWaterSupplierQuery =
+			"SELECT Supplier_Id,Supplier_Name,Capacity_In_Liter FROM water_suppiler";
+
+	public static final String insertWaterReadingQuery =
+			"INSERT INTO water_supply_reading " +
+			"(Supplier_Id,Capacity_In_Liter,Reading_Before_Supply,Reading_After_Supply) " +
+			" VALUES (?, ?, ?, ?)";
 }

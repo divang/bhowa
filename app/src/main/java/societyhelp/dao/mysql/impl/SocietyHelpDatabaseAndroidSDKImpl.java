@@ -58,7 +58,9 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		flatWiseAutoSplitTransactions,
 		userWiseUnSplittedTransactions,
 		flatWiseUnSplittedTransactions,
-		getSociety
+		getSociety,
+		allWaterSupplier,
+		insertWaterReading
 	}
 
 	@Override
@@ -224,6 +226,13 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 				case getSociety:
 					result = dbCore.getAllSociety();
 					break;
+				case allWaterSupplier:
+					result = dbCore.getAllWaterSupplier();
+					break;
+				case insertWaterReading:
+					dbCore.insertWaterReading(params[1]);
+					break;
+
 			}
 
 		}catch(Exception e){
@@ -632,6 +641,27 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getSociety.name());
 		try {
 			return (List<SocietyDetails>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<WaterSuppyReading> getAllWaterSupplier() throws Exception {
+
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.allWaterSupplier.name());
+		try {
+			return (List<WaterSuppyReading>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void insertWaterReading(WaterSuppyReading reading) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.insertWaterReading.name(), reading);
+		try {
+			aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

@@ -3328,4 +3328,61 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return allSociety;
     }
 
+    public List<WaterSuppyReading> getAllWaterSupplier() throws Exception {
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        List<WaterSuppyReading> suppliers = new ArrayList<>();
+
+        try {
+            //"SELECT Supplier_Id,Supplier_Name,Capacity_In_Liter FROM water_suppiler";
+            pStat = con.prepareStatement(allWaterSupplierQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                WaterSuppyReading w = new WaterSuppyReading();
+                w.supplierId = result.getInt(1);
+                w.supplierName = result.getString(2);
+                w.capacityInLiter = result.getInt(3);
+                suppliers.add(w);
+            }
+        } finally {
+            close(con, pStat, result);
+        }
+        return suppliers;
+    }
+
+    public void insertWaterReading(Object reading) throws Exception {
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet res = null;
+
+        try {
+
+            if (reading instanceof WaterSuppyReading) {
+                WaterSuppyReading waterReading = (WaterSuppyReading) reading;
+
+                try {
+                    con = getDBInstance();
+                    pStat = con.prepareStatement(insertWaterReadingQuery);
+
+                    pStat.setInt(1, waterReading.supplierId);
+                    pStat.setInt(2, waterReading.capacityInLiter);
+                    pStat.setInt(3, waterReading.readingBeforeSupply);
+                    pStat.setInt(4, waterReading.readingAfterSupply);
+
+                    pStat.executeUpdate();
+
+                } catch (Exception e) {
+                    throw e;
+                } finally {
+                    close(con, pStat, res);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(con, pStat, res);
+        }
+    }
 }

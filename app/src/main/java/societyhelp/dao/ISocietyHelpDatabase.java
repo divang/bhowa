@@ -12,6 +12,7 @@ import societyhelp.dao.mysql.impl.StagingTransaction;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
+import societyhelp.dao.mysql.impl.WaterSuppyReading;
 import societyhelp.parser.LoadBhowaInitialData;
 
 /**
@@ -283,4 +284,16 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     public List<SocietyDetails> getAllSociety() throws Exception;
+
+    /**
+     * Get all water suppliers
+     */
+    public List<WaterSuppyReading> getAllWaterSupplier() throws Exception;
+
+    /**
+     * Insert water supply reading
+     * @param reading
+     * @throws Exception
+     */
+    public void insertWaterReading(WaterSuppyReading reading) throws Exception;
 }

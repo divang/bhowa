@@ -30,4 +30,6 @@ public interface SocietyHelpConstant {
     String CONST_CREDIT_TRANSACTION_FLOW = "Credit";
 
     String CONST_APARTMENT_EXPENSE_DATA = "apartmentExpenseData";
+    String CONST_EXPENSE_TYPE_WISE_DATA = "expenseTypeWiseData";
+    String CONST_EXPENSE_TYPE_TEXT = "expenseTypeText";
 }

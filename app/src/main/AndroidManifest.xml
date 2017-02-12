@@ -74,6 +74,10 @@
             android:name=".reports.AllExpenseReportActivity"
             android:label="@string/title_activity_all_expense_report" >
         </activity>
+        <activity
+            android:name=".reports.ExpenseTypeWiseReportActivity"
+            android:label="@string/title_activity_expense_type_wise_report" >
+        </activity>
     </application>
 
 </manifest>

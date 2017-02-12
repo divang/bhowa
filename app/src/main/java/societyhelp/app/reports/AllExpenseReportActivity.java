@@ -1,6 +1,9 @@
 package societyhelp.app.reports;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -10,6 +13,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,19 +29,20 @@ import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 
-public class AllExpenseReportActivity extends DashBoardActivity  implements SocietyHelpConstant {
+public class AllExpenseReportActivity extends DashBoardActivity
+        implements SocietyHelpConstant/*, OnChartValueSelectedListener, View.OnTouchListener */{
 
     protected HorizontalBarChart mChart;
     private float[] yData = null;
     private String[] xData = null;
     private HashMap<String, float[]> labelValueData= new HashMap();
+    private TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_expense_report);
         setHeader(getString(R.string.title_activity_all_expense_report), true, false);
-        TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense = null;
         try {
             byte[] sObjet = (byte[]) getIntent().getSerializableExtra(CONST_APARTMENT_EXPENSE_DATA);
             apartmentExpense = (TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>>) CustomSerializer.deserializeObject(sObjet);
@@ -81,12 +88,39 @@ public class AllExpenseReportActivity extends DashBoardActivity  implements Soci
 
         BarData barData = new BarData(xVals, set);
         mChart.setData(barData);
-        mChart.setTouchEnabled(true);
+        mChart.setTouchEnabled(true) ;
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
         mChart.setPinchZoom(false);
         mChart.getAxisLeft().setDrawLabels(false);
         mChart.getAxisRight().setDrawLabels(false);
+
+        mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+                Intent innerIntent = new Intent(getApplicationContext(), ExpenseTypeWiseReportActivity.class);
+                int i=0;
+                List<TransactionOnBalanceSheet> typeExpense = null;
+                String strExpenseType = null;
+                for(ExpenseType.ExpenseTypeConst t : apartmentExpense.keySet()) {
+                    if(i==e.getXIndex()) {
+                        typeExpense = apartmentExpense.get(t);
+                        strExpenseType = t.toString();
+                        break;
+                    }
+                    i++;
+                }
+
+                innerIntent.putExtra(CONST_EXPENSE_TYPE_WISE_DATA, CustomSerializer.serializeObject(typeExpense));
+                if(strExpenseType != null) innerIntent.putExtra(CONST_EXPENSE_TYPE_TEXT, strExpenseType.replaceAll("_"," "));
+                startActivity(innerIntent);
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         XAxis xl = mChart.getXAxis();
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -111,4 +145,24 @@ public class AllExpenseReportActivity extends DashBoardActivity  implements Soci
         l.setXEntrySpace(4f);
 
     }
+/*
+    @Override
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+        Intent innerIntent = new Intent(getApplicationContext(), ExpenseTypeWiseReportActivity.class);
+        innerIntent.putExtra(CONST_EXPENSE_TYPE_WISE_DATA, CustomSerializer.serializeObject(apartmentExpense.get(apartmentExpense.firstKey())));
+        startActivity(innerIntent);
+    }
+
+    @Override
+    public void onNothingSelected() {
+
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        Intent innerIntent = new Intent(getApplicationContext(), ExpenseTypeWiseReportActivity.class);
+        innerIntent.putExtra(CONST_EXPENSE_TYPE_WISE_DATA, CustomSerializer.serializeObject(apartmentExpense.get(apartmentExpense.firstKey())));
+        startActivity(innerIntent);
+        return true;
+    }*/
 }

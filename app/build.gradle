@@ -8,8 +8,8 @@ android {
         applicationId "societyhelp.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 16
-        versionName "1.15"
+        versionCode 17
+        versionName "1.17"
     }
 
     aaptOptions {
@@ -17,7 +17,7 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        abortOnError
     }
 
     buildTypes {

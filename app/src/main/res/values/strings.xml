@@ -112,4 +112,5 @@
     <string name="title_activity_expense_report_in_pie_chart">ExpenseReportInPieChartActivity
     </string>
     <string name="title_activity_all_expense_report">Apartment Expense Report</string>
+    <string name="title_activity_expense_type_wise_report">Expense Type Wise Report</string>
 </resources>
