@@ -2,6 +2,8 @@ package societyhelp.dao.mysql.impl;
 
 //import android.util.Log;
 
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -3328,7 +3330,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return allSociety;
     }
 
-    public List<WaterSuppyReading> getAllWaterSupplier() throws Exception {
+  public List<WaterSuppyReading> getAllWaterSupplier() throws Exception {
 
         Connection con = null;
         PreparedStatement pStat = null;
@@ -3336,6 +3338,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         List<WaterSuppyReading> suppliers = new ArrayList<>();
 
         try {
+            con = getDBInstance();
             //"SELECT Supplier_Id,Supplier_Name,Capacity_In_Liter FROM water_suppiler";
             pStat = con.prepareStatement(allWaterSupplierQuery);
             result = pStat.executeQuery();
@@ -3346,7 +3349,11 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 w.capacityInLiter = result.getInt(3);
                 suppliers.add(w);
             }
-        } finally {
+        }catch(Exception e) {
+            Log.e("error",e.getMessage());
+            throw e;
+        }
+        finally {
             close(con, pStat, result);
         }
         return suppliers;
@@ -3365,12 +3372,12 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 try {
                     con = getDBInstance();
                     pStat = con.prepareStatement(insertWaterReadingQuery);
-
                     pStat.setInt(1, waterReading.supplierId);
                     pStat.setInt(2, waterReading.capacityInLiter);
                     pStat.setInt(3, waterReading.readingBeforeSupply);
                     pStat.setInt(4, waterReading.readingAfterSupply);
-
+                    pStat.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+                    pStat.setString(6, waterReading.loginId);
                     pStat.executeUpdate();
 
                 } catch (Exception e) {
@@ -3385,4 +3392,38 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             close(con, pStat, res);
         }
     }
+
+    public List<WaterSuppyReading> getAllWaterReading() throws Exception {
+
+        Connection con = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        List<WaterSuppyReading> suppliers = new ArrayList<>();
+
+        try {
+            con = getDBInstance();
+            //"SELECT ws.Supplier_Id, ws.Supplier_Name, wsr.Capacity_In_Liter, Supply_Time, Reading_Before_Supply, Reading_After_Supply " +
+            pStat = con.prepareStatement(allWaterReadingQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                WaterSuppyReading w = new WaterSuppyReading();
+                w.supplierId = result.getInt(1);
+                w.supplierName = result.getString(2);
+                w.capacityInLiter = result.getInt(3);
+                w.SupplyTime = result.getTimestamp(4);
+                w.readingBeforeSupply = result.getInt(5);
+                w.readingAfterSupply = result.getInt(6);
+                w.loginId = result.getString(7);
+                suppliers.add(w);
+            }
+        } catch (Exception e) {
+            Log.e("error", e.getMessage());
+            throw e;
+        }
+        finally {
+            close(con, pStat, result);
+        }
+        return suppliers;
+    }
+
 }

@@ -29,6 +29,7 @@ import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
+import societyhelp.dao.mysql.impl.WaterSuppyReading;
 import societyhelp.parser.SocietyHelpParserFactory;
 
 public class HomeActivity extends DashBoardActivity {
@@ -106,10 +107,22 @@ public class HomeActivity extends DashBoardActivity {
                 case VERIFIED_PDF_TRANSACTIONS_UPLOAD: //16
                     userAuthActivityIds.add(R.id.transaction_report_activity_btn_upload_transactions);
                     break;
-                case ADD_USER_EXPEND:
+                case ADD_USER_EXPEND: //17
                     userAuthActivityIds.add(R.id.home_activity_btn_user_expense);
                     break;
-                case VIEW_SPLIT_TRANSACTIONS:
+                case VIEW_REPORT: //18
+                    userAuthActivityIds.add(R.id.home_activity_btn_view_report);
+                    break;
+                case MANUAL_SPLIT: //19
+                    userAuthActivityIds.add(R.id.home_activity_btn_save_splitted_transactions);
+                    break;
+                case ADD_WATER_READING: //20
+                    userAuthActivityIds.add(R.id.home_activity_btn_add_water_reading);
+                    break;
+                case VIEW_WATER_READING: //21
+                    userAuthActivityIds.add(R.id.home_activity_btn_view_water_reading);
+                    break;
+                case VIEW_SPLIT_TRANSACTIONS: //22
                     userAuthActivityIds.add(R.id.home_activity_btn_view_split_transaction);
                     break;
             }
@@ -123,8 +136,7 @@ public class HomeActivity extends DashBoardActivity {
             switch (v.getId()) {
 
                 case R.id.home_activity_btn_create_login:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_create_login))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_create_login)) {
                         progress = ProgressDialog.show(this, null, "Login creation activity ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -135,31 +147,29 @@ public class HomeActivity extends DashBoardActivity {
                                     Intent intentCreateLogin = new Intent(getApplicationContext(), CreateLoginIdActivity.class);
                                     intentCreateLogin.putExtra(CONST_LOGIN_IDS, Login.getLogIds(logins));
                                     startActivity(intentCreateLogin);
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching My dues verified data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (create login). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_add_flat:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_flat))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_flat)) {
                         intent = new Intent(this, AddFlatDetailsActivity.class);
                         startActivity(intent);
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (add flat). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_add_user:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_user)) {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_user)) {
                         progress = ProgressDialog.show(this, null, "Going to add User activity ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -172,8 +182,7 @@ public class HomeActivity extends DashBoardActivity {
                                     innerIntent.putExtra(CONST_FLAT_IDS, getFlatIds());
                                     startActivity(innerIntent);
 
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching My dues verified data has problem", e);
                                 }
                                 progress.dismiss();
@@ -182,14 +191,13 @@ public class HomeActivity extends DashBoardActivity {
                         }).start();
 
 
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (add user). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_view_all_login:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_login))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_login)) {
                         progress = ProgressDialog.show(this, null, "Fetching all login ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -204,22 +212,20 @@ public class HomeActivity extends DashBoardActivity {
 
                                     startActivity(innerIntent);
 
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching all login data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (view all login). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_view_all_flat:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_flat))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_all_flat)) {
                         progress = ProgressDialog.show(this, null, "Fetching all Flats' details ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -232,22 +238,20 @@ public class HomeActivity extends DashBoardActivity {
                                     innerIntent.putExtra(CONST_ALL_FLATS, sObj);
                                     startActivity(innerIntent);
 
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching all flat data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (view all flat). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_manage_users:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_manage_users))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_manage_users)) {
                         progress = ProgressDialog.show(this, null, "Fetching all Users' details ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -260,23 +264,21 @@ public class HomeActivity extends DashBoardActivity {
                                     innerIntent.putExtra(CONST_ALL_USERS, sObj);
                                     startActivity(innerIntent);
 
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching all user data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (manage users). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
 
                 case R.id.home_activity_btn_user_expense:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_user_expense))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_user_expense)) {
                         progress = ProgressDialog.show(this, null, "Waiting for add user expend activity ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -287,22 +289,20 @@ public class HomeActivity extends DashBoardActivity {
                                     Intent intentMyDues = new Intent(getApplicationContext(), AddCashExpenseActivity.class);
                                     intentMyDues.putExtra(CONST_EXPENSE_TYPES, expenseTypes);
                                     startActivity(intentMyDues);
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching My dues verified data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (user expend). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_validate_user_expense:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_validate_user_expense))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_validate_user_expense)) {
                         progress = ProgressDialog.show(this, null, "Getting unverified user's cash payment ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -315,15 +315,14 @@ public class HomeActivity extends DashBoardActivity {
                                     intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);
 
                                     startActivity(intentMyDues);
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching My dues verified data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (user expend). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
@@ -337,31 +336,28 @@ public class HomeActivity extends DashBoardActivity {
                     }
                     break;
                     */
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_transaction_view))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_transaction_view)) {
                         intent = new Intent(this, TransactionHomeActivity.class);
                         startActivity(intent);
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (generate monthly maintenance). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
-                case  R.id.home_activity_btn_detail_transactions:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_detail_transactions))
-                    {
+                case R.id.home_activity_btn_detail_transactions:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_detail_transactions)) {
                         intent = new Intent(this, DetailTransactionViewActivity.class);
                         startActivity(intent);
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (view detail transactions). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
-                case  R.id.home_activity_btn_flat_wise_payable:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_flat_wise_payable))
-                    {
-                    intent = new Intent(this, ManageFlatWisePayableActivity.class);
-                    startActivity(intent);
-                    } else{
+                case R.id.home_activity_btn_flat_wise_payable:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_flat_wise_payable)) {
+                        intent = new Intent(this, ManageFlatWisePayableActivity.class);
+                        startActivity(intent);
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (generate monthly maintenance). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
@@ -371,9 +367,8 @@ public class HomeActivity extends DashBoardActivity {
                     startActivity(intent);
                     break;
                 */
-                case  R.id.home_activity_btn_my_dues:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_my_dues))
-                    {
+                case R.id.home_activity_btn_my_dues:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_my_dues)) {
                         progress = ProgressDialog.show(this, null, "Fetching My dues from Database ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -384,22 +379,20 @@ public class HomeActivity extends DashBoardActivity {
                                     Intent intentMyDues = new Intent(getApplicationContext(), MyDuesActivity.class);
                                     intentMyDues.putExtra("MyDueAmount", myDues);
                                     startActivity(intentMyDues);
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching My dues verified data has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
-                                }
+                            }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (pay dues). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                 case R.id.home_activity_btn_view_split_transaction:
-                    if(isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_split_transaction))
-                    {
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_split_transaction)) {
                         progress = ProgressDialog.show(this, null, "Fetching Split Transactions from Database ...", true, true);
                         progress.setCancelable(true);
                         progress.show();
@@ -411,111 +404,168 @@ public class HomeActivity extends DashBoardActivity {
                                     byte[] sObj = CustomSerializer.serializeObject(splipttedUserPaid);
                                     innerIntent.putExtra(CONST_SPLITTED_TRANSACTION, sObj);
                                     startActivity(innerIntent);
-                                }catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     Log.e("Error", "Fetching spitted transaction flat wise has problem", e);
                                 }
                                 progress.dismiss();
                                 progress.cancel();
                             }
                         }).start();
-                    } else{
+                    } else {
                         Toast.makeText(this, "Permission denied to access this link (pay dues). Ask your Admin!", Toast.LENGTH_LONG).show();
                     }
 
                     break;
-                case  R.id.home_activity_btn_save_splitted_transactions:
-                    progress = ProgressDialog.show(this, null, "Balance Sheet transactions from Database and export in XLS ...", true, false);
-                    progress.show();
-                    Thread verifiedTransTaskThread = new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
-                                List<FlatWisePayable> payables = SocietyHelpDatabaseFactory.getDBInstance().getFlatWisePayables();
+                case R.id.home_activity_btn_save_splitted_transactions:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_save_splitted_transactions)) {
+                        progress = ProgressDialog.show(this, null, "Balance Sheet transactions from Database and export in XLS ...", true, false);
+                        progress.show();
+                        Thread verifiedTransTaskThread = new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
+                                    List<FlatWisePayable> payables = SocietyHelpDatabaseFactory.getDBInstance().getFlatWisePayables();
 
-                                Util.generateBalanceSheet(balanceSheetData, payables);
+                                    Util.generateBalanceSheet(balanceSheetData, payables);
 
-                            }catch (Exception e)
-                            {
-                                Log.e("Error","Insert verified data has problem",e);
+                                } catch (Exception e) {
+                                    Log.e("Error", "Insert verified data has problem", e);
+                                }
+
+                                progress.dismiss();
+                                progress.cancel();
                             }
-
-                            progress.dismiss();
-                            progress.cancel();
-                        }
-                    });
-                    verifiedTransTaskThread.start();
+                        });
+                        verifiedTransTaskThread.start();
+                    } else {
+                        Toast.makeText(this, "Permission denied to access this link (split transaction). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case R.id.home_activity_btn_view_auto_split_verify:
-                    progress = ProgressDialog.show(this, null, "Getting auto splitted / un splitted data from Database", true, false);
-                    progress.show();
-                    Thread autoTransactionTaskThread = new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                List<TransactionOnBalanceSheet> autoSplittedTransactions;
-                                List<SocietyHelpTransaction> unSplittedTransactions;
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_auto_split_verify)) {
+                        progress = ProgressDialog.show(this, null, "Getting auto splitted / un splitted data from Database", true, false);
+                        progress.show();
+                        Thread autoTransactionTaskThread = new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<TransactionOnBalanceSheet> autoSplittedTransactions;
+                                    List<SocietyHelpTransaction> unSplittedTransactions;
 
-                                if(isOwner()) {
-                                    autoSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().flatWiseAutoSplitTransactions(getFlatId());
-                                    unSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().getFlatWiseUnSplittedTransaction(getFlatId());
+                                    if (isOwner()) {
+                                        autoSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().flatWiseAutoSplitTransactions(getFlatId());
+                                        unSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().getFlatWiseUnSplittedTransaction(getFlatId());
+                                    } else {
+                                        autoSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().userWiseAutoSplitTransactions(getLoginId());
+                                        unSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().getUserWiseUnSplittedTransaction(getLoginId());
+                                    }
+
+                                    String expenseTypes = getExpenseTypes();
+
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManualSplitActivity.class);
+
+                                    innerIntent.putExtra(CONST_UNSPLITTED_TRANSACTIONS, CustomSerializer.serializeObject(unSplittedTransactions));
+                                    innerIntent.putExtra(CONST_SPLITTED_TRANSACTIONS, CustomSerializer.serializeObject(autoSplittedTransactions));
+                                    innerIntent.putExtra(CONST_EXPENSE_TYPES, expenseTypes);
+
+                                    startActivity(innerIntent);
+
+                                } catch (Exception e) {
+                                    Log.e("Error", "Insert verified data has problem", e);
                                 }
-                                else
-                                {
-                                    autoSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().userWiseAutoSplitTransactions(getLoginId());
-                                    unSplittedTransactions = SocietyHelpDatabaseFactory.getDBInstance().getUserWiseUnSplittedTransaction(getLoginId());
-                                }
 
-                                String expenseTypes = getExpenseTypes();
-
-                                Intent innerIntent = new Intent(getApplicationContext(), ManualSplitActivity.class);
-
-                                innerIntent.putExtra(CONST_UNSPLITTED_TRANSACTIONS, CustomSerializer.serializeObject(unSplittedTransactions));
-                                innerIntent.putExtra(CONST_SPLITTED_TRANSACTIONS, CustomSerializer.serializeObject(autoSplittedTransactions));
-                                innerIntent.putExtra(CONST_EXPENSE_TYPES, expenseTypes);
-
-                                startActivity(innerIntent);
-
-                            }catch (Exception e)
-                            {
-                                Log.e("Error","Insert verified data has problem",e);
+                                progress.dismiss();
+                                progress.cancel();
                             }
-
-                            progress.dismiss();
-                            progress.cancel();
-                        }
-                    });
-                    autoTransactionTaskThread.start();
+                        });
+                        autoTransactionTaskThread.start();
+                    }
+                    else {
+                        Toast.makeText(this, "Permission denied to access this link (auto split verification). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
-                case R.id.home_activity_btn_save_manual_split:
-                    progress = ProgressDialog.show(this, null, "Downloading Apartment Expense from Database ...", true, false);
-                    progress.show();
-                    Thread expenseThread = new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
-                                TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense = Util.getApartmentExpense(balanceSheetData, null);
-                                //Intent innerIntent = new Intent(getApplicationContext(), ExpenseReportInPieChartActivity.class);
-                                Intent innerIntent = new Intent(getApplicationContext(), AllExpenseReportActivity.class);
-                                innerIntent.putExtra(CONST_APARTMENT_EXPENSE_DATA, CustomSerializer.serializeObject(apartmentExpense));
-                                startActivity(innerIntent);
+                case R.id.home_activity_btn_view_report:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_report)) {
+                        progress = ProgressDialog.show(this, null, "Downloading Apartment Expense from Database ...", true, false);
+                        progress.show();
+                        Thread expenseThread = new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<TransactionOnBalanceSheet> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getBalanceSheetData();
+                                    TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense = Util.getApartmentExpense(balanceSheetData, null);
+                                    //Intent innerIntent = new Intent(getApplicationContext(), ExpenseReportInPieChartActivity.class);
+                                    Intent innerIntent = new Intent(getApplicationContext(), AllExpenseReportActivity.class);
+                                    innerIntent.putExtra(CONST_APARTMENT_EXPENSE_DATA, CustomSerializer.serializeObject(apartmentExpense));
+                                    startActivity(innerIntent);
 
-                            }catch (Exception e)
-                            {
-                                Log.e("Error","Insert verified data has problem",e);
+                                } catch (Exception e) {
+                                    Log.e("Error", "Insert verified data has problem", e);
+                                }
+
+                                progress.dismiss();
+                                progress.cancel();
                             }
-
-                            progress.dismiss();
-                            progress.cancel();
-                        }
-                    });
-                    expenseThread.start();
+                        });
+                        expenseThread.start();
+                    }
+                    else {
+                        Toast.makeText(this, "Permission denied to access this link (view report). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
                     break;
 
-                //home_activity_btn_view_water_reading
+                case R.id.home_activity_btn_add_water_reading:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_add_water_reading)) {
+                        progress = ProgressDialog.show(this, null, "Getting Water Suppliers from Database ...", true, false);
+                        progress.show();
+                        Thread addWaterReadingThread = new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<WaterSuppyReading> balanceSheetData = SocietyHelpDatabaseFactory.getDBInstance().getAllWaterSupplier();
+                                    Intent innerIntent = new Intent(getApplicationContext(), AddWaterReadingActivity.class);
+                                    innerIntent.putExtra(CONST_WATER_SUPPLIERS, CustomSerializer.serializeObject(balanceSheetData));
+                                    startActivity(innerIntent);
 
-                //home_activity_btn_add_water_reading
+                                } catch (Exception e) {
+                                    Log.e("Error", "Water supplier data has problem", e);
+                                }
+
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        });
+                        addWaterReadingThread.start();
+                    }
+                    else {
+                        Toast.makeText(this, "Permission denied to access this link (add water reading). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+
+                case R.id.home_activity_btn_view_water_reading:
+                    if (isAdmin || userAuthActivityIds.contains(R.id.home_activity_btn_view_water_reading)) {
+                        progress = ProgressDialog.show(this, null, "Getting Water Suppliers from Database ...", true, false);
+                        progress.show();
+                        Thread viewWaterReadingThread = new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    List<WaterSuppyReading> readings = SocietyHelpDatabaseFactory.getDBInstance().getAllWaterReading();
+                                    Intent innerIntent = new Intent(getApplicationContext(), ViewWaterReadingActivity.class);
+                                    byte[] sObj = CustomSerializer.serializeObject(readings);
+                                    innerIntent.putExtra(CONST_WATER_READINGS, sObj);
+                                    startActivity(innerIntent);
+                                } catch (Exception e) {
+                                    Log.e("Error", "Water supplier data has problem", e);
+                                }
+
+                                progress.dismiss();
+                                progress.cancel();
+                            }
+                        });
+                        viewWaterReadingThread.start();
+                    }else {
+                        Toast.makeText(this, "Permission denied to access this link (view water reading). Ask your Admin!", Toast.LENGTH_LONG).show();
+                    }
+                    break;
             }
         }catch (Exception e)
         {

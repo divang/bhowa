@@ -296,4 +296,12 @@ public interface ISocietyHelpDatabase {
      * @throws Exception
      */
     public void insertWaterReading(WaterSuppyReading reading) throws Exception;
+
+    /**
+     * Return all the water reading
+     * @return
+     * @throws Exception
+     */
+    public List<WaterSuppyReading> getAllWaterReading() throws Exception;
+
 }

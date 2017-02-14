@@ -117,4 +117,7 @@
     <string name="addWaterReadingText">Add Water Reading</string>
     <string name="viewWaterReadingText">View Water Reading</string>
 
+    <string name="title_activity_add_water_reading">Add Water Reading</string>
+    <string name="title_activity_view_water_reading">Water Reading</string>
+
 </resources>

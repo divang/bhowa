@@ -14,6 +14,7 @@ public class WaterSuppyReading implements Serializable {
     public Timestamp SupplyTime;
     public int readingBeforeSupply;
     public int readingAfterSupply;
+    public String loginId;
 
     @Override
     public String toString() {
@@ -24,6 +25,7 @@ public class WaterSuppyReading implements Serializable {
         str.append(" SupplyTime=").append(SupplyTime);
         str.append(" readingBeforeSupply=").append(readingBeforeSupply);
         str.append(" readingAfterSupply=").append(readingAfterSupply);
+        str.append(" loginId=").append(loginId);
         return str.toString();
     }
 }

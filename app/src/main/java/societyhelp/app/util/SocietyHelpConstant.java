@@ -14,6 +14,7 @@ public interface SocietyHelpConstant {
     String CONST_LOGIN_IDS = "loginIds";
     String CONST_USER_IDS = "userIds";
     String CONST_FLAT_IDS = "flatIds";
+    String CONST_WATER_SUPPLIERS = "waterSuppliers";
     String CONST_EXPENSE_TYPES = "expenseTypes";
     String CONST_UN_VERIFIED_PAYMENT = "unverifiedPayment";
     String CONST_SPLITTED_TRANSACTION = "splittedTransactionFlatWise";
@@ -32,4 +33,6 @@ public interface SocietyHelpConstant {
     String CONST_APARTMENT_EXPENSE_DATA = "apartmentExpenseData";
     String CONST_EXPENSE_TYPE_WISE_DATA = "expenseTypeWiseData";
     String CONST_EXPENSE_TYPE_TEXT = "expenseTypeText";
+
+    String CONST_WATER_READINGS = "waterReadings";
 }

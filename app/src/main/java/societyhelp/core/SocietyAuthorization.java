@@ -6,7 +6,7 @@ package societyhelp.core;
 public class SocietyAuthorization {
 
     public enum Type {
-           ADMIN,
+           ADMIN,                         //0
            MY_DUES_VIEWS,
            NOTIFICATION_SEND,
            USER_DETAIL_VIEW,
@@ -24,6 +24,10 @@ public class SocietyAuthorization {
            MONTHLY_MAINTENANCE_GENERATOR,
            VERIFIED_PDF_TRANSACTIONS_UPLOAD,
            ADD_USER_EXPEND,
-           VIEW_SPLIT_TRANSACTIONS
+           VIEW_SPLIT_TRANSACTIONS,
+           VIEW_REPORT,
+           MANUAL_SPLIT,
+           ADD_WATER_READING,
+           VIEW_WATER_READING             //20
     }
 }

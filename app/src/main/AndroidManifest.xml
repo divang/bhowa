@@ -78,6 +78,14 @@
             android:name=".reports.ExpenseTypeWiseReportActivity"
             android:label="@string/title_activity_expense_type_wise_report" >
         </activity>
+        <activity
+            android:name=".AddWaterReadingActivity"
+            android:label="@string/title_activity_add_water_reading" >
+        </activity>
+        <activity
+            android:name=".ViewWaterReadingActivity"
+            android:label="@string/title_activity_view_water_reading" >
+        </activity>
     </application>
 
 </manifest>

@@ -569,6 +569,13 @@ public class Queries {
 
 	public static final String insertWaterReadingQuery =
 			"INSERT INTO water_supply_reading " +
-			"(Supplier_Id,Capacity_In_Liter,Reading_Before_Supply,Reading_After_Supply) " +
-			" VALUES (?, ?, ?, ?)";
+			"(Supplier_Id,Capacity_In_Liter,Reading_Before_Supply,Reading_After_Supply, Supply_Time, Login_Id) " +
+			" VALUES (?, ?, ?, ?, ?, ?)";
+
+	public static final String allWaterReadingQuery =
+			"SELECT ws.Supplier_Id, ws.Supplier_Name, wsr.Capacity_In_Liter, Supply_Time, Reading_Before_Supply, Reading_After_Supply, Login_Id " +
+			"FROM societyhelp.water_supply_reading wsr " +
+			"left join water_suppiler ws " +
+			"on ws.Supplier_Id = wsr.Supplier_Id";
+
 }

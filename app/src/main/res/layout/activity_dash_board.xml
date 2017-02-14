@@ -38,6 +38,28 @@
             <LinearLayout
                 style="@style/DashboardLinerLayout">
 
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_report"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_varified_credit"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/expenseReportPieChartText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_my_dues"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_my_dues"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/myDuesIconText"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
                 <Button
                     android:id="@+id/home_activity_btn_create_login"
                     style="@style/HomeButton"
@@ -129,51 +151,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/DashboardLinerLayout">
-
-                <Button
-                    android:id="@+id/home_activity_btn_flat_wise_payable"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_flat_wise_payable"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/generateMaintenanceIconText"
-                    />
-
-                <!--Button
-                    android:id="@+id/home_activity_btn_my_transactions"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_my_expense"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/myExpensesIconText"
-                    /-->
-
-                <Button
-                    android:id="@+id/home_activity_btn_my_dues"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_my_dues"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/myDuesIconText"
-                    />
-
-                <!--Button
-                    android:id="@+id/home_activity_btn_send_notification"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_notification"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/notificationIconText"
-                    /-->
-
-
-
-                <!--Button
-                    android:id="@+id/home_activity_btn_expenditure_type"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_expenditure_type"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/expenditureTypeIconText"
-                    /-->
-            </LinearLayout>
 
             <LinearLayout
                 style="@style/DashboardLinerLayout">
@@ -221,6 +198,14 @@
                 style="@style/DashboardLinerLayout">
 
                 <Button
+                    android:id="@+id/home_activity_btn_flat_wise_payable"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_flat_wise_payable"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/generateMaintenanceIconText"
+                    />
+
+                <Button
                     android:id="@+id/home_activity_btn_view_auto_split_verify"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_manual_split"
@@ -228,13 +213,6 @@
                     android:text="@string/splitTransactionsHomeTest"
                     />
 
-                <Button
-                    android:id="@+id/home_activity_btn_save_manual_split"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_varified_credit"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/expenseReportPieChartText"
-                    />
             </LinearLayout>
 
         </LinearLayout>
