@@ -42,17 +42,40 @@
                 <Button
                     android:id="@+id/home_activity_btn_view_report"
                     style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_varified_credit"
+                    android:drawableTop="@drawable/ic_expense_mapping"
                     android:onClick="onButtonClicker"
                     android:text="@string/expenseReportPieChartText"
                     />
 
+
                 <Button
-                    android:id="@+id/home_activity_btn_my_dues"
+                    android:id="@+id/home_activity_btn_save_splitted_transactions"
                     style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_my_dues"
+                    android:drawableTop="@drawable/ic_save_splitted_transactions"
                     android:onClick="onButtonClicker"
-                    android:text="@string/myDuesIconText"
+                    android:text="@string/saveSplitTransactionText"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_all_flat"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_view_all_flat"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/viewAllFlatIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_manage_users"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_manage_user"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/manageUsersIconText"
                     />
 
             </LinearLayout>
@@ -99,26 +122,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/DashboardLinerLayout">
-
-                <Button
-                    android:id="@+id/home_activity_btn_view_all_flat"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_view_all_flat"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/viewAllFlatIconText"
-                    />
-
-                <Button
-                    android:id="@+id/home_activity_btn_manage_users"
-                    style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_manage_user"
-                    android:onClick="onButtonClicker"
-                    android:text="@string/manageUsersIconText"
-                    />
-
-            </LinearLayout>
 
             <LinearLayout
                 style="@style/DashboardLinerLayout">
@@ -184,12 +187,13 @@
                     android:text="@string/splitTransactionText"
                     />
 
+
                 <Button
-                    android:id="@+id/home_activity_btn_save_splitted_transactions"
+                    android:id="@+id/home_activity_btn_my_dues"
                     style="@style/HomeButton"
-                    android:drawableTop="@drawable/ic_save_splitted_transactions"
+                    android:drawableTop="@drawable/ic_my_dues"
                     android:onClick="onButtonClicker"
-                    android:text="@string/saveSplitTransactionText"
+                    android:text="@string/myDuesIconText"
                     />
 
             </LinearLayout>

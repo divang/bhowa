@@ -95,7 +95,12 @@ public class Queries {
 			"select Login_Id from user_details";
 
 	public static final String selectAllFlatQuery =
-			"SELECT * FROM flat";
+			"SELECT f.Flat_Id,f.Flat_Number,f.Area,f.Maintenance_Amount," +
+					"f.Block_Number,f.Status,group_concat(ud.Name, '')" +
+					"FROM flat f left join user_details ud on ud.Flat_ID = f.Flat_Id " +
+					"where ud.User_Type = 'Owner' " +
+					"group by f.Flat_Id " +
+					"order by f.Flat_Id ";
 
 	public static final String selectFinalTransactionQuery =
 			"SELECT  Transaction_ID,StatementID,tsd.Name,Amount," +
@@ -574,7 +579,7 @@ public class Queries {
 
 	public static final String allWaterReadingQuery =
 			"SELECT ws.Supplier_Id, ws.Supplier_Name, wsr.Capacity_In_Liter, Supply_Time, Reading_Before_Supply, Reading_After_Supply, Login_Id " +
-			"FROM societyhelp.water_supply_reading wsr " +
+			"FROM water_supply_reading wsr " +
 			"left join water_suppiler ws " +
 			"on ws.Supplier_Id = wsr.Supplier_Id";
 

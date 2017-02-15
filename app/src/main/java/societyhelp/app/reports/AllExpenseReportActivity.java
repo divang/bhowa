@@ -95,6 +95,29 @@ public class AllExpenseReportActivity extends DashBoardActivity
         mChart.getAxisLeft().setDrawLabels(false);
         mChart.getAxisRight().setDrawLabels(false);
 
+        mChart.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent innerIntent = new Intent(getApplicationContext(), ExpenseTypeWiseReportActivity.class);
+                int i=0;
+                List<TransactionOnBalanceSheet> typeExpense = null;
+                String strExpenseType = null;
+                for(ExpenseType.ExpenseTypeConst t : apartmentExpense.keySet()) {
+                    if(i==v.getScrollX()) {
+                        typeExpense = apartmentExpense.get(t);
+                        strExpenseType = t.toString();
+                        break;
+                    }
+                    i++;
+                }
+
+                innerIntent.putExtra(CONST_EXPENSE_TYPE_WISE_DATA, CustomSerializer.serializeObject(typeExpense));
+                if(strExpenseType != null) innerIntent.putExtra(CONST_EXPENSE_TYPE_TEXT, strExpenseType.replaceAll("_"," "));
+                startActivity(innerIntent);
+                return true;
+            }
+        });
+        /*
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
@@ -121,7 +144,7 @@ public class AllExpenseReportActivity extends DashBoardActivity
 
             }
         });
-
+        */
         XAxis xl = mChart.getXAxis();
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
         xl.setDrawAxisLine(true);

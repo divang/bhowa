@@ -287,3 +287,15 @@ SELECT * FROM `societyhelp`.`transactions_verified`
 where Transaction_From_Bank_Statement_ID=182205
 
 */
+
+https://cyrilmottier.com/2011/08/08/listview-tips-tricks-3-create-fancy-listviews/
+
+Various Android design page : http://alamkanak.github.io/android-libraries-and-resources/
+Max/Mini feature : https://github.com/hamsterready/android-accordion-view
+Widgets : https://github.com/wasabeef/awesome-android-ui
+
+Water supplier :
+--------------
+4400 small
+5000 less then 
+

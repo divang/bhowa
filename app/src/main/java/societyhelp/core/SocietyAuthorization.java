@@ -7,27 +7,28 @@ public class SocietyAuthorization {
 
     public enum Type {
            ADMIN,                         //0
-           MY_DUES_VIEWS,
-           NOTIFICATION_SEND,
-           USER_DETAIL_VIEW,
-           USER_DETAIL_CREATE,
-           FLAT_DETAIL_VIEW,
-           FLAT_DETAIL_CREATE,
-           LOGIN_VIEW,
-           LOGIN_CREATE,
-           TRANSACTION_HOME_VIEW,
-           RAW_DATA_VIEW,
-           TRANSACTIONS_DETAIL_VIEW,
-           PDF_TRANSACTION_VIEW,
-           PDF_TRANSACTION_UPLOAD_TO_STAGING_TABLE,
-           MAP_USER_WITH_MONTHLY_PDF_NAME,
-           MONTHLY_MAINTENANCE_GENERATOR,
-           VERIFIED_PDF_TRANSACTIONS_UPLOAD,
-           ADD_USER_EXPEND,
-           VIEW_SPLIT_TRANSACTIONS,
-           VIEW_REPORT,
-           MANUAL_SPLIT,
-           ADD_WATER_READING,
-           VIEW_WATER_READING             //20
+           MY_DUES_VIEWS,                 //1
+           NOTIFICATION_SEND,             //2
+           USER_DETAIL_VIEW,              //3
+           USER_DETAIL_CREATE,            //4
+           FLAT_DETAIL_VIEW,              //5
+           FLAT_DETAIL_CREATE,            //6
+           LOGIN_VIEW,                    //7
+           LOGIN_CREATE,                  //8
+           TRANSACTION_HOME_VIEW,         //9
+           RAW_DATA_VIEW,                 //10
+           TRANSACTIONS_DETAIL_VIEW,      //11
+           PDF_TRANSACTION_VIEW,          //12
+           PDF_TRANSACTION_UPLOAD_TO_STAGING_TABLE,     //13
+           MAP_USER_WITH_MONTHLY_PDF_NAME,              //14
+           MONTHLY_MAINTENANCE_GENERATOR,               //15
+           VERIFIED_PDF_TRANSACTIONS_UPLOAD,            //16
+           ADD_USER_EXPEND,                             //17
+           VIEW_SPLIT_TRANSACTIONS,                     //18
+           VIEW_REPORT,                                 //19
+           MANUAL_SPLIT,                                //20
+           ADD_WATER_READING,                           //21
+           VIEW_WATER_READING                           //22
+           //22,21,19,5,3,1
     }
 }

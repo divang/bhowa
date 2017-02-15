@@ -10,7 +10,7 @@
     <string name="addUserIconText">Add User</string>
     <string name="viewAllLoginIconText">View Login</string>
     <string name="viewAllFlatIconText">View Flats</string>
-    <string name="manageUsersIconText">View Users</string>
+    <string name="manageUsersIconText">View Users Details</string>
     <string name="uploadPdfIconText">Monthly Bank Statement Upload</string>
     <string name="downloadRawDataIconText">Raw Data</string>
     <string name="allTransactionsIconText">All Transactions</string>
@@ -88,7 +88,7 @@
     <string name="title_activity_manage_login">ManageLoginActivity</string>
     <string name="title_activity_manage_flat">ManageFlatActivity</string>
     <string name="title_activity_detail_transaction_view">DetailTransactionViewActivity</string>
-    <string name="title_activity_my_dues">MyDuesActivity</string>
+    <string name="title_activity_my_dues">My payables and paid</string>
     <string name="title_activity_manage_flat_wise_payable">ManageFlatWisePayableActivity</string>
     <string name="title_activity_add_cash_expense">AddCashExpenseActivity</string>
     <string name="title_activity_verified_cash_payment">PDF Transaction</string>
@@ -114,7 +114,7 @@
     <string name="title_activity_all_expense_report">Apartment Expense Report</string>
     <string name="title_activity_expense_type_wise_report">Expense Type Wise Report</string>
 
-    <string name="addWaterReadingText">Add Water Reading</string>
+    <string name="addWaterReadingText">Enter Water Reading</string>
     <string name="viewWaterReadingText">View Water Reading</string>
 
     <string name="title_activity_add_water_reading">Add Water Reading</string>

@@ -34,8 +34,8 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
 
         try {
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int[] fixedColumnWidths = new int[]{30, 20, 20, 20, 20, 20,30};
-            int[] scrollableColumnWidths = new int[]{30, 20, 20, 20, 20, 20,30};
+            int[] fixedColumnWidths = new int[]{30, 40, 40, 40, 50, 50, 40};
+            int[] scrollableColumnWidths = new int[]{30, 40, 40, 40, 50, 50, 40};
 
             int fixedRowHeight = 50;
             int fixedHeaderHeight = 60;
@@ -47,10 +47,11 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
             row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
 
             row.addView(makeTableRowWithText("Supply Time", fixedColumnWidths[1], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Capacity", fixedColumnWidths[2], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Start Meter Reading", fixedColumnWidths[3], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Stop Meter Reading", fixedColumnWidths[4], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Monitored By", fixedColumnWidths[5], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Tanker Capacity", fixedColumnWidths[2], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Actual Capacity", fixedColumnWidths[3], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Start Meter Reading", fixedColumnWidths[4], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Stop Meter Reading", fixedColumnWidths[5], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Feed By", fixedColumnWidths[6], fixedHeaderHeight));
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("Water Supplier", scrollableColumnWidths[0], fixedHeaderHeight);
@@ -83,9 +84,10 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
 
                 row.addView(makeTableRowWithText(String.valueOf(wsr.SupplyTime), scrollableColumnWidths[1], fixedRowHeight));
                 row.addView(makeTableRowWithText(String.valueOf(wsr.capacityInLiter), scrollableColumnWidths[2], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.readingBeforeSupply), scrollableColumnWidths[3], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply), scrollableColumnWidths[4], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.loginId), scrollableColumnWidths[5], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply - wsr.readingBeforeSupply), scrollableColumnWidths[3], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.readingBeforeSupply), scrollableColumnWidths[4], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply), scrollableColumnWidths[5], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.loginId), scrollableColumnWidths[6], fixedRowHeight));
                 scrollablePart.addView(row);
 
             }

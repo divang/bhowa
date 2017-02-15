@@ -664,8 +664,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         ResultSet result = null;
         try {
 			/*
-			SELECT `Flat_Id`, `Flat_Number`, `Area`, `Maintenance_Amount`, `Block_Number`, `Status`
-			FROM `sql6134070`.`Flat` LIMIT 0, 1000;
+			f.Flat_Id,f.Flat_Number,f.Area,f.Maintenance_Amount," +
+					"f.Block_Number,f.Status,group_concat(ud.Name, '')" +
+
 			 */
             connection = getDBInstance();
             pStat = connection.prepareStatement(selectAllFlatQuery);
@@ -678,7 +679,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 l.maintenanceAmount = result.getFloat(4);
                 l.block = result.getString(5);
                 l.status = result.getBoolean(6);
-
+                l.owner = result.getString(7);
                 flats.add(l);
             }
 
