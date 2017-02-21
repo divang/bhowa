@@ -3427,4 +3427,131 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         return suppliers;
     }
 
+    public List<StagingTransaction> getUnsettledCreditTransaction() throws Exception {
+        List<StagingTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+            /*
+            SELECT `Transaction_ID`, `StatementID`, `Name`, `Amount`, `Transaction_Date`,
+			`Transaction_Flow`, `Transaction_Mode`, `Transaction_Reference`,
+			`Upload_Date`, `Uploaded_LoginId` FROM `Transactions_Staging_Data`
+			*/
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(getUnSettledCreditTransactionQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                StagingTransaction t = new StagingTransaction();
+                t.transactionId = result.getInt(1);
+                t.srNo = result.getInt(2);
+                t.name = result.getString(3);
+                t.amount = result.getFloat(4);
+                t.transactionDate = result.getDate(5);
+                t.transactionFlow = result.getString(6);
+                t.type = result.getString(7);
+                t.reference = result.getString(8);
+                t.updloadedDate = result.getTimestamp(9);
+                t.uploadedBy = result.getString(10);
+                t.verifiedBy = "";
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
+
+    public List<StagingTransaction> getUnsettledDebitTransaction() throws Exception {
+        List<StagingTransaction> list = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+            /*
+            SELECT `Transaction_ID`, `StatementID`, `Name`, `Amount`, `Transaction_Date`,
+			`Transaction_Flow`, `Transaction_Mode`, `Transaction_Reference`,
+			`Upload_Date`, `Uploaded_LoginId` FROM `Transactions_Staging_Data`
+			*/
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(getUnSettledDebitTransactionQuery);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                StagingTransaction t = new StagingTransaction();
+                t.transactionId = result.getInt(1);
+                t.srNo = result.getInt(2);
+                t.name = result.getString(3);
+                t.amount = result.getFloat(4);
+                t.transactionDate = result.getDate(5);
+                t.transactionFlow = result.getString(6);
+                t.type = result.getString(7);
+                t.reference = result.getString(8);
+                t.updloadedDate = result.getTimestamp(9);
+                t.uploadedBy = result.getString(10);
+                t.verifiedBy = "";
+                list.add(t);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return list;
+    }
+
+    public void settledCreditTransaction(Object transactions) throws  Exception {
+
+        if (transactions instanceof List) {
+            List<StagingTransaction> tList = (List<StagingTransaction>) transactions;
+            Connection con = null;
+            PreparedStatement pStat = null;
+
+            try {
+                con = getDBInstance();
+                con.setAutoCommit(false);
+
+                pStat = con.prepareStatement(insertSettledCreditTransactionQuery);
+                for(StagingTransaction t : tList) {
+                    if (t.userId != null) {
+                        pStat.setFloat(1, t.amount);
+                        if (t.transactionDate != null)
+                            pStat.setDate(2, new Date(t.transactionDate.getTime()));
+                        else pStat.setDate(2, new Date(System.currentTimeMillis()));
+                        pStat.setString(3, t.transactionFlow);
+                        pStat.setString(4, t.type);
+                        pStat.setString(5, t.reference);
+                        pStat.setString(6, t.userId);
+                        pStat.setString(7, t.flatId);
+                        pStat.setString(8, t.verifiedBy);
+                        pStat.setBoolean(9, t.splitted);
+                        pStat.setLong(10, autoSplitId);
+                        pStat.addBatch();
+                        pStat.clearParameters();
+                    }
+                }
+                pStat.executeBatch();
+
+                pStat = con.prepareStatement(deleteUnSettledTransactionQuery);
+                for(StagingTransaction t : tList) {
+                    if (t.userId != null) {
+                        pStat.setInt(1, t.transactionId);
+                        pStat.addBatch();
+                        pStat.clearParameters();
+                    }
+                }
+                pStat.executeBatch();
+                con.commit();
+
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                close(con, pStat, null);
+            }
+        }
+    }
 }

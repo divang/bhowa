@@ -61,7 +61,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		getSociety,
 		allWaterSupplier,
 		insertWaterReading,
-		getAllWaterReadings
+		getAllWaterReadings,
+		getUnsettledCreditTransaction,
+		getUnsettledDebitTransaction,
+		settledCreditTransaction
 	}
 
 	@Override
@@ -235,6 +238,15 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 				case getAllWaterReadings:
 					result = dbCore.getAllWaterReading();
+					break;
+				case getUnsettledCreditTransaction:
+					result = dbCore.getUnsettledCreditTransaction();
+					break;
+				case getUnsettledDebitTransaction:
+					result = dbCore.getUnsettledDebitTransaction();
+					break;
+				case settledCreditTransaction:
+					dbCore.settledCreditTransaction(params[1]);
 					break;
 			}
 
@@ -680,4 +692,35 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 			throw e;
 		}
 	}
+
+	@Override
+	public List<StagingTransaction> getUnsettledCreditTransaction() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getUnsettledCreditTransaction.name());
+		try {
+			return (List<StagingTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<StagingTransaction> getUnsettledDebitTransaction() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getUnsettledDebitTransaction.name());
+		try {
+			return (List<StagingTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void settledCreditTransaction(Object transactions) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.settledCreditTransaction.name(), transactions);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 }

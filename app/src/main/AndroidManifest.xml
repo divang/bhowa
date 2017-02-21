@@ -86,6 +86,10 @@
             android:name=".ViewWaterReadingActivity"
             android:label="@string/title_activity_view_water_reading" >
         </activity>
+        <activity
+            android:name=".transaction.UnSettledCreditActivity"
+            android:label="@string/title_activity_un_settled_credit" >
+        </activity>
     </application>
 
 </manifest>

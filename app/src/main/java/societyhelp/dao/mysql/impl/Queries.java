@@ -112,7 +112,43 @@ public class Queries {
 					"on (UPPER(ud.Name) LIKE CONCAT('%', UPPER(tsd.Name),'%')) " +
 					"OR (UPPER(ud.Name_Alias) LIKE CONCAT('%', UPPER(tsd.Name), '%'))";
 
+	public static final String getUnSettledCreditTransactionQuery =
+			"SELECT  Transaction_ID,StatementID,tsd.Name,Amount," +
+					"Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
+					"ud.User_Id,ud.Flat_Id " +
+					"FROM transactions_staging_data as tsd " +
+					"left join " +
+					"user_details as ud " +
+					"on (UPPER(ud.Name) LIKE CONCAT('%', UPPER(tsd.Name),'%')) " +
+					"OR (UPPER(ud.Name_Alias) LIKE CONCAT('%', UPPER(tsd.Name), '%'))" +
+					"where tsd.Transaction_Flow = 'Credit' " +
+					"and User_Id is NULL";
+
+	public static final String getUnSettledDebitTransactionQuery =
+			"SELECT  Transaction_ID,StatementID,tsd.Name,Amount," +
+					"Transaction_Date,Transaction_Flow,Transaction_Mode,Transaction_Reference," +
+					"ud.User_Id,ud.Flat_Id " +
+					"FROM transactions_staging_data as tsd " +
+					"left join " +
+					"user_details as ud " +
+					"on (UPPER(ud.Name) LIKE CONCAT('%', UPPER(tsd.Name),'%')) " +
+					"OR (UPPER(ud.Name_Alias) LIKE CONCAT('%', UPPER(tsd.Name), '%'))" +
+					"where tsd.Transaction_Flow = 'Debit'";
+
+	public static final String deleteUnSettledTransactionQuery =
+			"delete FROM transactions_staging_data where Transaction_ID = ?";
+
 	public static final String insertFinalTransactionQuery =
+			"Insert into transactions_verified (" +
+					"Amount, Transaction_Date,Transaction_Flow," +
+					"Transaction_Mode,Transaction_Reference,User_Id," +
+					"Flat_Id,Verified_By,Splitted, Auto_Split_Id) " +
+					"values (" +
+					"? , ?, ?, " +
+					"?, ?, ?, " +
+					"?, ?, ?, ?) ";
+
+	public static final String insertSettledCreditTransactionQuery =
 			"Insert into transactions_verified (" +
 					"Amount, Transaction_Date,Transaction_Flow," +
 					"Transaction_Mode,Transaction_Reference,User_Id," +
@@ -581,6 +617,7 @@ public class Queries {
 			"SELECT ws.Supplier_Id, ws.Supplier_Name, wsr.Capacity_In_Liter, Supply_Time, Reading_Before_Supply, Reading_After_Supply, Login_Id " +
 			"FROM water_supply_reading wsr " +
 			"left join water_suppiler ws " +
-			"on ws.Supplier_Id = wsr.Supplier_Id";
+			"on ws.Supplier_Id = wsr.Supplier_Id " +
+			"order by wsr.Supply_Time desc";
 
 }

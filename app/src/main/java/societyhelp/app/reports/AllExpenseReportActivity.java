@@ -37,6 +37,7 @@ public class AllExpenseReportActivity extends DashBoardActivity
     private String[] xData = null;
     private HashMap<String, float[]> labelValueData= new HashMap();
     private TreeMap<ExpenseType.ExpenseTypeConst, List<TransactionOnBalanceSheet>> apartmentExpense;
+    static int lastSelectedIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class AllExpenseReportActivity extends DashBoardActivity
         mChart.getAxisLeft().setDrawLabels(false);
         mChart.getAxisRight().setDrawLabels(false);
 
+        /*
         mChart.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -116,27 +118,36 @@ public class AllExpenseReportActivity extends DashBoardActivity
                 startActivity(innerIntent);
                 return true;
             }
-        });
-        /*
+        });*/
+
+
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
                 Intent innerIntent = new Intent(getApplicationContext(), ExpenseTypeWiseReportActivity.class);
-                int i=0;
+                int i = 0;
                 List<TransactionOnBalanceSheet> typeExpense = null;
                 String strExpenseType = null;
-                for(ExpenseType.ExpenseTypeConst t : apartmentExpense.keySet()) {
-                    if(i==e.getXIndex()) {
+                if (lastSelectedIndex != e.getXIndex()) {
+                    lastSelectedIndex = e.getXIndex();
+                    return;
+                }
+                for (ExpenseType.ExpenseTypeConst t : apartmentExpense.keySet()) {
+
+                    if (i == e.getXIndex()) {
                         typeExpense = apartmentExpense.get(t);
                         strExpenseType = t.toString();
                         break;
                     }
                     i++;
+
                 }
 
-                innerIntent.putExtra(CONST_EXPENSE_TYPE_WISE_DATA, CustomSerializer.serializeObject(typeExpense));
-                if(strExpenseType != null) innerIntent.putExtra(CONST_EXPENSE_TYPE_TEXT, strExpenseType.replaceAll("_"," "));
-                startActivity(innerIntent);
+                if (strExpenseType != null) {
+                    innerIntent.putExtra(CONST_EXPENSE_TYPE_WISE_DATA, CustomSerializer.serializeObject(typeExpense));
+                    innerIntent.putExtra(CONST_EXPENSE_TYPE_TEXT, strExpenseType.replaceAll("_", " "));
+                    startActivity(innerIntent);
+                }
             }
 
             @Override
@@ -144,7 +155,7 @@ public class AllExpenseReportActivity extends DashBoardActivity
 
             }
         });
-        */
+
         XAxis xl = mChart.getXAxis();
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
         xl.setDrawAxisLine(true);

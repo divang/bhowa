@@ -23,6 +23,7 @@ public interface SocietyHelpConstant {
     String CONST_ALL_FLATS = "allFlats";
     String CONST_ALL_USERS = "allUsers";
     String CONST_PDF_ALL_STAGING_TRANSACTIONS = "allStagingPDFTransaction";
+    String CONST_UN_SETTLED_TRANSACTIONS = "unSettledTransaction";
 
     String CONST_UNSPLITTED_TRANSACTIONS = "unSplittedTransactions";
     String CONST_SPLITTED_TRANSACTIONS = "splittedTransactions";

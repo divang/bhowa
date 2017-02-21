@@ -27,6 +27,7 @@ import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.StagingTransaction;
+import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.parser.LoadBhowaInitialData;
 import societyhelp.parser.SocietyHelpParserFactory;
@@ -116,6 +117,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
         startActivity(nextIntent);
     }
 
+
     public void goToDebitTransactionActivity(View view) {
         Intent nextIntent = new Intent(getApplicationContext(), DebitTransactionsActivity.class);
         startActivity(nextIntent);
@@ -132,6 +134,32 @@ public class TransactionHomeActivity extends DashBoardActivity {
                     List<StagingTransaction> stagingTransaction = SocietyHelpDatabaseFactory.getDBInstance().getAllStaggingTransaction();
                     Intent nextIntent = new Intent(getApplicationContext(), StagingTransactionViewActivity.class);
                     nextIntent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, CustomSerializer.serializeObject(stagingTransaction));
+                    startActivityForResult(nextIntent, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                progress.dismiss();
+                progress.cancel();
+            }
+        });
+        taskThread.start();
+
+    }
+
+    public void unSettledCreditTransactions(View v) {
+        progress = ProgressDialog.show(TransactionHomeActivity.this, null, "Getting unsettled Credit transactions from database ...", true, false);
+        progress.setCancelable(true);
+        progress.show();
+        Thread taskThread = new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    List<StagingTransaction> stagingTransaction = SocietyHelpDatabaseFactory.getDBInstance().getUnsettledCreditTransaction();
+                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+                    Intent nextIntent = new Intent(getApplicationContext(), UnSettledCreditActivity.class);
+                    nextIntent.putExtra(CONST_UN_SETTLED_TRANSACTIONS, CustomSerializer.serializeObject(stagingTransaction));
+                    nextIntent.putExtra(CONST_ALL_USERS, CustomSerializer.serializeObject(users));
                     startActivityForResult(nextIntent, 0);
                 } catch (Exception e) {
                     e.printStackTrace();

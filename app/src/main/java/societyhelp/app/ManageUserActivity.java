@@ -23,6 +23,7 @@ public class ManageUserActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_user);
+        setHeader(getString(R.string.manageUsersIconText), true, false);
         List<UserDetails> users = new ArrayList<>();
         try {
             byte[] sObjet = (byte[]) getIntent().getSerializableExtra(CONST_ALL_USERS);

@@ -48,7 +48,7 @@
     <string name="upload_pdf_button_text">Upload Bank Statement</string>
     <string name="view_pdf_data_text">View PDF File data</string>
 
-    <string name="credit_manage_home_text">Manage PDF credit</string>
+    <string name="credit_manage_home_text">Manage Credit Transactions</string>
     <string name="debit_manage_home_text">Auto Verify and Split Transaction</string>
     <string name="verify_user_cash_deposit">Verify User Cash Debit</string>
     <string name="load_initial_data_text">Upload Initial Data</string>
@@ -69,6 +69,7 @@
 
     <!-- Start Custom Tool bar Title  -->
     <string name="title_activity_credit_transactions">Manage Credit Transactions</string>
+    <string name="title_activity_unshettled_credit_transactions">UnSettled Credit Transactions</string>
     <string name="title_activity_debit_transactions">Manage Debit Transactions</string>
     <string name="title_activity_upload_pdf">UploadPDf</string>
     <string name="title_activity_transaction_report">TransactionReport</string>
@@ -119,5 +120,6 @@
 
     <string name="title_activity_add_water_reading">Add Water Reading</string>
     <string name="title_activity_view_water_reading">Water Reading</string>
+    <string name="title_activity_un_settled_credit">UnSettledCreditActivity</string>
 
 </resources>

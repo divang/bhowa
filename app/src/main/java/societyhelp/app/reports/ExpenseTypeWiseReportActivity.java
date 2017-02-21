@@ -52,20 +52,19 @@ public class ExpenseTypeWiseReportActivity extends DashBoardActivity implements 
     private void setData() {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-        float spaceForBar = 5f;
-        float barWidth = 4f;
-        float xAxisMax = 0;
+        ArrayList<String> xVals = new ArrayList<String>();
+
         for (int i = 0; i < apartmentTypeWiseExpense.size(); i++) {
-            BarEntry be = new BarEntry(apartmentTypeWiseExpense.get(i).amount,i);
-            yVals1.add(be);
+            if(apartmentTypeWiseExpense.get(i).transactionDate != null) {
+                BarEntry be = new BarEntry(apartmentTypeWiseExpense.get(i).amount, i);
+                yVals1.add(be);
+                xVals.add(apartmentTypeWiseExpense.get(i).transactionDate.toString());
+            }
         }
+
         if(expenseType == null) expenseType = "Expense";
         BarDataSet set = new BarDataSet(yVals1, expenseType + " (2011-2017)");
 
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        for (int i = 0; i < apartmentTypeWiseExpense.size(); i++)
-            xVals.add(apartmentTypeWiseExpense.get(i).transactionDate.toString());
 
         BarData barData = new BarData(xVals, set);
         mChart.setData(barData);

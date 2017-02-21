@@ -34,8 +34,8 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
 
         try {
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int[] fixedColumnWidths = new int[]{30, 40, 40, 40, 50, 50, 40};
-            int[] scrollableColumnWidths = new int[]{30, 40, 40, 40, 50, 50, 40};
+            int[] fixedColumnWidths = new int[]{30, 20, 20, 30, 50, 30, 30};
+            int[] scrollableColumnWidths = new int[]{30, 20, 20, 30, 50, 30, 30};
 
             int fixedRowHeight = 50;
             int fixedHeaderHeight = 60;
@@ -45,13 +45,13 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
             row.setLayoutParams(wrapWrapTableRowParams);
             row.setGravity(Gravity.CENTER);
             row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
+            row.addView(makeTableRowWithText("Meter Start", fixedColumnWidths[1], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Meter Stop", fixedColumnWidths[2], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Feed By", fixedColumnWidths[3], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Supply Time", fixedColumnWidths[4], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Tanker Capacity", fixedColumnWidths[5], fixedHeaderHeight));
+            row.addView(makeTableRowWithText("Actual Capacity", fixedColumnWidths[6], fixedHeaderHeight));
 
-            row.addView(makeTableRowWithText("Supply Time", fixedColumnWidths[1], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Tanker Capacity", fixedColumnWidths[2], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Actual Capacity", fixedColumnWidths[3], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Start Meter Reading", fixedColumnWidths[4], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Stop Meter Reading", fixedColumnWidths[5], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Feed By", fixedColumnWidths[6], fixedHeaderHeight));
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
             TextView fixedViewUserIdH = makeTableRowWithText("Water Supplier", scrollableColumnWidths[0], fixedHeaderHeight);
@@ -69,7 +69,9 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
 
             float totalDues = 0;
             boolean rowColorFlip = true;
+
             for (WaterSuppyReading wsr : readings) {
+
                 //Fixed Columns
                 TextView fixedViewUserId = makeTableRowWithText(wsr.supplierName, scrollableColumnWidths[0], fixedRowHeight);
                 fixedColumn.addView(fixedViewUserId);
@@ -81,15 +83,14 @@ public class ViewWaterReadingActivity extends DashBoardActivity {
 
                 if(rowColorFlip) row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
                 else row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
-
-                row.addView(makeTableRowWithText(String.valueOf(wsr.SupplyTime), scrollableColumnWidths[1], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.capacityInLiter), scrollableColumnWidths[2], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply - wsr.readingBeforeSupply), scrollableColumnWidths[3], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.readingBeforeSupply), scrollableColumnWidths[4], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply), scrollableColumnWidths[5], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(wsr.loginId), scrollableColumnWidths[6], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.readingBeforeSupply), scrollableColumnWidths[1], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply), scrollableColumnWidths[2], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.loginId), scrollableColumnWidths[3], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.SupplyTime), scrollableColumnWidths[4], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.capacityInLiter), scrollableColumnWidths[5], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(wsr.readingAfterSupply - wsr.readingBeforeSupply), scrollableColumnWidths[6], fixedRowHeight));
                 scrollablePart.addView(row);
-
+                rowColorFlip = !rowColorFlip;
             }
 
             //Scrollable columns

@@ -57,7 +57,7 @@
                     android:id="@+id/pdf_credit_manage_th"
                     style="@style/HomeButton"
                     android:drawableTop="@drawable/ic_credit_manage_home"
-                    android:onClick="goToCreditTransactionActivity"
+                    android:onClick="unSettledCreditTransactions"
                     android:text="@string/credit_manage_home_text"
                     />
 
