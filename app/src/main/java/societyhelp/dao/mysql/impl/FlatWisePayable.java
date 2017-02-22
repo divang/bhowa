@@ -10,10 +10,12 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
 
     public int paymentId;
     public String flatId;
+    public String flatNo;
     public boolean status;
     public int month;
     public int year;
     public float amount;
+    public float amountInitial;
     public String comments;
     public int expenseTypeId;
     public int payablePriority;
@@ -21,14 +23,19 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
     public ExpenseType.PaymentStatusConst paymentStatus;
     public String paymentIds;
 
+    public static final String InitialDataLoad = "Load_From_XLS";
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("paymentId=").append(paymentId);
+        str.append(" flatId=").append(flatId);
+        str.append(" flatNo=").append(flatNo);
         str.append(" status=").append(status);
         str.append(" month=").append(month);
         str.append(" year=").append(year);
         str.append(" amount=").append(amount);
+        str.append(" amountInitial=").append(amountInitial);
         str.append(" comments=").append(comments);
         str.append(" expenseType=").append(expenseType);
         str.append(" expenseTypeId=").append(expenseTypeId);
@@ -40,7 +47,7 @@ public class FlatWisePayable implements Comparable<FlatWisePayable>, Serializabl
     @Override
     public int compareTo(FlatWisePayable another) {
 
-        if(this.payablePriority < another.payablePriority)
+        if(this.payablePriority > another.payablePriority)
         {
             return 1;
         }

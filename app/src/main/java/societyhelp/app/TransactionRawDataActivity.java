@@ -2,6 +2,7 @@ package societyhelp.app;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,7 @@ import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.UserDetails;
 
-public class TransactionRawDataActivity extends AppCompatActivity {
+public class TransactionRawDataActivity extends DashBoardActivity {
 
     List<UserDetails> users;
     private ProgressDialog progress;
@@ -30,36 +31,27 @@ public class TransactionRawDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         try {
             setContentView(R.layout.activity_transaction_raw_data);
+            int[] fixedColumnWidths = new int[]{20, 5, 5, 70, 20, 70, 100, 20, 20};
+            int[] scrollableColumnWidths = new int[]{20, 5, 5, 70, 20, 70, 100, 20, 20};
+            int fixedRowHeight = 70;
+            int fixedHeaderHeight = 70;
 
             TableRow.LayoutParams wrapWrapTableRowParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int[] fixedColumnWidths = new int[]{20, 5, 5, 40, 20, 70, 60, 20, 20};
-            int[] scrollableColumnWidths = new int[]{20, 5, 5, 40, 20, 70, 60, 20, 20};
-            int fixedRowHeight = 50;
-            int fixedHeaderHeight = 60;
+            TableRow row = getTableRow();
 
-            TableRow row = new TableRow(this);
-            //header (fixed vertically)
-            TableLayout header = (TableLayout) findViewById(R.id.table_header);
-            row.setLayoutParams(wrapWrapTableRowParams);
-            row.setGravity(Gravity.CENTER);
-            row.setBackgroundColor(Color.YELLOW);
-            //row.addView(makeTableRowWithText("User Id", fixedColumnWidths[0], fixedHeaderHeight));
-          //  row.addView(makeTableRowWithText("Approved", fixedColumnWidths[1], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Sr", fixedColumnWidths[2], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Name in transaction", fixedColumnWidths[3], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Amount", fixedColumnWidths[4], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Transaction Date", fixedColumnWidths[5], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Reference", fixedColumnWidths[6], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Cr / Dr", fixedColumnWidths[7], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Type", fixedColumnWidths[8], fixedHeaderHeight));
-            //header.addView(row);
+            row.addView(makeTableRowWithText("Sr", fixedColumnWidths[2], fixedHeaderHeight, Gravity.LEFT));
+            row.addView(makeTableRowWithText("Name in transaction", fixedColumnWidths[3], fixedHeaderHeight, Gravity.LEFT));
+            row.addView(makeTableRowWithText("Amount", fixedColumnWidths[4], fixedHeaderHeight, Gravity.RIGHT));
+            row.addView(makeTableRowWithText("Transaction Date", fixedColumnWidths[5], fixedHeaderHeight, Gravity.RIGHT));
+            row.addView(makeTableRowWithText("Reference", fixedColumnWidths[6], fixedHeaderHeight, Gravity.RIGHT));
+            row.addView(makeTableRowWithText("Cr / Dr", fixedColumnWidths[7], fixedHeaderHeight, Gravity.RIGHT));
+            row.addView(makeTableRowWithText("Type", fixedColumnWidths[8], fixedHeaderHeight, Gravity.RIGHT));
 
             TableLayout fixedColumn = (TableLayout) findViewById(R.id.fixed_column);
-            TextView fixedViewUserIdH = makeTableRowWithText("User Id", scrollableColumnWidths[0], fixedHeaderHeight);
-            fixedViewUserIdH.setBackgroundColor(Color.YELLOW);
+            TextView fixedViewUserIdH = makeTableRowWithText("User Id", scrollableColumnWidths[0], fixedHeaderHeight, Gravity.LEFT);
+            fixedViewUserIdH.setBackgroundColor(ContextCompat.getColor(this, R.color.tableStaticHeaderColor));
             fixedViewUserIdH.setLayoutParams(wrapWrapTableRowParams);
             fixedColumn.addView(fixedViewUserIdH);
-
 
             //rest of the table (within a scroll view)
             TableLayout scrollablePart = (TableLayout) findViewById(R.id.reportTableLayout);
@@ -77,59 +69,43 @@ public class TransactionRawDataActivity extends AppCompatActivity {
 
                 //Fixed Columns
                 String userId = getUserID(bt.name, users);
-                TextView fixedViewUserId = makeTableRowWithText(userId, scrollableColumnWidths[0], fixedRowHeight);
+                TextView fixedViewUserId = makeTableRowWithText(userId, scrollableColumnWidths[0], fixedRowHeight, Gravity.LEFT);
                 //fixedViewUserId.setBackgroundColor(Color.BLUE);
                 fixedColumn.addView(fixedViewUserId);
                 //Fixed Columns
 
                 //Scrollable columns
-                row = new TableRow(this);
-                row.setLayoutParams(wrapWrapTableRowParams);
-                row.setGravity(Gravity.CENTER);
-                row.setBackgroundColor(Color.WHITE);
-/*
-                if (userId != null) {
-                    CheckBox approvedCheck = new CheckBox(this);
-                    approvedCheck.setOnClickListener(new View.OnClickListener() {
-                                                         @Override
-                                                         public void onClick(View v) {
-                                                             Log.d("info", "Approved");
-                                                             //insert to  DB
-                                                         }
-                                                     }
-                    );
-                    fixedColumn.addView(approvedCheck);
-                }
-*/
-                row.addView(makeTableRowWithText(String.valueOf(srNo), scrollableColumnWidths[2], fixedRowHeight));
+                row = getTableRow();
 
-                row.addView(makeTableRowWithText(bt.name, scrollableColumnWidths[3], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(srNo), scrollableColumnWidths[2], fixedRowHeight, Gravity.LEFT));
 
-                row.addView(makeTableRowWithText(String.valueOf(bt.amount), scrollableColumnWidths[4], fixedRowHeight));
+                row.addView(makeTableRowWithText(bt.name, scrollableColumnWidths[3], fixedRowHeight, Gravity.LEFT));
 
-                row.addView(makeTableRowWithText(String.valueOf(bt.transactionDate), scrollableColumnWidths[5], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(bt.amount), scrollableColumnWidths[4], fixedRowHeight, Gravity.RIGHT));
 
-                row.addView(makeTableRowWithText(bt.reference, scrollableColumnWidths[6], fixedRowHeight));
+                row.addView(makeTableRowWithText(String.valueOf(bt.transactionDate), scrollableColumnWidths[5], fixedRowHeight, Gravity.RIGHT));
 
-                row.addView(makeTableRowWithText(bt.transactionFlow, scrollableColumnWidths[7], fixedRowHeight));
+                row.addView(makeTableRowWithText(bt.reference, scrollableColumnWidths[6], fixedRowHeight, Gravity.RIGHT));
 
-                row.addView(makeTableRowWithText(bt.type, scrollableColumnWidths[8], fixedRowHeight));
+                row.addView(makeTableRowWithText(bt.transactionFlow, scrollableColumnWidths[7], fixedRowHeight, Gravity.RIGHT));
+
+                row.addView(makeTableRowWithText(bt.type, scrollableColumnWidths[8], fixedRowHeight, Gravity.RIGHT));
 
                 scrollablePart.addView(row);
 
 
                 if (userId == null) {
-                    row.setBackgroundColor(Color.RED);
-                    fixedViewUserId.setBackgroundColor(Color.RED);
+                    row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRowNotVerifiedColor));
+                    fixedViewUserId.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRowNotVerifiedColor));
                 }
                 else if(isdimGreen) {
-                    row.setBackgroundColor(Color.argb(100, 143, 196, 162));
-                    fixedViewUserId.setBackgroundColor(Color.argb(100, 143, 196, 162));
+                    row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
+                    fixedViewUserId.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow1Color));
                     isdimGreen = !isdimGreen;
                 }
                 else {
-                    row.setBackgroundColor(Color.argb(100, 178, 243, 202));
-                    fixedViewUserId.setBackgroundColor(Color.argb(100, 178, 243, 202));
+                    row.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
+                    fixedViewUserId.setBackgroundColor(ContextCompat.getColor(this, R.color.tableRow2Color));
                     isdimGreen = !isdimGreen;
                 }
 
@@ -154,18 +130,5 @@ public class TransactionRawDataActivity extends AppCompatActivity {
     }
 
 
-    //util method
-    private TextView recyclableTextView;
-
-    public TextView makeTableRowWithText(String text, int widthInPercentOfScreenWidth, int fixedHeightInPixels) {
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        recyclableTextView = new TextView(this);
-        recyclableTextView.setText(text);
-        recyclableTextView.setTextColor(Color.BLACK);
-        recyclableTextView.setTextSize(10);
-        recyclableTextView.setWidth(widthInPercentOfScreenWidth * screenWidth / 100);
-        recyclableTextView.setHeight(fixedHeightInPixels);
-        return recyclableTextView;
-    }
 
 }

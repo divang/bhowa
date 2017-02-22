@@ -1,0 +1,3 @@
+SocietyHelp APP Data usage policy-
+- It only read the file from the device which is uploaded by the user. 
+- It writes a balance sheet XLS in societyhelp folder. If societyhelp folder does not exist, then it will create it.

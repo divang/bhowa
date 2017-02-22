@@ -6,15 +6,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.util.List;
+
+import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
+import societyhelp.dao.mysql.impl.StagingTransaction;
 
 public class HomeTransactionActivity extends DashBoardActivity {
 
     private ProgressDialog progress;
 
-    public void onButtonClicker(View v)
-    {
+    public void onButtonClicker(View v) {
         try {
             final BankStatement bankStat = (BankStatement) getIntent().getSerializableExtra("bankStat");
 
@@ -22,8 +25,10 @@ public class HomeTransactionActivity extends DashBoardActivity {
             switch (v.getId()) {
 
                 case R.id.transaction_report_activity_btn_view_map_user_alias:
+                    List<StagingTransaction> stagingTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllStaggingTransaction();
                     intent = new Intent(this, UserAliasMappingActivity.class);
-                    intent.putExtra("bankStat", bankStat);
+                    byte[] data = CustomSerializer.serializeObject(stagingTransactions);
+                    intent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, data);
                     startActivity(intent);
                     break;
 
@@ -70,8 +75,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                                 SocietyHelpDatabaseFactory.getDBInstance().uploadMonthlyTransactions(bankStat);
                                 Intent intentAllTrans = new Intent(getApplicationContext(), DetailTransactionViewActivity.class);
                                 startActivity(intentAllTrans);
-                            }catch (Exception e)
-                            {
+                            } catch (Exception e) {
                                 Log.e("Error", "Upload Monthly transaction has problem", e);
                             }
                             progress.dismiss();
@@ -92,9 +96,8 @@ public class HomeTransactionActivity extends DashBoardActivity {
                         public void run() {
                             try {
                                 SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedTransactions(verifiedBankStat);
-                            }catch (Exception e)
-                            {
-                                Log.e("Error","Insert verified data has problem",e);
+                            } catch (Exception e) {
+                                Log.e("Error", "Insert verified data has problem", e);
                             }
 
                             progress.dismiss();
@@ -105,8 +108,7 @@ public class HomeTransactionActivity extends DashBoardActivity {
                     break;
 
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e("Error", "HomeTransactionActivity has some problem", e);
         }
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import android.os.AsyncTask;
 import societyhelp.dao.ISocietyHelpDatabase;
+import societyhelp.parser.LoadBhowaInitialData;
 
 /**
  * Created by divang.sharma on 8/6/2016.
@@ -48,7 +49,22 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 		getUnVerifiedCashPayment,
 		saveVerifiedCashPayment,
 		generateSplittedTransactionsFlatWise,
-		getFlatWisePayables
+		getFlatWisePayables,
+		getAllStagingTransactions,
+		balanceSheetData,
+		loadInitialData,
+		createSociety,
+		userWiseAutoSplitTransactions,
+		flatWiseAutoSplitTransactions,
+		userWiseUnSplittedTransactions,
+		flatWiseUnSplittedTransactions,
+		getSociety,
+		allWaterSupplier,
+		insertWaterReading,
+		getAllWaterReadings,
+		getUnsettledCreditTransaction,
+		getUnsettledDebitTransaction,
+		settledCreditTransaction
 	}
 
 	@Override
@@ -142,7 +158,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 
 				case saveVerifiedTransactions:
-					dbCore.saveVerifiedTransactionsDB(params[1]);
+					result = dbCore.saveVerifiedTransactionsDB(params[1]);
 					break;
 
 				case getMyTransactions:
@@ -186,6 +202,51 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 				case getFlatWisePayables:
 					result = dbCore.getFlatWisePayables();
+					break;
+				case getAllStagingTransactions:
+					result = dbCore.getAllStaggingTransaction();
+					break;
+				case balanceSheetData:
+					result = dbCore.getBalanceSheetData();
+					break;
+				case loadInitialData:
+					dbCore.loadInitialData(params[1]);
+					break;
+				case createSociety:
+					dbCore.createSociety(params[1]);
+					break;
+				case userWiseAutoSplitTransactions:
+					result = dbCore.userWiseAutoSplitTransactions(String.valueOf(params[1]));
+					break;
+				case flatWiseAutoSplitTransactions:
+					result = dbCore.flatWiseAutoSplitTransactions(String.valueOf(params[1]));
+					break;
+				case userWiseUnSplittedTransactions:
+					result = dbCore.getUserWiseUnSplittedTransaction(String.valueOf(params[1]));
+					break;
+				case flatWiseUnSplittedTransactions:
+					result = dbCore.getFlatWiseUnSplittedTransaction(String.valueOf(params[1]));
+					break;
+				case getSociety:
+					result = dbCore.getAllSociety();
+					break;
+				case allWaterSupplier:
+					result = dbCore.getAllWaterSupplier();
+					break;
+				case insertWaterReading:
+					dbCore.insertWaterReading(params[1]);
+					break;
+				case getAllWaterReadings:
+					result = dbCore.getAllWaterReading();
+					break;
+				case getUnsettledCreditTransaction:
+					result = dbCore.getUnsettledCreditTransaction();
+					break;
+				case getUnsettledDebitTransaction:
+					result = dbCore.getUnsettledDebitTransaction();
+					break;
+				case settledCreditTransaction:
+					dbCore.settledCreditTransaction(params[1]);
 					break;
 			}
 
@@ -390,10 +451,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public void saveVerifiedTransactions(Object obj) throws Exception {
+	public List<SocietyHelpTransaction> saveVerifiedTransactions(Object obj) throws Exception {
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.saveVerifiedTransactions.name(),obj);
 		try {
-			aTask.get();
+			return (List<SocietyHelpTransaction>)aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -508,4 +569,158 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 			throw e;
 		}
 	}
+
+	@Override
+	public List<StagingTransaction> getAllStaggingTransaction() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllStagingTransactions.name());
+		try {
+			return (List<StagingTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<TransactionOnBalanceSheet> getBalanceSheetData() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.balanceSheetData.name());
+		try {
+			return (List<TransactionOnBalanceSheet>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void loadInitialData(LoadBhowaInitialData.LoadData data) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.loadInitialData.name(), data);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void createSociety(SocietyDetails societyDetails) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createSociety.name(), societyDetails);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<TransactionOnBalanceSheet> userWiseAutoSplitTransactions(String loginId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.userWiseAutoSplitTransactions.name(), loginId);
+		try {
+			return (List<TransactionOnBalanceSheet>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	@Override
+	public List<TransactionOnBalanceSheet> flatWiseAutoSplitTransactions(String flatId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.flatWiseAutoSplitTransactions.name(), flatId);
+		try {
+			return (List<TransactionOnBalanceSheet>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<SocietyHelpTransaction> getUserWiseUnSplittedTransaction(String loginId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.userWiseUnSplittedTransactions.name(), loginId);
+		try {
+			return (List<SocietyHelpTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<SocietyHelpTransaction> getFlatWiseUnSplittedTransaction(String flatId) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.flatWiseUnSplittedTransactions.name(), flatId);
+		try {
+			return (List<SocietyHelpTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<SocietyDetails> getAllSociety() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getSociety.name());
+		try {
+			return (List<SocietyDetails>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<WaterSuppyReading> getAllWaterSupplier() throws Exception {
+
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.allWaterSupplier.name());
+		try {
+			return (List<WaterSuppyReading>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void insertWaterReading(WaterSuppyReading reading) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.insertWaterReading.name(), reading);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<WaterSuppyReading> getAllWaterReading() throws Exception {
+
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllWaterReadings.name());
+		try {
+			return (List<WaterSuppyReading>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<StagingTransaction> getUnsettledCreditTransaction() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getUnsettledCreditTransaction.name());
+		try {
+			return (List<StagingTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<StagingTransaction> getUnsettledDebitTransaction() throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getUnsettledDebitTransaction.name());
+		try {
+			return (List<StagingTransaction>)aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void settledCreditTransaction(Object transactions) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.settledCreditTransaction.name(), transactions);
+		try {
+			aTask.get();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 }

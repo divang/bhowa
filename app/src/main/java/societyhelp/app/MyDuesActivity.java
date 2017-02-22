@@ -28,7 +28,7 @@ public class MyDuesActivity extends DashBoardActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_dues);
 
-        setHeader("", true, false);
+        setHeader(getString(R.string.title_activity_my_dues), true, false);
 
         //setCustomToolBarBack();
         try {
@@ -78,7 +78,8 @@ public class MyDuesActivity extends DashBoardActivity {
             for (SocietyHelpTransaction bt : allTransactions) {
 
                 //Fixed Columns
-                TextView fixedViewUserId = makeTableRowWithText(bt.transactionFlow, scrollableColumnWidths[0], fixedRowHeight);
+                TextView fixedViewUserId = makeTableRowWithText(bt.expenseType != null ? bt.expenseType.toString():""+" ("+bt.transactionFlow+")", scrollableColumnWidths[0], fixedRowHeight);
+                //TextView fixedViewUserId = makeTableRowWithText(bt.transactionFlow, scrollableColumnWidths[0], fixedRowHeight);
                 //fixedViewUserId.setBackgroundColor(Color.BLUE);
                 fixedColumn.addView(fixedViewUserId);
                 //Fixed Columns

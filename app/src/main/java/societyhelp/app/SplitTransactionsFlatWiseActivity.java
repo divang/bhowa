@@ -34,8 +34,7 @@ public class SplitTransactionsFlatWiseActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_split_transactions_flat_wise);
-        setHeader("", true, false);
-        //setCustomToolBarBack();
+        setHeader(getString(R.string.title_activity_verify_splitted_transaction), false, true);
 
         List<UserPaid> userPaids = null;
         try {
@@ -80,7 +79,6 @@ public class SplitTransactionsFlatWiseActivity extends DashBoardActivity {
             row.addView(makeTableRowWithText("Amount", fixedColumnWidths[4], fixedHeaderHeight));
             row.addView(makeTableRowWithText("Paid Date", fixedColumnWidths[5], fixedHeaderHeight));
             row.addView(makeTableRowWithText("Expense Type", fixedColumnWidths[6], fixedHeaderHeight));
-            row.addView(makeTableRowWithText("Transaction ID", fixedColumnWidths[7], fixedHeaderHeight));
             row.addView(makeTableRowWithText("User Comment", fixedColumnWidths[8], fixedHeaderHeight));
             row.addView(makeTableRowWithText("Admin Comment", fixedColumnWidths[9], fixedHeaderHeight));
             scrollablePart.addView(row);
@@ -126,7 +124,6 @@ public class SplitTransactionsFlatWiseActivity extends DashBoardActivity {
                 row.addView(makeTableRowWithText(String.valueOf(paid.amount), scrollableColumnWidths[4], fixedRowHeight));
                 row.addView(makeTableRowWithText(String.valueOf(paid.expendDate), scrollableColumnWidths[5], fixedRowHeight));
                 row.addView(makeTableRowWithText(String.valueOf(paid.expenseType), scrollableColumnWidths[6], fixedRowHeight));
-                row.addView(makeTableRowWithText(String.valueOf(paid.transactionId), scrollableColumnWidths[7], fixedRowHeight));
                 row.addView(makeTableRowWithText(String.valueOf(paid.userComment), scrollableColumnWidths[8], fixedRowHeight));
                 row.addView(makeTableRowWithText(String.valueOf(paid.adminComment), scrollableColumnWidths[9], fixedRowHeight));
 
@@ -153,7 +150,9 @@ public class SplitTransactionsFlatWiseActivity extends DashBoardActivity {
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
+
                                     SocietyHelpDatabaseFactory.getDBInstance().saveVerifiedCashPayment(getLoginId(), getStrPaymentIds());
+
                                     List<UserPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
                                     Intent intentInner = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(payments);

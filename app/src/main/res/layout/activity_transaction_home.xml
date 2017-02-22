@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="societyhelp.app.transaction.TransactionHomeActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            >
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/upload_pdf_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_upload_pdf"
+                    android:onClick="openFileBrowser"
+                    android:text="@string/upload_pdf_button_text"
+                    />
+
+                <Button
+                    android:id="@+id/view_pdf_data_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_transactions"
+                    android:onClick="viewPDFStagingTransactions"
+                    android:text="@string/view_pdf_data_text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/pdf_debit_manage_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_debit_manage_home"
+                    android:onClick="autoSplitAndVerified"
+                    android:text="@string/debit_manage_home_text"
+                    />
+
+                <Button
+                    android:id="@+id/pdf_credit_manage_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_credit_manage_home"
+                    android:onClick="unSettledCreditTransactions"
+                    android:text="@string/credit_manage_home_text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/validating_user_cash_expense"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_user_cash_expense_validation"
+                    android:onClick="validateUserCashDeposit"
+                    android:text="@string/verify_user_cash_deposit"
+                    />
+
+                <Button
+                    android:id="@+id/validating_initial_data"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_validating_initial_data"
+                    android:onClick="goToDebitTransactionActivity"
+                    android:text="@string/credit_manage_home_text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/transaction_report_activity_btn_view_map_user_alias"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_user_mapping"
+                    android:onClick="mapPDFNameToIUser"
+                    android:text="@string/mapUserAliasIconText"
+                    />
+
+                <Button
+                    android:id="@+id/upload_initial_data"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_upload_raw_data"
+                    android:onClick="loadInitialData"
+                    android:text="@string/load_initial_data_text"
+                    />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -9,16 +9,16 @@ import java.sql.Date;
 public class UserPaid implements Serializable {
 
     public int paymentId;
-    public float amount;
-    public java.sql.Date expendDate;
-    public ExpenseType.ExpenseTypeConst expenseType;
     public String userId;
     public String flatId;
+    public float amount;
+    public float amountInitial;
+    public java.sql.Date expendDate;
+    public ExpenseType.ExpenseTypeConst expenseType;
     public String userComment;
     public String adminComment;
     public boolean isVerified;
     public String verifiedBy;
-    public int transactionId;
     public boolean isUserVerified;
 
 
@@ -27,6 +27,7 @@ public class UserPaid implements Serializable {
         StringBuilder str = new StringBuilder();
         str.append("paymentId=").append(paymentId);
         str.append(" amount=").append(amount);
+        str.append(" amountInitial=").append(amountInitial);
         str.append(" userComment=").append(userComment);
         str.append(" expendDate=").append(expendDate);
         str.append(" expenseType=").append(expenseType);
@@ -35,7 +36,6 @@ public class UserPaid implements Serializable {
         str.append(" flatId=").append(flatId);
         str.append(" isVerified=").append(isVerified);
         str.append(" verifiedBy=").append(verifiedBy);
-        str.append(" transactionId=").append(transactionId);
         str.append(" isUserVerified=").append(isUserVerified);
         return str.toString();
     }

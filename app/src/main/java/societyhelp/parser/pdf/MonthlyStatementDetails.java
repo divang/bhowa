@@ -6,9 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 
-public class MonthlyStatementDetails {
+public class MonthlyStatementDetails implements SocietyHelpConstant {
 
 	protected  DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 
@@ -399,8 +400,8 @@ public class MonthlyStatementDetails {
 
 		if(indexDR == -1 &&  indexCR > 0 ) t.transactionFlow = "Credit";
 		else if(indexCR == -1 &&  indexDR > 0 ) t.transactionFlow = "Debit";
-		else if(indexCR > indexDR) t.transactionFlow = "Debit";
-		else if(indexCR < indexDR) t.transactionFlow = "Credit";
+		else if(indexCR > indexDR) t.transactionFlow = CONST_DEBIT_TRANSACTION_FLOW;
+		else if(indexCR < indexDR) t.transactionFlow = CONST_CREDIT_TRANSACTION_FLOW;
 	}
 
 }

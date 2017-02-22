@@ -8,6 +8,7 @@ public class BankStatement implements Serializable {
 	public String bankStatementFileName;
 	public List<SocietyHelpTransaction> allTransactions;
 	public List<String> rowdata;
+	public String uploadedLoginId;
 	
 	@Override
 	public String toString() {
@@ -15,16 +16,4 @@ public class BankStatement implements Serializable {
 		str.append("bankStatementFileName").append(bankStatementFileName);
 		return str.toString();
 	}
-	
-	/* Database Schema
- 	
- 	CREATE TABLE `Bank_Statement` (
-	`Statement_FileName` VARCHAR(100) NOT NULL,
-	`Uploaded_Date` DATETIME NOT NULL,
-	`Status` VARCHAR(10) NOT NULL
-	)
-	ENGINE=InnoDB
-	ROW_FORMAT=DEFAULT
-	 
-	 */
 }

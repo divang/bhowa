@@ -11,8 +11,10 @@
     <!-- TO access storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- android:uses-permission android:name="android.permission.READ_PHONE_STATE" / -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -47,9 +49,46 @@
         <activity android:name=".AddCashExpenseActivity" />
         <activity android:name=".VerifiedCashPaymentActivity" />
         <activity android:name=".SplitTransactionsFlatWiseActivity" />
+        <activity android:name=".FlatWiseAllPayableActivity" />
+        <activity android:name=".transaction.StagingTransactionViewActivity" />
+        <activity android:name=".transaction.TransactionHomeActivity" />
+        <activity android:name=".transaction.CreditTransactionsActivity" />
+        <activity android:name=".transaction.DebitTransactionsActivity" />
         <activity
-            android:name=".FlatWiseAllPayableActivity"
-            android:label="@string/title_activity_flat_wise_all_payable" >
+            android:name=".CreateSocietyActivity"
+            android:label="@string/title_activity_create_society" >
+        </activity>
+        <activity
+            android:name=".StatusMessageActivity"
+            android:label="@string/title_activity_status_message" >
+        </activity>
+        <activity
+            android:name=".ManualSplitActivity"
+            android:label="@string/title_activity_manual_split" >
+        </activity>
+        <activity
+            android:name=".ExpenseReportInPieChartActivity"
+            android:label="@string/title_activity_expense_report_in_pie_chart" >
+        </activity>
+        <activity
+            android:name=".reports.AllExpenseReportActivity"
+            android:label="@string/title_activity_all_expense_report" >
+        </activity>
+        <activity
+            android:name=".reports.ExpenseTypeWiseReportActivity"
+            android:label="@string/title_activity_expense_type_wise_report" >
+        </activity>
+        <activity
+            android:name=".AddWaterReadingActivity"
+            android:label="@string/title_activity_add_water_reading" >
+        </activity>
+        <activity
+            android:name=".ViewWaterReadingActivity"
+            android:label="@string/title_activity_view_water_reading" >
+        </activity>
+        <activity
+            android:name=".transaction.UnSettledCreditActivity"
+            android:label="@string/title_activity_un_settled_credit" >
         </activity>
     </application>
 

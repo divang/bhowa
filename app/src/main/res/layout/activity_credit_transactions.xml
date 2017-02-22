@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="societyhelp.app.transaction.CreditTransactionsActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/user_mapping_credit_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_user_mapping"
+                    android:onClick="mapNameToUserId"
+                    android:text="@string/user_mapping_text" />
+
+                <Button
+                    android:id="@+id/view_verified_credit_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_varified_credit"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/verified_credit_transaction_text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/credit_verifying_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_varifying_credit_transactions"
+                    android:onClick="verifyPDFStagingTransactions"
+                    android:text="@string/verifying_credit_transaction_text" />
+
+                <Button
+                    android:id="@+id/split_credit_transaction_th"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_varifying_credit_transactions"
+                    android:onClick="verifyPDFStagingTransactions"
+                    android:text="@string/split_credit_transactions_text" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

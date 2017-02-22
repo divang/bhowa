@@ -8,8 +8,8 @@ android {
         applicationId "societyhelp.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 7
-        versionName "1.7"
+        versionCode 19
+        versionName "1.19"
     }
 
     aaptOptions {
@@ -17,7 +17,7 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        abortOnError
     }
 
     buildTypes {
@@ -37,4 +37,6 @@ dependencies {
     compile 'com.android.support:design:23.2.0'
     compile 'com.android.support:support-vector-drawable:23.2.0'
     compile 'com.android.support:animated-vector-drawable:23.2.0'
+    //compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 }

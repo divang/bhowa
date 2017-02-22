@@ -25,6 +25,9 @@ public class UserDetails implements Serializable{
 	public Date flatLeftDate;
 	public List<SocietyAuthorization.Type> sAuthorizations = new ArrayList<>();
 
+	public final static String OWNER = "Owner";
+	public final static String TENANT = "Tenant";
+
 	public String getAuthorizationList()
 	{
 		StringBuilder str = new StringBuilder();

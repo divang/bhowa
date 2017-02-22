@@ -31,13 +31,17 @@
 
     <color name="btnEnableColor">#4e69a2</color>
 
-    <color name="tableStaticHeaderColor">#4e69a2</color>
+    <color name="textCreateSocietyColor">#444fa2</color>
+
+    <color name="tableStaticHeaderColor">#d8d8d8</color>
 
     <color name="tableStaticLeftColumnColor">#758ab6</color>
 
-    <color name="tableRow1Color">#b0bcd5</color>
+    <color name="tableTextColor">#000000</color>
 
-    <color name="tableRow2Color">#9daccb</color>
+    <color name="tableRow1Color">#f2f2f2</color>
+
+    <color name="tableRow2Color">#b2c4a8</color>
 
     <color name="tableRowNotVerifiedColor">#cb7e7a</color>
 

@@ -3,25 +3,17 @@
 
     <string name="uploadPdfText">Please upload monthly kotak bank statement in PDF format!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_upload_pdf">UploadPDf</string>
-    <string name="title_activity_transaction_report">TransactionReport</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_dash_board">DashBoardActivity</string>
 
     <!-- Home Dashboard Icons text -->
     <string name="createLoginIconText">Create Login</string>
     <string name="addFlatIconText">Add Flat Details</string>
     <string name="addUserIconText">Add User</string>
-
     <string name="viewAllLoginIconText">View Login</string>
     <string name="viewAllFlatIconText">View Flats</string>
-    <string name="manageUsersIconText">View Users</string>
-
+    <string name="manageUsersIconText">View Users Details</string>
     <string name="uploadPdfIconText">Monthly Bank Statement Upload</string>
     <string name="downloadRawDataIconText">Raw Data</string>
     <string name="allTransactionsIconText">All Transactions</string>
-
     <string name="expenditureTypeIconText">Expenditure Types</string>
     <string name="myExpensesIconText">My Transactions</string>
     <string name="myDuesIconText">My Dues</string>
@@ -35,14 +27,54 @@
     <string name="viewTransactionsIconText">View Transactions</string>
     <string name="uploadRawDataIconText">Upload Raw Data</string>
     <string name="uploadTransactionsIconText">Upload Transactions</string>
-    <string name="verifiedTransactionsIconText">Verified Transactions</string>
+    <string name="verifiedTransactionsIconText">Export Balance sheet in XLS</string>
     <string name="generateMaintenanceIconText">Generate Flat Payable</string>
     <string name="myExpenseIconText">Add your Expends</string>
     <string name="splitTransactionText">View Splitted Transaction</string>
-    <string name="saveSplitTransactionText">Save Splitted Transaction</string>
+    <string name="saveSplitTransactionText">Export Balance Sheet in XLS</string>
     <string name="validateUserExpenseIconText">Validate User Expense</string>
+    <string name="verifyAutoSplitTransactionHomeTest">Verify auto split</string>
+    <string name="splitTransactionsHomeTest">Split your transactions</string>
+    <string name="expenseReportPieChartText">Expense Report Pie Chart</string>
+    <!-- Color -->
+    <color name="white">#FFFFFF</color>
 
-    <string name="title_activity_home">HomeActivity</string>
+    <!-- <string name="uploadPdfIconText">Monthly Bank Statement Upload</string> -->
+    <string name="transaction_home_button_text">Transaction Home Page</string>
+
+    <!-- -->
+
+    <!-- Start Transaction Home Activity -->
+    <string name="upload_pdf_button_text">Upload Bank Statement</string>
+    <string name="view_pdf_data_text">View PDF File data</string>
+
+    <string name="credit_manage_home_text">Manage Credit Transactions</string>
+    <string name="debit_manage_home_text">Auto Verify and Split Transaction</string>
+    <string name="verify_user_cash_deposit">Verify User Cash Debit</string>
+    <string name="load_initial_data_text">Upload Initial Data</string>
+
+    <string name="Balance_Sheet_text">View Balance Sheet</string>
+
+    <string name="user_mapping_text">Map PDF name to user Id</string>
+    <string name="expense_mapping_text">Map Debit amount to expense</string>
+
+    <string name="verifying_credit_transaction_text">Verify Credit Transactions</string>
+    <string name="verifying_debit_transaction_text">Verify Debit Transactions</string>
+    <string name="verified_credit_transaction_text">All Credit Transactions</string>
+    <string name="verified_debit_transaction_text">All Debit Transactions</string>
+    <!-- End Transaction Home Activity -->
+
+    <!-- Credit transaction Activity -->
+    <string name="split_credit_transactions_text">Split Credit Transactions</string>
+
+    <!-- Start Custom Tool bar Title  -->
+    <string name="title_activity_credit_transactions">Manage Credit Transactions</string>
+    <string name="title_activity_unshettled_credit_transactions">UnSettled Credit Transactions</string>
+    <string name="title_activity_debit_transactions">Manage Debit Transactions</string>
+    <string name="title_activity_upload_pdf">UploadPDf</string>
+    <string name="title_activity_transaction_report">TransactionReport</string>
+    <string name="title_activity_dash_board">DashBoardActivity</string>
+    <string name="title_activity_home">Society Help Home</string>
     <string name="title_activity_manage_user">ManageUserActivity</string>
     <string name="title_activity_manage_expenditure_type">ManageExpenditureTypeActivity</string>
     <string name="title_activity_view_raw_transaction_data">ViewRawTransactionDataActivity</string>
@@ -57,17 +89,37 @@
     <string name="title_activity_manage_login">ManageLoginActivity</string>
     <string name="title_activity_manage_flat">ManageFlatActivity</string>
     <string name="title_activity_detail_transaction_view">DetailTransactionViewActivity</string>
-    <string name="title_activity_my_dues">MyDuesActivity</string>
-
-
-    <!-- Color -->
-    <color name="white">#FFFFFF</color>
+    <string name="title_activity_my_dues">My payables and paid</string>
     <string name="title_activity_manage_flat_wise_payable">ManageFlatWisePayableActivity</string>
     <string name="title_activity_add_cash_expense">AddCashExpenseActivity</string>
-    <string name="title_activity_verified_cash_payment">VerifiedCashPaymentActivity</string>
-    <string name="title_activity_split_transactions_flat_wise">SplitTransactionsFlatWiseActivity
-    </string>
+    <string name="title_activity_verified_cash_payment">PDF Transaction</string>
+    <string name="title_activity_split_transactions_flat_wise">SplitTransactionsFlatWiseActivity</string>
     <string name="title_activity_flat_wise_all_payable">FlatWiseAllPayableActivity</string>
+    <string name="title_activity_transaction_home">Manage PDF Transactions</string>
+    <string name="title_activity_verify_user_cash_deposit">Verify User Cash Deposit</string>
+    <string name="title_activity_verify_splitted_transaction">Verify Split Transactions</string>
+    <string name="title_activity_user_revert_auto_split">Revert Auto Split</string>
+    <string name="title_apartment_expense_report">Apartment Expense Report</string>
+    <!-- End Custom Tool bar Title  -->
 
+    <string name="Title_New_Society_Create"><i><u>Create New Society</u></i></string>
+    <string name="title_activity_create_society">CreateSocietyActivity</string>
+
+    <string name="Society_Add_Response">Thanks!!! for showing interest. Will get back to you shortly over supplied Mail.</string>
+    <string name="title_activity_status_message">StatusMessageActivity</string>
+    <string name="title_activity_manual_split">ManualSplitActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_expense_report_in_pie_chart">ExpenseReportInPieChartActivity
+    </string>
+    <string name="title_activity_all_expense_report">Apartment Expense Report</string>
+    <string name="title_activity_expense_type_wise_report">Expense Type Wise Report</string>
+
+    <string name="addWaterReadingText">Enter Water Reading</string>
+    <string name="viewWaterReadingText">View Water Reading</string>
+
+    <string name="title_activity_add_water_reading">Add Water Reading</string>
+    <string name="title_activity_view_water_reading">Water Reading</string>
+    <string name="title_activity_un_settled_credit">UnSettledCreditActivity</string>
 
 </resources>

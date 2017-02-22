@@ -206,8 +206,8 @@ public class AddUserActivity extends DashBoardActivity {
     {
         List<String> types = new ArrayList<>();
         types.add("Select User Type");
-        types.add("Owner");
-        types.add("Tenant");
+        types.add(UserDetails.OWNER);
+        types.add(UserDetails.TENANT);
         return  types;
     }
 
