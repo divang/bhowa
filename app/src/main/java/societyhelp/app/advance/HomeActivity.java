@@ -1,26 +1,24 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.system.Os;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import societyhelp.app.R;
 import societyhelp.app.reports.AllExpenseReportActivity;
 import societyhelp.app.transaction.TransactionHomeActivity;
-import societyhelp.app.util.FileChooser;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.Util;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.FlatWisePayable;
@@ -30,7 +28,6 @@ import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 import societyhelp.dao.mysql.impl.UserPaid;
 import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.dao.mysql.impl.WaterSuppyReading;
-import societyhelp.parser.SocietyHelpParserFactory;
 
 public class HomeActivity extends DashBoardActivity {
 
@@ -232,7 +229,7 @@ public class HomeActivity extends DashBoardActivity {
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
-                                    List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats();
+                                    List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats(getSocietyId());
                                     Intent innerIntent = new Intent(getApplicationContext(), ManageFlatActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(flats);
                                     innerIntent.putExtra(CONST_ALL_FLATS, sObj);
@@ -258,7 +255,7 @@ public class HomeActivity extends DashBoardActivity {
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
-                                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+                                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers(getSocietyId());
                                     Intent innerIntent = new Intent(getApplicationContext(), ManageUserActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(users);
                                     innerIntent.putExtra(CONST_ALL_USERS, sObj);
@@ -310,7 +307,7 @@ public class HomeActivity extends DashBoardActivity {
                             public void run() {
                                 try {
                                     List<UserPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
-                                    Intent intentMyDues = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
+                                    Intent intentMyDues = new Intent(getApplicationContext(), ManageExpenditureTypeActivity.VerifiedCashPaymentActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(payments);
                                     intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);
 
@@ -400,7 +397,7 @@ public class HomeActivity extends DashBoardActivity {
                             public void run() {
                                 try {
                                     List<UserPaid> splipttedUserPaid = SocietyHelpDatabaseFactory.getDBInstance().generateSplittedTransactionsFlatWise();
-                                    Intent innerIntent = new Intent(getApplicationContext(), SplitTransactionsFlatWiseActivity.class);
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManageFlatWisePayableActivity.SplitTransactionsFlatWiseActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(splipttedUserPaid);
                                     innerIntent.putExtra(CONST_SPLITTED_TRANSACTION, sObj);
                                     startActivity(innerIntent);
@@ -549,7 +546,7 @@ public class HomeActivity extends DashBoardActivity {
                             public void run() {
                                 try {
                                     List<WaterSuppyReading> readings = SocietyHelpDatabaseFactory.getDBInstance().getAllWaterReading();
-                                    Intent innerIntent = new Intent(getApplicationContext(), ViewWaterReadingActivity.class);
+                                    Intent innerIntent = new Intent(getApplicationContext(), ManageExpenditureTypeActivity.ViewWaterReadingActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(readings);
                                     innerIntent.putExtra(CONST_WATER_READINGS, sObj);
                                     startActivity(innerIntent);
@@ -577,7 +574,7 @@ public class HomeActivity extends DashBoardActivity {
     {
         StringBuilder listFlatIds = new StringBuilder();
         listFlatIds.append("Select Flat Id").append(",");
-        List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats();
+        List<Flat> flats = SocietyHelpDatabaseFactory.getDBInstance().getAllFlats(getSocietyId());
         for(Flat f : flats)
         {
             listFlatIds.append(f.flatId).append(",");
@@ -612,7 +609,7 @@ public class HomeActivity extends DashBoardActivity {
     {
         StringBuilder listIds = new StringBuilder();
         listIds.append("Select Login Id").append(",");
-        List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+        List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers(getSocietyId());
 
         for(UserDetails u : users)
         {

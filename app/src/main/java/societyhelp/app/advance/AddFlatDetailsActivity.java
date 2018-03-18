@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import societyhelp.app.R;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.Flat;
@@ -51,7 +52,7 @@ public class AddFlatDetailsActivity extends DashBoardActivity {
                 flat.area = Integer.valueOf(fAreaText.getText().toString());
                 flat.maintenanceAmount = Float.valueOf(fMaintenanceAmountText.getText().toString());
                 flat.block = fBlockText.getText().toString();
-
+                flat.societyId = Integer.parseInt(getSocietyId());
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
                         try {

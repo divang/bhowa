@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.List;
 
+import societyhelp.app.R;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.util.CustomSerializer;
-import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 
 public class DetailTransactionViewActivity extends DashBoardActivity {

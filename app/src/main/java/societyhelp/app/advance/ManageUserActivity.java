@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,9 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.R;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.util.CustomSerializer;
-import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.Flat;
 import societyhelp.dao.mysql.impl.UserDetails;
 
 public class ManageUserActivity extends DashBoardActivity {

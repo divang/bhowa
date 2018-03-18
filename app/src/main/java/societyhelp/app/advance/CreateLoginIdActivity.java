@@ -1,10 +1,8 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,12 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.util.List;
 
+import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
@@ -54,11 +51,16 @@ public class CreateLoginIdActivity extends DashBoardActivity {
                 Thread taskThread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            SocietyHelpDatabaseFactory.getMasterDBInstance().createLogin(loginIdText.getText().toString(), passwordText.getText().toString(), getLoginId());
+                            Login login = new Login();
+                            login.isAdmin = false;
+                            login.loginId = loginIdText.getText().toString();
+                            login.password = passwordText.getText().toString();
+                            login.societyId = getSocietyId();
+                            SocietyHelpDatabaseFactory.getMasterDBInstance().createLogin(login);
                             Intent intent = new Intent(getApplicationContext(), ManageLoginActivity.class);
 
-                            List<Login> login = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
-                            byte[] sObj = CustomSerializer.serializeObject(login);
+                            List<Login> logins = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(getLoginId());
+                            byte[] sObj = CustomSerializer.serializeObject(logins);
                             intent.putExtra(CONST_ALL_LOGINS, sObj);
 
                             startActivity(intent);

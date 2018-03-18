@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;

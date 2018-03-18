@@ -1,24 +1,17 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import societyhelp.app.R;
 import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.SocietyHelpConstant;
 
@@ -35,6 +29,12 @@ public abstract class DashBoardActivity extends AppCompatActivity implements Soc
 
     private SharedPreferences prefs;
     protected ProgressDialog progress;
+
+    public String getSocietyId() {
+        String v = prefs.getString(CONST_SOCIETY_ID_KEY_PREF_MANAGER, "");
+        Log.d("info", "society id from preference manager :" + v);
+        return v;
+    }
 
     public String getLoginId() {
         String v = prefs.getString(CONST_LOGIN_ID_KEY_PREF_MANAGER, "");

@@ -1,23 +1,12 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -28,21 +17,18 @@ import android.widget.TextView;
 
 import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.DatePickerDialogTheme;
 import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.Util;
 import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.Flat;
-import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.UserDetails;
 
 public class AddUserActivity extends DashBoardActivity {
@@ -75,7 +61,7 @@ public class AddUserActivity extends DashBoardActivity {
         emailIdText = (TextView) findViewById(R.id.emailIdText_AUA);
         addressText = (TextView) findViewById(R.id.AddressText_AUA);
         flatJoinDateText = (EditText) findViewById(R.id.flatJoinDateText_AUA);
-
+/*
         flatJoinDateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +86,7 @@ public class AddUserActivity extends DashBoardActivity {
                 }.show(getFragmentManager(), "Calendar Theme");
             }
         });
-
+*/
         flatIdSpinner = (Spinner) findViewById(R.id.flatIdSpinner_AUA);
         loginIdSpinner = (Spinner) findViewById(R.id.loginIdSpinner_AUA);
         userTypeSpinner = (Spinner) findViewById(R.id.userTypeSpinner_AUA);
@@ -176,7 +162,7 @@ public class AddUserActivity extends DashBoardActivity {
                             public void run() {
                                 try {
                                     SocietyHelpDatabaseFactory.getDBInstance().addUserDetails(ud);
-                                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+                                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers(getSocietyId());
                                     Intent innerIntent = new Intent(getApplicationContext(), ManageUserActivity.class);
                                     byte[] sObj = CustomSerializer.serializeObject(users);
                                     innerIntent.putExtra(CONST_ALL_USERS, sObj);

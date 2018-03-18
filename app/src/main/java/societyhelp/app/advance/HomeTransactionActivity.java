@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.View;
 
 import java.util.List;
 
+import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
@@ -26,20 +27,20 @@ public class HomeTransactionActivity extends DashBoardActivity {
 
                 case R.id.transaction_report_activity_btn_view_map_user_alias:
                     List<StagingTransaction> stagingTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllStaggingTransaction();
-                    intent = new Intent(this, UserAliasMappingActivity.class);
+                    intent = new Intent(this, ManageExpenditureTypeActivity.UserAliasMappingActivity.class);
                     byte[] data = CustomSerializer.serializeObject(stagingTransactions);
                     intent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, data);
                     startActivity(intent);
                     break;
 
                 case R.id.transaction_report_activity_btn_view_raw_data:
-                    intent = new Intent(this, ViewRawDataActivity.class);
+                    intent = new Intent(this, ManageExpenditureTypeActivity.ViewRawDataActivity.class);
                     intent.putExtra("bankStat", bankStat);
                     startActivity(intent);
                     break;
 
                 case R.id.transaction_report_activity_btn_view_transactions:
-                    intent = new Intent(this, TransactionRawDataActivity.class);
+                    intent = new Intent(this, ManageFlatWisePayableActivity.TransactionRawDataActivity.class);
                     intent.putExtra("bankStat", bankStat);
                     startActivity(intent);
                     break;

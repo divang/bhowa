@@ -1,36 +1,44 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
+import societyhelp.app.R;
 import societyhelp.app.util.PropertyReader;
 import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.app.util.Util;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
+import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.SocietyDetails;
-import societyhelp.dao.mysql.impl.UserDetails;
 
-public class CreateSocietyActivity extends AppCompatActivity {
+public class CreateSocietyActivity extends AppCompatActivity implements SocietyHelpConstant{
 
     private ProgressDialog progress;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         setContentView(R.layout.activity_create_society);
         setCustomToolBar();
 
         final TextView societyName = (TextView) findViewById(R.id.society_name_CS);
         final TextView emailId = (TextView) findViewById(R.id.emailId_CS);
+        final TextView city = (TextView) findViewById(R.id.city_CS);
+        final TextView coutry = (TextView) findViewById(R.id.country_CS);
+        final TextView mobileNumber = (TextView) findViewById(R.id.mobile_CS);
+
         final Button createSocietyButton = (Button) findViewById(R.id.CreateSocietyButton);
 
         createSocietyButton.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +57,9 @@ public class CreateSocietyActivity extends AppCompatActivity {
                 }
 
                 final SocietyDetails socDetail = new SocietyDetails();
-                socDetail.city = "";
-                socDetail.country = "";
+                socDetail.city = city.getText().toString();
+                socDetail.country = coutry.getText().toString();
+                socDetail.mobileNo = mobileNumber.getText().toString();
                 socDetail.emailId = emailId.getText().toString();
                 socDetail.societyName = societyName.getText().toString();
 
@@ -62,11 +71,19 @@ public class CreateSocietyActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             initDB();
-                            SocietyHelpDatabaseFactory.getDBInstance().createSociety(socDetail);
+                            String societyId = SocietyHelpDatabaseFactory.getDBInstance().createSociety(socDetail);
+                            Log.d("DEBUG","Created society Id:" + societyId);
+                            prefs.edit().putString(CONST_SOCIETY_ID_KEY_PREF_MANAGER, societyId).commit();
                             progress.dismiss();
                             progress.cancel();
 
-                            Intent homeIntent = new Intent(v.getContext(), StatusMessageActivity.class);
+                            List<Login> logins = SocietyHelpDatabaseFactory.getMasterDBInstance().getAllLogins(societyId);
+                            Log.i("info","all logins:" + logins);
+                            Intent intentCreateLogin = new Intent(getApplicationContext(), CreateLoginIdActivity.class);
+                            intentCreateLogin.putExtra(CONST_LOGIN_IDS, Login.getLogIds(logins));
+                            intentCreateLogin.putExtra(CONST_SOCIETY_ID_KEY_PREF_MANAGER, societyId);
+                            Log.i("info","society Id :" + societyId);
+                            Intent homeIntent = new Intent(v.getContext(), ManageFlatWisePayableActivity.StatusMessageActivity.class);
                             startActivity(homeIntent);
 
                         } catch (Exception e) {
@@ -84,7 +101,6 @@ public class CreateSocietyActivity extends AppCompatActivity {
         String dbUrl = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_URL, getApplicationContext());
         String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
         String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
-        Log.d("----------  Database", "dbUrl-" + dbUrl + " dbUser-" + dbUser + " dbPass-" + dbPass);
         SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
         SocietyHelpDatabaseFactory.initMasterDB(dbUrl, dbUser, dbPass);
     }

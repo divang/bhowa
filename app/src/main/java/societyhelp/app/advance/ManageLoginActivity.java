@@ -1,12 +1,7 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -14,14 +9,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.R;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.util.CustomSerializer;
-import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.Login;
-import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
-import societyhelp.dao.mysql.impl.UserPaid;
 
 public class ManageLoginActivity extends DashBoardActivity {
 

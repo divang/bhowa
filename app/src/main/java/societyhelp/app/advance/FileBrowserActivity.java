@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import java.io.File;
+
+import societyhelp.app.R;
 import societyhelp.app.util.FileChooser;
 import societyhelp.dao.mysql.impl.BankStatement;
 import societyhelp.parser.SocietyHelpParserFactory;

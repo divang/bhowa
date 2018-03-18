@@ -1,4 +1,4 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import societyhelp.app.R;
 import societyhelp.app.util.DatePickerDialogTheme;
 import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.Util;
@@ -41,7 +42,7 @@ public class AddCashExpenseActivity extends DashBoardActivity {
         commentText = (EditText) findViewById(R.id.user_comment_ACE);
         expenseType = (Spinner) findViewById(R.id.expense_type_AUA);
         final Button submit = (Button) findViewById(R.id.addMyPaidBtn_AUA);
-
+/*
         dateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +54,7 @@ public class AddCashExpenseActivity extends DashBoardActivity {
                 }.show(getFragmentManager(), "Calendar Theme");
             }
         });
-
+*/
         List<String> expenseTypes;
         try {
             expenseTypes = getExpenseTypes();

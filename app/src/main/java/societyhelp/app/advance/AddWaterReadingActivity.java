@@ -1,31 +1,24 @@
-package societyhelp.app;
+package societyhelp.app.advance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import java.sql.Date;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.ListViewAdaptor;
 import societyhelp.app.util.Util;
-import societyhelp.core.SocietyAuthorization;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.UserDetails;
 import societyhelp.dao.mysql.impl.WaterSuppyReading;
 
 public class AddWaterReadingActivity extends DashBoardActivity {
@@ -82,7 +75,7 @@ public class AddWaterReadingActivity extends DashBoardActivity {
                             try {
                                 SocietyHelpDatabaseFactory.getDBInstance().insertWaterReading(wsr);
                                 List<WaterSuppyReading> readings = SocietyHelpDatabaseFactory.getDBInstance().getAllWaterReading();
-                                Intent innerIntent = new Intent(getApplicationContext(), ViewWaterReadingActivity.class);
+                                Intent innerIntent = new Intent(getApplicationContext(), ManageExpenditureTypeActivity.ViewWaterReadingActivity.class);
                                 byte[] sObj = CustomSerializer.serializeObject(readings);
                                 innerIntent.putExtra(CONST_WATER_READINGS, sObj);
                                 startActivity(innerIntent);
