@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="societyhelp.app.mini.creation.SetupSocietyMiniActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            >
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_create_login"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_login_create"
+                    android:onClick="setupSociety"
+                    android:text="@string/createLoginIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_all_login"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_view_all_logins"
+                    android:onClick="setupSociety"
+                    android:text="@string/viewAllLoginIconText"
+                    />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_add_flat"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_add_flat"
+                    android:onClick="setupSociety"
+                    android:text="@string/addFlatIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_all_flat"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_view_all_flat"
+                    android:onClick="setupSociety"
+                    android:text="@string/viewAllFlatIconText"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+                <Button
+                    android:id="@+id/home_activity_btn_add_user"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_add_user"
+                    android:onClick="setupSociety"
+                    android:text="@string/addUserIconText"
+                    />
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_manage_users"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_manage_user"
+                    android:onClick="setupSociety"
+                    android:text="@string/manageUsersIconText"
+                    />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

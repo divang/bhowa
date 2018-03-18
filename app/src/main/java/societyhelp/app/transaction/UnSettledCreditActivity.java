@@ -19,7 +19,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import societyhelp.app.DashBoardActivity;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.dao.SocietyHelpDatabaseFactory;

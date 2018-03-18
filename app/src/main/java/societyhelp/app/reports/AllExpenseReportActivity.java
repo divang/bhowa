@@ -2,10 +2,7 @@ package societyhelp.app.reports;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -22,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
-import societyhelp.app.DashBoardActivity;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.SocietyHelpConstant;

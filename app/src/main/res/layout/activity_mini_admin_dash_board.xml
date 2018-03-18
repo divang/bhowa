@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="societyhelp.app.mini.dashboard.DashBoardAdminMiniActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            >
+
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_setup_society"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_raw_data"
+                    android:onClick="executeAdminRequest"
+                    android:text="@string/setupSociety"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_transaction_view"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_transaction_home"
+                    android:onClick="executeAdminRequest"
+                    android:text="@string/transaction_home_button_text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_report"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_expense_mapping"
+                    android:onClick="executeAdminRequest"
+                    android:text="@string/expenseReportPieChartText"
+                    />
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_save_splitted_transactions"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_save_splitted_transactions"
+                    android:onClick="executeAdminRequest"
+                    android:text="@string/saveSplitTransactionText"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_validate_user_expense"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_user_expend"
+                    android:onClick="executeAdminRequest"
+                    android:text="@string/validateUserExpenseIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_flat_wise_payable"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_flat_wise_payable"
+                    android:onClick="executeAdminRequest"
+                    android:text="@string/generateMaintenanceIconText"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

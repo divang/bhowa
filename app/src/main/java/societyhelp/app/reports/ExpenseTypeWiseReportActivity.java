@@ -1,9 +1,6 @@
 package societyhelp.app.reports;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -14,15 +11,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
-import societyhelp.app.DashBoardActivity;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.R;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.SocietyHelpConstant;
-import societyhelp.dao.mysql.impl.ExpenseType;
 import societyhelp.dao.mysql.impl.TransactionOnBalanceSheet;
 
 public class ExpenseTypeWiseReportActivity extends DashBoardActivity implements SocietyHelpConstant {

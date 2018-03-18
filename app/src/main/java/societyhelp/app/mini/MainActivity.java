@@ -1,32 +1,32 @@
-package societyhelp.app;
+package societyhelp.app.mini;
 
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
-
+import societyhelp.app.R;
+import societyhelp.app.mini.dashboard.DashBoardAdminMiniActivity;
+import societyhelp.app.mini.dashboard.DashBoardUserMiniActivity;
+import societyhelp.app.mini.creation.CreateSocietyMiniActivity;
 import societyhelp.app.util.PropertyReader;
 import societyhelp.app.util.SocietyHelpConstant;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
-import societyhelp.dao.mysql.impl.*;
+import societyhelp.dao.mysql.impl.Login;
+import societyhelp.dao.mysql.impl.UserDetails;
 
 public class MainActivity extends AppCompatActivity implements SocietyHelpConstant {
 
@@ -125,13 +125,16 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
 
     private void doTask(View v, TextView userNameText, TextView passwordText) {
         try {
+
             UserDetails userLogin = new UserDetails();
             userLogin.userName = userNameText.getText().toString();
             userLogin.password = passwordText.getText().toString();
-            boolean isLoginSuccess = SocietyHelpDatabaseFactory.getDBInstance().login(userLogin);
-            if (isLoginSuccess) {
+            Login loginCredential = SocietyHelpDatabaseFactory.getDBInstance().login(userLogin);
+            if (loginCredential != null) {
                 prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 prefs.edit().putString(CONST_LOGIN_ID_KEY_PREF_MANAGER, userLogin.userName).commit();
+                prefs.edit().putString(CONST_SOCIETY_ID_KEY_PREF_MANAGER, loginCredential.societyId).commit();
+                prefs.edit().putString(CONST_SOCIETY_NAME_KEY_PREF_MANAGER, loginCredential.societyName).commit();
                 UserDetails ud = SocietyHelpDatabaseFactory.getDBInstance().getMyDetails(userLogin.userName);
                 if (ud != null) {
                     prefs.edit().putString(CONST_FLAT_ID_KEY_PREF_MANAGER, ud.flatId).commit();
@@ -139,8 +142,15 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
                     else prefs.edit().putBoolean(CONST_OWNER_KEY_PREF_MANAGER, false).commit();
                     prefs.edit().putString(CONST_USER_AUTHS_PREF_MANAGER, ud.getAuthorizationList()).commit();
                 }
-                Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
-                startActivity(homeIntent);
+                if(loginCredential.isAdmin) {
+                    prefs.edit().putString(CONST_DASHBOARD_CLASS_PREF_MANAGER, DashBoardAdminMiniActivity.class.getCanonicalName()).commit();
+                	Intent homeIntent = new Intent(v.getContext(), DashBoardAdminMiniActivity.class);
+                    startActivity(homeIntent);
+                }else{
+	                prefs.edit().putString(CONST_DASHBOARD_CLASS_PREF_MANAGER, DashBoardUserMiniActivity.class.getCanonicalName()).commit();
+	                Intent homeIntent = new Intent(v.getContext(), DashBoardUserMiniActivity.class);
+                    startActivity(homeIntent);
+                }
             } else {
                 runOnUiThread(changeMessage);
             }
@@ -172,24 +182,23 @@ public class MainActivity extends AppCompatActivity implements SocietyHelpConsta
         String dbUrl = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_URL, getApplicationContext());
         String dbUser = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_USER, getApplicationContext());
         String dbPass = PropertyReader.getProperty(SocietyHelpConstant.CONST_DB_PASSWORD, getApplicationContext());
-        Log.d("----------  Database", "dbUrl-" + dbUrl + " dbUser-" + dbUser + " dbPass-" + dbPass);
         SocietyHelpDatabaseFactory.init(dbUrl, dbUser, dbPass);
         SocietyHelpDatabaseFactory.initMasterDB(dbUrl, dbUser, dbPass);
     }
 
     protected void setCustomToolBar() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         //displaying custom ActionBar
         View mActionBarView = getLayoutInflater().inflate(R.layout.login_tool_bar, null);
         actionBar.setCustomView(mActionBarView);
-        actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
 
     public void createNewSociety(View v) {
         try {
-            Intent societyIntent = new Intent(v.getContext(), CreateSocietyActivity.class);
+            Intent societyIntent = new Intent(v.getContext(), CreateSocietyMiniActivity.class);
             startActivity(societyIntent);
         } catch (Exception e) {
 

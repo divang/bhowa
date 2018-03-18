@@ -15,6 +15,7 @@ public class Flat implements Serializable {
     public String block;
     public boolean status;
     public String owner;
+    public int societyId;
 
     @Override
     public String toString() {
@@ -26,6 +27,7 @@ public class Flat implements Serializable {
         str.append(" block=").append(block);
         str.append(" status=").append(status);
         str.append(" owner=").append(owner);
+        str.append(" societyId=").append(societyId);
         return str.toString();
     }
 

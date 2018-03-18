@@ -36,7 +36,7 @@ public class SocietyHelpDatabaseFactory {
 
 	public static ISocietyHelpDatabase getDBInstance()
 	{
-		if(!isInitialized) throw new ExceptionInInitializerError("Factory does not have DBURL, user and password");
+		//if(!isInitialized) throw new ExceptionInInitializerError("Factory does not have DBURL, user and password");
 		/*
 		Async task should be executed once, beacuse of that always creating new Instance.
 		if(instance != null) return instance;

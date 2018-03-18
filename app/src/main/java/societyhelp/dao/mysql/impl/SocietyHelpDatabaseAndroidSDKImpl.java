@@ -110,7 +110,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 
 				case getActiveUser:
-					result = dbCore.getAllUsers();
+					result = dbCore.getAllSocietyUsers(String.valueOf(params[1]));
 					break;
 
 				case getAllTransactionStagingUsers:
@@ -134,7 +134,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					break;
 
 				case createLogin:
-					dbCore.createUserLogin(String.valueOf(params[1]), String.valueOf(params[2]), String.valueOf(params[3]));
+					dbCore.createUserLogin(params[1]);
 					break;
 
 				case addFlatDetails:
@@ -146,7 +146,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
                     break;
 
                 case getAllFlats:
-                    result = dbCore.getAllFlats();
+                    result = dbCore.getAllFlatsInSociety(String.valueOf(params[1]));
                     break;
 
                 case addUserDetails:
@@ -213,7 +213,7 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 					dbCore.loadInitialData(params[1]);
 					break;
 				case createSociety:
-					dbCore.createSociety(params[1]);
+					result = dbCore.createSociety(params[1]);
 					break;
 				case userWiseAutoSplitTransactions:
 					result = dbCore.userWiseAutoSplitTransactions(String.valueOf(params[1]));
@@ -261,21 +261,21 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public boolean login(Object userDetailsObj)  throws Exception{
+	public Login login(Object userDetailsObj)  throws Exception{
 
 		if(userDetailsObj instanceof UserDetails)
 		{
 			UserDetails user = (UserDetails) userDetailsObj;
 			AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.login.name(), user.userName, user.password);
 			try {
-				return (Boolean)aTask.get();
+				return (Login)aTask.get();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
 				e.printStackTrace();
 			}
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -340,8 +340,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public List<UserDetails> getAllUsers()  throws Exception{
-		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getActiveUser.name());
+	public List<UserDetails> getAllUsers(String societyId)  throws Exception{
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getActiveUser.name(), societyId);
 		try {
 			return (List<UserDetails>)aTask.get();
 		} catch (Exception e) {
@@ -390,8 +390,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public void createLogin(String loginId, String password, String adminLoginId) throws Exception {
-		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createLogin.name(), loginId, password, adminLoginId);
+	public void createLogin(Object login) throws Exception {
+		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createLogin.name(), login);
 		try {
 			aTask.get();
 		} catch (Exception e) {
@@ -421,8 +421,8 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
     }
 
     @Override
-    public List<Flat> getAllFlats() throws Exception {
-        AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllFlats.name());
+    public List<Flat> getAllFlats(String societyId) throws Exception {
+        AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.getAllFlats.name(), societyId);
         try {
             return (List<Flat>)aTask.get();
         } catch (Exception e) {
@@ -601,10 +601,10 @@ public class SocietyHelpDatabaseAndroidSDKImpl extends AsyncTask<Object, Integer
 	}
 
 	@Override
-	public void createSociety(SocietyDetails societyDetails) throws Exception {
+	public String createSociety(SocietyDetails societyDetails) throws Exception {
 		AsyncTask<Object, Integer, Object> aTask = this.execute(QUERY_NAME.createSociety.name(), societyDetails);
 		try {
-			aTask.get();
+			return (String) aTask.get();
 		} catch (Exception e) {
 			throw e;
 		}

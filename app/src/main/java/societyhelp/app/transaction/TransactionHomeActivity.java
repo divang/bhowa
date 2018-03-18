@@ -4,27 +4,19 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import java.io.File;
 import java.util.List;
 
-import societyhelp.app.CreateLoginIdActivity;
-import societyhelp.app.DashBoardActivity;
-import societyhelp.app.DetailTransactionViewActivity;
-import societyhelp.app.HomeTransactionActivity;
+import societyhelp.app.advance.DashBoardActivity;
 import societyhelp.app.R;
-import societyhelp.app.SplitTransactionsFlatWiseActivity;
-import societyhelp.app.UserAliasMappingActivity;
-import societyhelp.app.VerifiedCashPaymentActivity;
+import societyhelp.app.advance.ManageExpenditureTypeActivity;
+import societyhelp.app.advance.ManageFlatWisePayableActivity;
 import societyhelp.app.util.CustomSerializer;
 import societyhelp.app.util.FileChooser;
 import societyhelp.dao.SocietyHelpDatabaseFactory;
 import societyhelp.dao.mysql.impl.BankStatement;
-import societyhelp.dao.mysql.impl.Login;
 import societyhelp.dao.mysql.impl.SocietyHelpTransaction;
 import societyhelp.dao.mysql.impl.StagingTransaction;
 import societyhelp.dao.mysql.impl.UserDetails;
@@ -156,7 +148,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
 
                 try {
                     List<StagingTransaction> stagingTransaction = SocietyHelpDatabaseFactory.getDBInstance().getUnsettledCreditTransaction();
-                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers();
+                    List<UserDetails> users = SocietyHelpDatabaseFactory.getDBInstance().getAllUsers(getSocietyId());
                     Intent nextIntent = new Intent(getApplicationContext(), UnSettledCreditActivity.class);
                     nextIntent.putExtra(CONST_UN_SETTLED_TRANSACTIONS, CustomSerializer.serializeObject(stagingTransaction));
                     nextIntent.putExtra(CONST_ALL_USERS, CustomSerializer.serializeObject(users));
@@ -188,7 +180,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
 
                     List<UserPaid> splipttedUserPaid = SocietyHelpDatabaseFactory.getDBInstance().generateSplittedTransactionsFlatWise();
                     // Insert to new balance sheet table
-                    Intent innerIntent = new Intent(getApplicationContext(), SplitTransactionsFlatWiseActivity.class);
+                    Intent innerIntent = new Intent(getApplicationContext(), ManageFlatWisePayableActivity.SplitTransactionsFlatWiseActivity.class);
                     byte[] sObj = CustomSerializer.serializeObject(splipttedUserPaid);
                     innerIntent.putExtra(CONST_SPLITTED_TRANSACTION, sObj);
                     startActivity(innerIntent);
@@ -213,7 +205,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
             public void run() {
                 try {
                     List<UserPaid> payments = SocietyHelpDatabaseFactory.getDBInstance().getUnVerifiedCashPayment();
-                    Intent intentMyDues = new Intent(getApplicationContext(), VerifiedCashPaymentActivity.class);
+                    Intent intentMyDues = new Intent(getApplicationContext(), ManageExpenditureTypeActivity.VerifiedCashPaymentActivity.class);
                     byte[] sObj = CustomSerializer.serializeObject(payments);
                     intentMyDues.putExtra(CONST_UN_VERIFIED_PAYMENT, sObj);
 
@@ -237,7 +229,7 @@ public class TransactionHomeActivity extends DashBoardActivity {
             public void run() {
                 try {
                     List<StagingTransaction> stagingTransactions = SocietyHelpDatabaseFactory.getDBInstance().getAllStaggingTransaction();
-                    Intent intent = new Intent(getApplicationContext(), UserAliasMappingActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ManageExpenditureTypeActivity.UserAliasMappingActivity.class);
                     byte[] data = CustomSerializer.serializeObject(stagingTransactions);
                     intent.putExtra(CONST_PDF_ALL_STAGING_TRANSACTIONS, data);
                     startActivity(intent);

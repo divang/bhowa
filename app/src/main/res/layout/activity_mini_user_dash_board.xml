@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="societyhelp.app.mini.dashboard.DashBoardUserMiniActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            >
+
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_view_report"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_expense_mapping"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/expenseReportPieChartText"
+                    />
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_save_splitted_transactions"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_save_splitted_transactions"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/saveSplitTransactionText"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DashboardLinerLayout">
+
+
+                <Button
+                    android:id="@+id/home_activity_btn_my_dues"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_my_dues"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/myDuesIconText"
+                    />
+
+                <Button
+                    android:id="@+id/home_activity_btn_user_expense"
+                    style="@style/HomeButton"
+                    android:drawableTop="@drawable/ic_my_expense"
+                    android:onClick="onButtonClicker"
+                    android:text="@string/myExpenseIconText"
+                    />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

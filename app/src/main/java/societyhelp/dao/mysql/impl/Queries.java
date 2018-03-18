@@ -6,8 +6,7 @@ public class Queries {
 
 	//Queries
 	public static final String loginQuery =
-			//"select Login_Id FROM Login WHERE Login_Id = ? and Password = ? and Status = 1";
-			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, s.Society_Id from " +
+			"select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, s.Society_Id, l.isAdmin from " +
 					" login l" +
 					" inner join " +
 					" society s " +
@@ -16,7 +15,7 @@ public class Queries {
 					" and l.Password = ?" +
 					" and l.Status = 1";
 
-	public static final String activityLoggingQuery =
+   public static final String activityLoggingQuery =
 			"Insert into user_activity_logging (UserName, Mobile, Activity, Comment, Time) values (? ,? ,?, ?, ?)";
 
 	public static final String statementProcessedQuery =
@@ -57,7 +56,10 @@ public class Queries {
 
 	public static final String allUsersQuery =
 			"SELECT * FROM user_details";
-
+	
+	public static final String allSocietyUsersQuery =
+		"SELECT * FROM user_details ud INNER JOIN login l on ud.Login_Id = l.Login_Id where l.Society_Id=?";
+	
 	public static final String expenseTypeQuery =
 			"SELECT * FROM expense_type";
 
@@ -71,14 +73,12 @@ public class Queries {
 			"UPDATE user_details SET Name_Alias = ? WHERE User_Id = ?";
 
 	public static final String createLoginQuery =
-			//"Insert into login(Login_Id, Password) values (?, ?)"; //old query single database
-			//New query with Master login database and Other society database
-			"Insert into login(Login_Id, Password, Society_Id) " +
-					" select  ?, ?, Society_Id from login where login_id= ?";
+			"Insert into login(Login_Id, Password, isAdmin, Society_Id) " +
+					" select  ?, ?, ?, ?";
 
 	public static final String insertFlatDetailsQuery =
-			"Insert into flat(Flat_Id,Flat_Number,Area,Maintenance_Amount,Block_Number) " +
-					"values (?, ?, ?, ?,?)";
+			"Insert into flat(Flat_Id,Flat_Number,Area,Maintenance_Amount,Block_Number, Society_Id) " +
+					"values (?, ?, ?, ?, ?, ?)";
 
 	public static final String selectAllLoginQuery =
 			//"SELECT * FROM login"; //Old query
@@ -100,6 +100,13 @@ public class Queries {
 					"FROM flat f left join user_details ud on ud.Flat_ID = f.Flat_Id " +
 					"where ud.User_Type = 'Owner' " +
 					"group by f.Flat_Id " +
+					"order by f.Flat_Id ";
+
+	public static final String selectAllFlatInSocietyQuery =
+			"SELECT f.Flat_Id,f.Flat_Number,f.Area,f.Maintenance_Amount," +
+					"f.Block_Number,f.Status " +
+					"FROM flat f  " +
+					"where f.Society_Id = ? " +
 					"order by f.Flat_Id ";
 
 	public static final String selectFinalTransactionQuery =

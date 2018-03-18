@@ -36,6 +36,8 @@
     <string name="verifyAutoSplitTransactionHomeTest">Verify auto split</string>
     <string name="splitTransactionsHomeTest">Split your transactions</string>
     <string name="expenseReportPieChartText">Expense Report Pie Chart</string>
+    <string name="setupSociety">Setup Society</string>
+
     <!-- Color -->
     <color name="white">#FFFFFF</color>
 
@@ -105,8 +107,12 @@
     <string name="Title_New_Society_Create"><i><u>Create New Society</u></i></string>
     <string name="title_activity_create_society">CreateSocietyActivity</string>
 
-    <string name="Society_Add_Response">Thanks!!! for showing interest. Will get back to you shortly over supplied Mail.</string>
-    <string name="title_activity_status_message">StatusMessageActivity</string>
+    <string name="Society_Add_Response">Creation of Society is done. Now create admin user to manage Society.</string>
+    <string name="Society_Add_Admin_User">Create Admin Login</string>
+    <string name="Society_Creation_Final_Response">Admin login has been created for your society. Please click below link to login as admin and then setup other login, flat and user.</string>
+    <string name="Society_GO_TO_LOGIN">Go to login</string>
+
+    <string name="title_activity_status_message">Status MessageActivity</string>
     <string name="title_activity_manual_split">ManualSplitActivity</string>
 
     <string name="hello_world">Hello world!</string>

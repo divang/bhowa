@@ -12,6 +12,8 @@ public class Login implements Serializable {
     public String password;
     public boolean status;
     public String societyId;
+    public String societyName;
+    public boolean isAdmin;
 
     @Override
     public String toString() {
@@ -20,6 +22,8 @@ public class Login implements Serializable {
         str.append(" password=").append(password);
         str.append(" status=").append(status);
         str.append(" societyId=").append(societyId);
+        str.append(" societyName=").append(societyName);
+        str.append(" isAdmin=").append(isAdmin);
         return str.toString();
     }
 
@@ -33,15 +37,4 @@ public class Login implements Serializable {
 
         return str.toString();
     }
-    /*
-    CREATE TABLE `Login` (
-	`Login_Id` VARCHAR(20) NOT NULL,
-	`Password` VARCHAR(20) NOT NULL,
-	`Status` TINYINT(1) NOT NULL DEFAULT '1',
-	`Authorised_Activity` VARCHAR(100) NULL DEFAULT NULL,
-	PRIMARY KEY (`Login_Id`)
-    )
-    ENGINE=InnoDB
-    ROW_FORMAT=DEFAULT
-     */
 }

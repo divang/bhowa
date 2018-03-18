@@ -25,7 +25,7 @@ public interface ISocietyHelpDatabase {
      *
      * @return
      */
-    boolean login(Object userDetailsObj) throws Exception;
+    Login login(Object userDetailsObj) throws Exception;
 
     /**
      * Capture all user activities
@@ -75,7 +75,7 @@ public interface ISocietyHelpDatabase {
      *
      * @return
      */
-    List<UserDetails> getAllUsers() throws Exception;
+    List<UserDetails> getAllUsers(String societyId) throws Exception;
 
     /**
      * All type of expenses which user can do.
@@ -109,11 +109,9 @@ public interface ISocietyHelpDatabase {
     /**
      * Create a User login
      *
-     * @param loginId
-     * @param password
      * @throws Exception
      */
-    void createLogin(String loginId, String password, String adminLoginId) throws Exception;
+    void createLogin(Object login) throws Exception;
 
     /**
      * Add society flat details
@@ -137,7 +135,7 @@ public interface ISocietyHelpDatabase {
      * @return
      * @throws Exception
      */
-    List<Flat> getAllFlats() throws Exception;
+    List<Flat> getAllFlats(String societyId) throws Exception;
 
     /**
      * Insert new user
@@ -280,7 +278,7 @@ public interface ISocietyHelpDatabase {
      * @param societyDetails
      * @throws Exception
      */
-    void createSociety(SocietyDetails societyDetails) throws Exception;
+    String createSociety(SocietyDetails societyDetails) throws Exception;
 
     /**
      * All auto split transaction which are not validate by user. Use for Rented users

@@ -35,8 +35,9 @@ import societyhelp.parser.LoadBhowaInitialData.LoadData;
 public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, SocietyHelpConstant {
 
 	private static long autoSplitId;
-	
-	public static void main(String[] args) {
+	private static Connection connection;
+
+    public static void main(String[] args) {
 		
 		try {
 			
@@ -84,13 +85,15 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         databasePassword = strDatabasePassword;
     }
 
-    public Connection getDBInstance() throws Exception {
+    public synchronized Connection getDBInstance() throws Exception {
 
         if (!isInitialized)
             throw new ExceptionInInitializerError("DBURL, User and Password are not initialize.");
 
         try {
-            Connection connection = DriverManager.getConnection(databaseDBURL, databaseUser, databasePassword);
+            if(connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(databaseDBURL, databaseUser, databasePassword);
+            }
             return connection;
         } catch (Exception e) {
             throw e;
@@ -135,38 +138,27 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
-    public boolean loginDB(String userName, String password) throws Exception {
+    public Login loginDB(String userName, String password) throws Exception {
 
         Connection connection = null;
         PreparedStatement pStat = null;
         ResultSet result = null;
+        Login login = null;
         try {
-            /*
-            select s.Database_URL, s.Database_User, s.Database_Password, s.Society_Name, l.Authorised_Activity from
-			Login l
-			inner join
-			Society s
-			on l.Society_Id = s.Society_Id
-			where l.Login_Id='divangd'
-			and l.Password = '1'
-			and l.Status = 1
-			 */
             connection = getDBInstance();
             pStat = connection.prepareStatement(loginQuery);
             pStat.setString(1, userName);
             pStat.setString(2, password);
             result = pStat.executeQuery();
             if (result != null && result.next()) {
+                login = new Login();
                 //reset the DB URL, user and password
-                String url = result.getString(1);
-                String user = result.getString(2);
-                String pass = result.getString(3);
-                //String societyNmae = result.getString(4);
-                //int societyId = result.getInt(5);
-                init(url, user, pass);
+                login.societyName = result.getString(4);
+                login.societyId = result.getString(5);
+                login.isAdmin = result.getBoolean(6);
+                //init(url, user, pass);
                 //Reinitialize the factory class, so always new instance will use these configuration.
                 //SocietyHelpDatabaseFactory.init(url, user, pass);
-                return true;
             }
 
         } catch (Exception e) {
@@ -174,7 +166,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         } finally {
             close(connection, pStat, result);
         }
-        return false;
+        return login;
     }
 
     public void activityLoggingDB(Object activity) throws Exception {
@@ -407,14 +399,6 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
             pStat = connection.prepareStatement(allUsersQuery);
             result = pStat.executeQuery();
             while (result.next()) {
-                /*
-				SELECT `User_Id`, `Login_Id`, `User_Type_Id`,
-				`Status`, `Flat_Id`, `Name`,
-				LEFT(`Name_Alias`, 256), `Mobile_No`, `Moble_No_Alternate`,
-				`Email_Id`, `Address`, `Flat_Join_Date`,
-				`Flat_Left_Date`
-				FROM `sql6134070`.`User_Details` ORDER BY `Login_Id` ASC LIMIT 0, 1000;
-				 */
                 UserDetails u = new UserDetails();
                 u.userId = result.getString(1);
                 u.loginId = result.getString(2);
@@ -444,7 +428,47 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
         return users;
     }
-
+	
+	public List<UserDetails> getAllSocietyUsers(String societyId) throws Exception {
+		List<UserDetails> users = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pStat = null;
+		ResultSet result = null;
+		try {
+			connection = getDBInstance();
+			pStat = connection.prepareStatement(allSocietyUsersQuery);
+			pStat.setString(1, societyId);
+			result = pStat.executeQuery();
+			while (result.next()) {
+				UserDetails u = new UserDetails();
+				u.userId = result.getString(1);
+				u.loginId = result.getString(2);
+				u.userType = result.getString(3);
+				
+				u.isActive = result.getInt(4) == 1 ? true : false;
+				u.flatId = result.getString(5);
+				u.userName = result.getString(6);
+				
+				u.nameAlias = result.getString(7);
+				u.mobileNo = result.getLong(8);
+				u.mobileNoAlternative = result.getLong(9);
+				
+				u.emailId = result.getString(10);
+				u.address = result.getString(11);
+				u.flatJoinDate = result.getDate(12);
+				
+				u.flatLeftDate = result.getDate(13);
+				
+				users.add(u);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			close(connection, pStat, result);
+		}
+		return users;
+	}
 
     public List<ExpenseType> getExpenseType() throws Exception {
         List<ExpenseType> types = new ArrayList<>();
@@ -530,19 +554,21 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
-    public void createUserLogin(String loginId, String password, String adminLoginId) throws Exception {
+    public void createUserLogin(Object oLogin) throws Exception {
         Connection con = null;
         PreparedStatement pStat = null;
         ResultSet res = null;
-
         try {
-            con = getDBInstance();
-            pStat = con.prepareStatement(createLoginQuery);
-            pStat.setString(1, loginId);
-            pStat.setString(2, password);
-            pStat.setString(3, adminLoginId);
-            pStat.executeUpdate();
-
+            if(oLogin instanceof Login) {
+                Login login = (Login) oLogin;
+                con = getDBInstance();
+                pStat = con.prepareStatement(createLoginQuery);
+                pStat.setString(1, login.loginId);
+                pStat.setString(2, login.password);
+                pStat.setBoolean(3, login.isAdmin);
+                pStat.setString(4, login.societyId);
+                pStat.executeUpdate();
+            }
         } catch (Exception e) {
             throw e;
         } finally {
@@ -590,6 +616,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 pStat.setInt(3, flat.area);
                 pStat.setFloat(4, flat.maintenanceAmount);
                 pStat.setString(5, flat.block);
+                pStat.setInt(6,flat.societyId);
 
                 pStat.executeUpdate();
 
@@ -680,6 +707,40 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 l.block = result.getString(5);
                 l.status = result.getBoolean(6);
                 l.owner = result.getString(7);
+                flats.add(l);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            close(connection, pStat, result);
+        }
+        return flats;
+    }
+
+    public List<Flat> getAllFlatsInSociety(String societyId) throws Exception {
+        List<Flat> flats = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pStat = null;
+        ResultSet result = null;
+        try {
+			/*
+			f.Flat_Id,f.Flat_Number,f.Area,f.Maintenance_Amount," +
+					"f.Block_Number,f.Status,group_concat(ud.Name, '')" +
+
+			 */
+            connection = getDBInstance();
+            pStat = connection.prepareStatement(selectAllFlatInSocietyQuery);
+            pStat.setString(1, societyId);
+            result = pStat.executeQuery();
+            while (result.next()) {
+                Flat l = new Flat();
+                l.flatId = result.getString(1);
+                l.flatNumber = result.getString(2);
+                l.area = result.getInt(3);
+                l.maintenanceAmount = result.getFloat(4);
+                l.block = result.getString(5);
+                l.status = result.getBoolean(6);
                 flats.add(l);
             }
 
@@ -3094,7 +3155,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
         }
     }
 
-    public void createSociety(Object obj) throws Exception {
+    public String createSociety(Object obj) throws Exception {
+
+        String generatedSocietyId = "";
 
         if(obj instanceof SocietyDetails) {
             SocietyDetails societyDetails = (SocietyDetails) obj;
@@ -3104,7 +3167,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
 
             try {
                 con = getDBInstance();
-                pStat = con.prepareStatement(createSocietyQuery);
+                pStat = con.prepareStatement(createSocietyQuery, Statement.RETURN_GENERATED_KEYS);
 
                 pStat.setString(1, societyDetails.societyName);
                 pStat.setString(2, societyDetails.emailId);
@@ -3113,6 +3176,9 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 pStat.setString(5, societyDetails.country);
 
                 pStat.executeUpdate();
+                ResultSet rs = pStat.getGeneratedKeys();
+                rs.next();
+                generatedSocietyId = rs.getString(1);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -3121,6 +3187,7 @@ public class DatabaseCoreAPIs extends Queries implements DatabaseConstant, Socie
                 close(con, pStat, res);
             }
         }
+        return generatedSocietyId;
     }
 
     public List<TransactionOnBalanceSheet> userWiseAutoSplitTransactions(String loginId) throws Exception {

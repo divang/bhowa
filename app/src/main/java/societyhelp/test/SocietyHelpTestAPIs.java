@@ -1,6 +1,7 @@
 package societyhelp.test;
 
 import societyhelp.dao.mysql.impl.DatabaseCoreAPIs;
+import societyhelp.dao.mysql.impl.Login;
 
 public class SocietyHelpTestAPIs {
 
@@ -17,8 +18,8 @@ public class SocietyHelpTestAPIs {
 	{
 		try
 		{
-			boolean r = dbCore.loginDB("divang", "divang1");
-			if(r) System.out.println("loging test OK");
+			Login r = dbCore.loginDB("divang", "divang1");
+			if(r != null) System.out.println("loging test OK");
 			else System.err.println("loging test Failed");
 		}
 		catch(Exception e)

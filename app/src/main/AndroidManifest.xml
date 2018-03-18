@@ -20,54 +20,68 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity" >
+        <activity android:name=".mini.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FileBrowserActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".HomeTransactionActivity" />
-        <activity android:name=".ManageUserActivity" />
-        <activity android:name=".ManageExpenditureTypeActivity" />
-        <activity android:name=".MyTransactionsActivity" />
-        <activity android:name=".NotificationActivity" />
-        <activity android:name=".TransactionRawDataActivity" />
-        <activity android:name=".ViewRawDataActivity" />
-        <activity android:name=".MapUserToNameAlias" />
-        <activity android:name=".UserAliasMappingActivity" />
-        <activity android:name=".AddUserActivity" />
-        <activity android:name=".CreateLoginIdActivity" />
-        <activity android:name=".AddFlatDetailsActivity" />
-        <activity android:name=".ManageLoginActivity" />
-        <activity android:name=".ManageFlatActivity" />
-        <activity android:name=".DetailTransactionViewActivity" />
-        <activity android:name=".MyDuesActivity" />
-        <activity android:name=".ManageFlatWisePayableActivity" />
-        <activity android:name=".AddCashExpenseActivity" />
-        <activity android:name=".VerifiedCashPaymentActivity" />
-        <activity android:name=".SplitTransactionsFlatWiseActivity" />
-        <activity android:name=".FlatWiseAllPayableActivity" />
+        <!-- Start of Mini APP support-->
+        <activity android:name=".mini.creation.CreateAdminLoginMiniActivity" />
+        <activity android:name=".mini.creation.CreateFlatMiniActivity" />
+        <activity android:name=".mini.creation.CreateLoginMiniActivity" />
+        <activity android:name=".mini.creation.SetupSocietyMiniActivity" />
+        <activity android:name=".mini.creation.CreateUserMiniActivity" />
+        <activity android:name=".mini.creation.CreateSocietyMiniActivity" />
+        <activity android:name=".mini.creation.SocietyFinalPageMiniActivity" />
+        <activity android:name=".mini.dashboard.DashBoardAdminMiniActivity" />
+        <activity android:name=".mini.dashboard.DashBoardUserMiniActivity" />
+        <activity android:name=".mini.update.ManageFlatWisePayableMiniActivity" />
+        <activity android:name=".mini.view.ViewAllFlatMiniActivity" />
+        <activity android:name=".mini.view.ViewAllLoginsMiniActivity" />
+        <activity android:name=".mini.view.ViewAllUsersMiniActivity" />
+        <activity android:name=".mini.report.MyDuesMiniActivity" />
+
+        <!-- End of Mini APP support-->
+
+        <activity android:name=".advance.FileBrowserActivity" />
+        <activity android:name=".advance.HomeTransactionActivity" />
+        <activity android:name=".advance.ManageUserActivity" />
+        <activity android:name=".advance.ManageExpenditureTypeActivity" />
+        <activity android:name=".advance.MyTransactionsActivity" />
+        <activity android:name=".advance.ManageFlatWisePayableActivity$NotificationActivity" />
+        <activity android:name=".advance.ManageFlatWisePayableActivity$TransactionRawDataActivity" />
+        <activity android:name=".advance.ManageExpenditureTypeActivity$ViewRawDataActivity" />
+        <activity android:name=".advance.MapUserToNameAlias" />
+        <activity android:name=".advance.ManageExpenditureTypeActivity$UserAliasMappingActivity" />
+        <activity android:name=".advance.AddUserActivity" />
+        <activity android:name=".advance.ManageLoginActivity" />
+        <activity android:name=".advance.ManageFlatActivity" />
+        <activity android:name=".advance.DetailTransactionViewActivity" />
+        <activity android:name=".advance.MyDuesActivity" />
+        <activity android:name=".advance.AddCashExpenseActivity" />
+        <activity android:name=".advance.ManageExpenditureTypeActivity$VerifiedCashPaymentActivity" />
+        <activity android:name=".advance.ManageFlatWisePayableActivity$SplitTransactionsFlatWiseActivity" />
+        <activity android:name=".advance.FlatWiseAllPayableActivity" />
         <activity android:name=".transaction.StagingTransactionViewActivity" />
         <activity android:name=".transaction.TransactionHomeActivity" />
         <activity android:name=".transaction.CreditTransactionsActivity" />
         <activity android:name=".transaction.DebitTransactionsActivity" />
         <activity
-            android:name=".CreateSocietyActivity"
+            android:name=".advance.CreateSocietyActivity"
             android:label="@string/title_activity_create_society" >
         </activity>
         <activity
-            android:name=".StatusMessageActivity"
+            android:name=".mini.creation.SetupHintsMiniActivity"
             android:label="@string/title_activity_status_message" >
         </activity>
         <activity
-            android:name=".ManualSplitActivity"
+            android:name=".advance.ManualSplitActivity"
             android:label="@string/title_activity_manual_split" >
         </activity>
         <activity
-            android:name=".ExpenseReportInPieChartActivity"
+            android:name=".advance.ExpenseReportInPieChartActivity"
             android:label="@string/title_activity_expense_report_in_pie_chart" >
         </activity>
         <activity
@@ -79,17 +93,18 @@
             android:label="@string/title_activity_expense_type_wise_report" >
         </activity>
         <activity
-            android:name=".AddWaterReadingActivity"
+            android:name=".advance.AddWaterReadingActivity"
             android:label="@string/title_activity_add_water_reading" >
         </activity>
         <activity
-            android:name=".ViewWaterReadingActivity"
+            android:name=".advance.ManageExpenditureTypeActivity$ViewWaterReadingActivity"
             android:label="@string/title_activity_view_water_reading" >
         </activity>
         <activity
             android:name=".transaction.UnSettledCreditActivity"
             android:label="@string/title_activity_un_settled_credit" >
         </activity>
+
     </application>
 
 </manifest>

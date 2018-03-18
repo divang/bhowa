@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/activity_left_margin"
     android:layout_marginRight="@dimen/activity_left_margin"
-    tools:context="societyhelp.app.AddCashExpenseActivity">
+    tools:context="societyhelp.app.advance.AddCashExpenseActivity">
 
     <LinearLayout
         android:layout_width="fill_parent"
