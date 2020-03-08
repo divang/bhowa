@@ -3,7 +3,7 @@ https://play.google.com/store/apps/details?id=societyhelp.app
 
 Setup APP to run in local machine:
 - Set root user password in local Mysql server
-	1- systemctl stop mysqld
+	1- systemctl stop mysqld </br>
 	2- systemctl set-environment MYSQLD_OPTS="--skip-grant-tables"
 	3- systemctl start mysqld
 	4- mysql -u root
